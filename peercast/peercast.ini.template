@@ -1,0 +1,92 @@
+[Server]
+serverName =
+serverPort = 7144
+autoServe = Yes
+forceIP =
+isRoot = Yes
+maxBitrateOut = 0
+maxRelays = 2
+maxDirect = 0
+maxRelaysPerChannel = 0
+firewallTimeout = 30
+forceNormal = No
+rootMsg =
+authType = cookie
+cookiesExpire = session
+htmlPath = html/ja
+maxServIn = 50
+chanLog =
+publicDirectory = No
+networkID = 00000000000000000000000000000000
+
+[Broadcast]
+broadcastMsgInterval = 10
+broadcastMsg =
+icyMetaInterval = 8192
+broadcastID = 00A52417F4A74AB5967112CAF6B2E71F
+hostUpdateInterval = 120
+maxControlConnections = 3
+rootHost =
+
+[Client]
+refreshHTML = 5
+chat = Yes
+relayBroadcast = 30
+minBroadcastTTL = 1
+maxBroadcastTTL = 7
+pushTries = 5
+pushTimeout = 60
+maxPushHops = 8
+transcodingEnabled = No
+preset = veryfast
+audioCodec = mp3
+wmvProtocol = http
+
+[Privacy]
+password = $PEERCAST_PASSWORD
+maxUptime = 0
+
+[Filter]
+ip = 255.255.255.255
+private = No
+ban = No
+network = Yes
+direct = Yes
+[End]
+
+[Feed]
+url = https://p-at.net/index.txt
+[End]
+
+[Uptest]
+url = http://bayonet.ddo.jp/sp/yp4g.xml
+[End]
+
+[Uptest]
+url = http://temp.orz.hm/yp/yp4g.xml
+[End]
+
+[Notify]
+PeerCast = Yes
+Broadcasters = Yes
+TrackInfo = Yes
+[End]
+
+[Server1]
+allowHTML = Yes
+allowBroadcast = Yes
+allowNetwork = Yes
+allowDirect = Yes
+[End]
+
+[Debug]
+logLevel = 3
+pauseLog = No
+idleSleepTime = 10
+
+[Flags]
+randomizeBroadcastingChannelID = Yes
+sendPortAtomWhenFirewallUnknown = No
+forceFirewalled = No
+startPlayingFromKeyFrame = Yes
+[End]
