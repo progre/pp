@@ -1,5 +1,5 @@
-/.terraform/
-/.terraform.lock.hcl
-/main.tfvars
-/terraform.tfstate
-/terraform.tfstate.backup
+/root/.terraform/
+/root/.terraform.lock.hcl
+/root/main.tfvars
+/root/terraform.tfstate
+/root/terraform.tfstate.backup
