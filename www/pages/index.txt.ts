@@ -7,6 +7,7 @@ function generateIndexTxt(): string {
   const formatter = new Intl.DateTimeFormat('ja-JP', {
     dateStyle: 'short',
     timeStyle: 'long',
+    timeZone: 'Asia/Tokyo',
   });
   return parser.stringify(
     [
