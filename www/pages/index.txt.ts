@@ -45,7 +45,7 @@ function handler(res: ServerResponse) {
 
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   handler(res);
-  return { props: {} };
+  return { props: {}, revalidate: 60 };
 }
 
 export default function Null() {
