@@ -43,9 +43,13 @@ function handler(res: ServerResponse) {
   );
 }
 
+export async function getStaticProps() {
+  return { props: {}, revalidate: 60 /* In seconds */ };
+}
+
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   handler(res);
-  return { props: { revalidateSample: Date.now() }, revalidate: 60 };
+  return { props: {} };
 }
 
 export default function Null() {
