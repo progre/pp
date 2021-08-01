@@ -2,24 +2,31 @@ import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import { ServerResponse } from 'http';
 
-function generateIndexTxt(): string {
-  const now = new Date();
+function formatISO8601Like(date: Date): string {
   const formatter = new Intl.DateTimeFormat('ja-JP', {
     dateStyle: 'short',
-    timeStyle: 'long',
+    timeStyle: 'medium',
     timeZone: 'Asia/Tokyo',
   });
+  return (
+    formatter
+      .format(date)
+      .replace(/\//g, '-')
+      .replace(/(?<=\d) (?=\d)/, 'T') + '+09:00'
+  );
+}
+
+function generateIndexTxt(): string {
+  const now = new Date();
   return parser.stringify(
     [
       {
-        name: `p@◆Updated at ${formatter.format(now)} (${JSON.stringify(
-          formatter.resolvedOptions()
-        )})`,
+        name: 'p@◆Status',
         id: '00000000000000000000000000000000',
         ip: '',
         url: 'https://p-at.net/',
         genre: '',
-        desc: '',
+        desc: 'まだ裏側ぜんぜんできてません',
         bandwidthType: '',
         listeners: -1,
         relays: -1,
@@ -32,7 +39,7 @@ function generateIndexTxt(): string {
           url: '',
         },
         createdAt: now.getTime(),
-        comment: '',
+        comment: `Updated at ${formatISO8601Like(now)}`,
         direct: false,
       },
     ],
