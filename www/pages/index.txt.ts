@@ -2,53 +2,59 @@ import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import { ServerResponse } from 'http';
 
-function handler(res: ServerResponse) {
-  // res.setHeader("Cache-Control", "s-maxage=86400, stale-while-revalidate"); // 24時間のキャッシュ
-  res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
-  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
-  res.shouldKeepAlive = false;
-  res.writeHead(200);
+function generateIndexTxt(): string {
   const now = new Date();
   const formatter = new Intl.DateTimeFormat('ja-JP', {
     dateStyle: 'short',
     timeStyle: 'long',
   });
-  res.end(
-    parser.stringify(
-      [
-        {
-          name: `p@◆Updated at ${formatter.format(now)}`,
-          id: '00000000000000000000000000000000',
-          ip: '',
-          url: 'https://p-at.net/',
-          genre: '',
-          desc: '',
-          bandwidthType: '',
-          listeners: -1,
-          relays: -1,
-          bitrate: 0,
-          type: 'RAW',
-          track: {
-            creator: '',
-            album: '',
-            title: '',
-            url: '',
-          },
-          createdAt: now.getTime(),
-          comment: '',
-          direct: false,
+  return parser.stringify(
+    [
+      {
+        name: `p@◆Updated at ${formatter.format(now)} (${JSON.stringify(
+          formatter.resolvedOptions()
+        )})`,
+        id: '00000000000000000000000000000000',
+        ip: '',
+        url: 'https://p-at.net/',
+        genre: '',
+        desc: '',
+        bandwidthType: '',
+        listeners: -1,
+        relays: -1,
+        bitrate: 0,
+        type: 'RAW',
+        track: {
+          creator: '',
+          album: '',
+          title: '',
+          url: '',
         },
-      ],
-      now
-    )
+        createdAt: now.getTime(),
+        comment: '',
+        direct: false,
+      },
+    ],
+    now
   );
 }
 
-export async function getServerSideProps({ res }: GetServerSidePropsContext) {
+function handler(res: ServerResponse): void {
+  const indexTxt = generateIndexTxt();
+  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
+  res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
+  res.shouldKeepAlive = false;
+  res.writeHead(200);
+  res.end(indexTxt);
+}
+
+export async function getServerSideProps({
+  res,
+}: GetServerSidePropsContext): Promise<unknown> {
   handler(res);
   return { props: {} };
 }
 
-export default function Null() {
+export default function Null(): null {
   return null;
 }
