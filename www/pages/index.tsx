@@ -1,4 +1,4 @@
-export function index() {
+export default function index() {
   const now = new Date();
   const formatter = new Intl.DateTimeFormat('ja-JP', {
     dateStyle: 'short',
