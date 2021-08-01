@@ -5,6 +5,7 @@ import { ServerResponse } from 'http';
 function handler(res: ServerResponse) {
   // res.setHeader("Cache-Control", "s-maxage=86400, stale-while-revalidate"); // 24時間のキャッシュ
   res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
+  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
   res.shouldKeepAlive = false;
   res.writeHead(200);
   const now = new Date();
@@ -41,10 +42,6 @@ function handler(res: ServerResponse) {
       now
     )
   );
-}
-
-export async function getStaticProps() {
-  return { props: {}, revalidate: 60 /* In seconds */ };
 }
 
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
