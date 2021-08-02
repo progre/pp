@@ -1,14 +1,40 @@
-```
-$ docker build --tag progre/pp:latest .
-$ docker push progre/pp:latest
-$ terraform init
-$ terraform apply -var-file="main.tfvars" -auto-approve
-```
+```mermaid
+flowchart TD;
+  subgraph "リスナー"
+    listener
+    browser
+  end
 
-```
-$ terraform destroy -var-file="main.tfvars" -auto-approve
-$ docker run -it --env DOMAIN=localhost --env EMAIL_ADDRESS=hoge@example.com --env PASSWORD=hoge -p 80:80 -p 7146:7144 progre/pp:latest
-```
+  subgraph "配信者"
+    broadcaster
+  end
 
-pcp://root.p-at.net
-https://p-at.net/index.txt
+  Terraform.->docker
+  Terraform.->dns
+
+  style pat fill:#0000
+  subgraph pat["p@"]
+    subgraph "p-at.net (Vercel)"
+      isr["Vercel ISR<br>(自動キャッシュ管理)"]
+      www["next.js"]
+    end
+
+    style GCP fill:#0000
+    subgraph GCP
+      direction LR
+      dns["Cloud DNS"]
+
+      subgraph docker["root.p-at.net (Docker)"]
+        root["rootモードPeerCast"];
+        nginx["Nginx"]
+      end
+    end
+  end
+
+  listener["リスナーのPeerCast"]--pcp-->broadcaster
+  broadcaster["配信者のPeerCast"]--pcp-->root
+  browser["PCYP"]--http/https-->isr
+  isr--http-->www;
+  www--https-->nginx;
+  nginx--http-->root;
+```
