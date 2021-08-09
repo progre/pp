@@ -25,7 +25,6 @@ export default async function parseXml(
   const uptimeStr = `${(uptime / 60 / 60 / 24) | 0}日+${
     (uptime / 60 / 60) | 0
   }:${(uptime / 60) | 0}:${uptime % 60}`;
-  console.log(peercast.channels_found);
   return [
     {
       name: 'p@◆Status',
@@ -50,7 +49,7 @@ export default async function parseXml(
       direct: false,
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...(<any[]>peercast.channels_found[0].channel).map((x): Channel => {
+    ...(<any[]>peercast.channels_found[0].channel ?? []).map((x): Channel => {
       const channelAttr = x['$'];
       const trackAttr = x.track[0]['$'];
       const hostAttr = x.hits[0].host[0]['$'];
