@@ -1,54 +1,20 @@
 import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import { ServerResponse } from 'http';
+import parseXml from '../utils/parseXml';
 
-function formatISO8601Like(date: Date): string {
-  const formatter = new Intl.DateTimeFormat('ja-JP', {
-    dateStyle: 'short',
-    timeStyle: 'medium',
-    timeZone: 'Asia/Tokyo',
-  });
-  return (
-    formatter
-      .format(date)
-      .replace(/\//g, '-')
-      .replace(/(?<=\d) (?=\d)/, 'T') + '+09:00'
-  );
-}
+const ROOT_SERVER_ORIGIN =
+  process.env.ROOT_SERVER_ORIGIN ?? 'http://admin:hoge@192.168.10.102';
 
-function generateIndexTxt(): string {
+async function generateIndexTxt(): Promise<string> {
+  const res = await fetch(`${ROOT_SERVER_ORIGIN}/admin?cmd=viewxml`);
   const now = new Date();
-  return parser.stringify(
-    [
-      {
-        name: 'p@◆Status',
-        id: '00000000000000000000000000000000',
-        ip: '',
-        url: 'https://p-at.net/',
-        genre: '',
-        desc: 'まだ裏側ぜんぜんできてません',
-        bandwidthType: '',
-        listeners: -1,
-        relays: -1,
-        bitrate: 0,
-        type: 'RAW',
-        track: {
-          creator: '',
-          album: '',
-          title: '',
-          url: '',
-        },
-        createdAt: now.getTime(),
-        comment: `Updated at ${formatISO8601Like(now)}`,
-        direct: false,
-      },
-    ],
-    now
-  );
+  const channels = await parseXml(await res.text(), now);
+  return parser.stringify(channels, now);
 }
 
-function handler(res: ServerResponse): void {
-  const indexTxt = generateIndexTxt();
+async function handler(res: ServerResponse): Promise<void> {
+  const indexTxt = await generateIndexTxt();
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
   res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
   res.shouldKeepAlive = false;
@@ -59,7 +25,7 @@ function handler(res: ServerResponse): void {
 export async function getServerSideProps({
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  handler(res);
+  await handler(res);
   return { props: {} };
 }
 
