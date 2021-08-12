@@ -7,7 +7,7 @@ $ terraform apply -var-file="main.tfvars" -auto-approve
 
 ```
 $ terraform destroy -var-file="main.tfvars" -auto-approve
-$ docker run -it --env DOMAIN=localhost --env EMAIL_ADDRESS=hoge@example.com --env PASSWORD=hoge -p 80:80 -p 7146:7144 progre/pp:latest
+$ docker run -it --env ROOT_DOMAIN=localhost --env INSECURE_DOMAIN=localhost2 --env EMAIL_ADDRESS=hoge@example.com --env PASSWORD=hoge -p 80:80 -p 7146:7144 progre/pp:latest
 ```
 
 pcp://root.p-at.net

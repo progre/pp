@@ -7,13 +7,13 @@ terraform {
   }
 }
 
-variable "env_domain" {}
+variable "env_root_domain" {}
+variable "env_insecure_domain" {}
 variable "env_email_address" {}
 variable "env_password" {}
 variable "google_credential_file_name" {}
 variable "google_project" {}
 variable "google_cloud_dns_zone_name" {}
-variable "google_cloud_dns_a_record" {}
 
 provider "google" {
   credentials = file(var.google_credential_file_name)
@@ -39,9 +39,17 @@ resource "google_compute_address" "tf_address" {
   name = "ipv4-address"
 }
 
-resource "google_dns_record_set" "resource-recordset" {
+resource "google_dns_record_set" "resource_recordset" {
   managed_zone = var.google_cloud_dns_zone_name
-  name         = var.google_cloud_dns_a_record
+  name         = "${var.env_root_domain}."
+  type         = "A"
+  rrdatas      = [google_compute_address.tf_address.address]
+  ttl          = 86400
+}
+
+resource "google_dns_record_set" "resource_recordset2" {
+  managed_zone = var.google_cloud_dns_zone_name
+  name         = "${var.env_insecure_domain}."
   type         = "A"
   rrdatas      = [google_compute_address.tf_address.address]
   ttl          = 86400
@@ -59,7 +67,7 @@ resource "google_compute_instance" "tf-cloud-01" {
     }
   }
   metadata = {
-    gce-container-declaration = "spec:\n  containers:\n    - image: 'docker.io/progre/pp:latest'\n      stdin: false\n      tty: true\n      env:\n        - name: \"DOMAIN\"\n          value: \"${var.env_domain}\"\n        - name: \"EMAIL_ADDRESS\"\n          value: \"${var.env_email_address}\"\n        - name: \"PASSWORD\"\n          value: \"${var.env_password}\"\n  restartPolicy: Always\n"
+    gce-container-declaration = "spec:\n  containers:\n    - image: 'docker.io/progre/pp:latest'\n      stdin: false\n      tty: true\n      env:\n        - name: \"ROOT_DOMAIN\"\n          value: \"${var.env_root_domain}\"\n        - name: \"INSECURE_DOMAIN\"\n          value: \"${var.env_insecure_domain}\"\n        - name: \"EMAIL_ADDRESS\"\n          value: \"${var.env_email_address}\"\n        - name: \"PASSWORD\"\n          value: \"${var.env_password}\"\n  restartPolicy: Always\n"
   }
   network_interface {
     network = google_compute_network.tf_network.name

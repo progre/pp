@@ -7,7 +7,8 @@ RUN apt update && \
   apt-get clean
 
 RUN rm /etc/nginx/conf.d/default.conf
-ADD nginx/peercast.conf.template /etc/nginx/conf.d/
+ADD nginx/root.conf.template /etc/nginx/conf.d/
+ADD nginx/insecure.conf.template /etc/nginx/conf.d/
 ADD cron.d/certbot /etc/cron.d/
 
 RUN chmod 755 Peercast_YT-x86_64.AppImage
