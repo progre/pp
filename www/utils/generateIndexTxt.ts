@@ -21,11 +21,12 @@ function formatISO8601Like(date: Date): string {
 
 async function parseXml(xml: string, now: Date): Promise<Channel[]> {
   const { peercast } = await xml2js.parseStringPromise(xml);
-  // console.log(peercast.channels_found[0].channel);
   const uptime = peercast.servent[0]['$'].uptime;
-  const uptimeStr = `${(uptime / 60 / 60 / 24) | 0}日+${
-    (uptime / 60 / 60) | 0
-  }:${(uptime / 60) | 0}:${uptime % 60}`;
+  const day = (uptime / 60 / 60 / 24) | 0;
+  const hours = String(((uptime / 60 / 60) | 0) % 24).padStart(2, '0');
+  const minutes = String(((uptime / 60) | 0) % 60).padStart(2, '0');
+  const seconds = uptime % 60;
+  const uptimeStr = `${day}日+${hours}:${minutes}:${seconds}`;
   return [
     {
       name: 'p@◆Status',
@@ -92,7 +93,7 @@ export default async function generateIndexTxt(
       ? []
       : [
           {
-            name: 'p@◆insecure',
+            name: 'p@◆Insecure',
             id: '00000000000000000000000000000000',
             ip: '',
             url: 'https://p-at.net/index.txt',
