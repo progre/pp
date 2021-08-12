@@ -1,5 +1,9 @@
+import * as parser from 'peercast-yp-channels-parser';
 import { Channel } from 'peercast-yp-channels-parser';
 import xml2js from 'xml2js';
+
+const ROOT_SERVER_ORIGIN =
+  process.env.ROOT_SERVER_ORIGIN ?? 'http://admin:hoge@192.168.10.102';
 
 function formatISO8601Like(date: Date): string {
   const formatter = new Intl.DateTimeFormat('ja-JP', {
@@ -15,10 +19,7 @@ function formatISO8601Like(date: Date): string {
   );
 }
 
-export default async function parseXml(
-  xml: string,
-  now: Date
-): Promise<Channel[]> {
+async function parseXml(xml: string, now: Date): Promise<Channel[]> {
   const { peercast } = await xml2js.parseStringPromise(xml);
   // console.log(peercast.channels_found[0].channel);
   const uptime = peercast.servent[0]['$'].uptime;
@@ -79,4 +80,41 @@ export default async function parseXml(
       };
     }),
   ];
+}
+
+export default async function generateIndexTxt(
+  insecure: boolean
+): Promise<string> {
+  const res = await fetch(`${ROOT_SERVER_ORIGIN}/admin?cmd=viewxml`);
+  const now = new Date();
+  const channels = [
+    ...(!insecure
+      ? []
+      : [
+          {
+            name: 'p@◆insecure',
+            id: '00000000000000000000000000000000',
+            ip: '',
+            url: 'https://p-at.net/index.txt',
+            genre: '',
+            desc: '通信は暗号化されていません。',
+            bandwidthType: '',
+            listeners: -1,
+            relays: -1,
+            bitrate: 0,
+            type: 'RAW',
+            track: {
+              creator: '',
+              album: '',
+              title: '',
+              url: '',
+            },
+            createdAt: now.getTime(),
+            comment: '',
+            direct: false,
+          },
+        ]),
+    ...(await parseXml(await res.text(), now)),
+  ];
+  return parser.stringify(channels, now);
 }

@@ -1,11 +1,11 @@
 import { GetServerSidePropsContext } from 'next';
-import generateIndexTxt from '../utils/generateIndexTxt';
-import handler from '../utils/handler';
+import generateIndexTxt from '../../utils/generateIndexTxt';
+import handler from '../../utils/handler';
 
 export async function getServerSideProps({
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  handler(res, await generateIndexTxt(false));
+  handler(res, await generateIndexTxt(true));
   return { props: {} };
 }
 
