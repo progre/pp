@@ -1,9 +1,7 @@
 import * as parser from 'peercast-yp-channels-parser';
 import { Channel } from 'peercast-yp-channels-parser';
 import xml2js from 'xml2js';
-
-const ROOT_SERVER_ORIGIN =
-  process.env.ROOT_SERVER_ORIGIN ?? 'http://admin:hoge@192.168.10.102';
+import { rootServerOrigin } from '../utils/env';
 
 function formatISO8601Like(date: Date): string {
   const formatter = new Intl.DateTimeFormat('ja-JP', {
@@ -19,14 +17,18 @@ function formatISO8601Like(date: Date): string {
   );
 }
 
-async function parseXml(xml: string, now: Date): Promise<Channel[]> {
-  const { peercast } = await xml2js.parseStringPromise(xml);
-  const uptime = peercast.servent[0]['$'].uptime;
+function uptimeToString(uptime: number): string {
   const day = (uptime / 60 / 60 / 24) | 0;
   const hours = String(((uptime / 60 / 60) | 0) % 24).padStart(2, '0');
   const minutes = String(((uptime / 60) | 0) % 60).padStart(2, '0');
-  const seconds = uptime % 60;
-  const uptimeStr = `${day}日+${hours}:${minutes}:${seconds}`;
+  const seconds = String(uptime % 60).padStart(2, '0');
+  return `${day}日+${hours}:${minutes}:${seconds}`;
+}
+
+async function parseXml(xml: string, now: Date): Promise<Channel[]> {
+  const { peercast } = await xml2js.parseStringPromise(xml);
+  const uptime = peercast.servent[0]['$'].uptime;
+  const uptimeStr = uptimeToString(uptime);
   return [
     {
       name: 'p@◆Status',
@@ -55,7 +57,6 @@ async function parseXml(xml: string, now: Date): Promise<Channel[]> {
       const channelAttr = x['$'];
       const trackAttr = x.track[0]['$'];
       const hostAttr = x.hits[0].host[0]['$'];
-      console.log(x, x.hits[0], x.track[0]);
       return {
         name: channelAttr.name,
         id: channelAttr.id,
@@ -83,39 +84,10 @@ async function parseXml(xml: string, now: Date): Promise<Channel[]> {
   ];
 }
 
-export default async function generateIndexTxt(
-  insecure: boolean
-): Promise<string> {
-  const res = await fetch(`${ROOT_SERVER_ORIGIN}/admin?cmd=viewxml`);
+export default async function generateIndexTxt(): Promise<string> {
+  const res = await fetch(`${rootServerOrigin}/admin?cmd=viewxml`);
+  const xml = await res.text();
   const now = new Date();
-  const channels = [
-    ...(!insecure
-      ? []
-      : [
-          {
-            name: 'p@◆Insecure',
-            id: '00000000000000000000000000000000',
-            ip: '',
-            url: 'https://p-at.net/index.txt',
-            genre: '',
-            desc: '通信は暗号化されていません。',
-            bandwidthType: '',
-            listeners: -1,
-            relays: -1,
-            bitrate: 0,
-            type: 'RAW',
-            track: {
-              creator: '',
-              album: '',
-              title: '',
-              url: '',
-            },
-            createdAt: now.getTime(),
-            comment: '',
-            direct: false,
-          },
-        ]),
-    ...(await parseXml(await res.text(), now)),
-  ];
+  const channels = await parseXml(xml, now);
   return parser.stringify(channels, now);
 }
