@@ -2,7 +2,7 @@
 FROM nginx:stable
 RUN apt update && \
   apt install --yes apache2-utils certbot curl nginx python3-certbot-nginx && \
-  curl --remote-name --location https://github.com/plonk/peercast-yt/releases/download/v0.3.7/Peercast_YT-x86_64.AppImage && \
+  curl --remote-name --location https://github.com/plonk/peercast-yt/releases/download/v0.3.8/Peercast_YT-x86_64.AppImage && \
   apt-get purge --yes curl && \
   apt-get clean
 

@@ -2,7 +2,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "3.5.0"
+      version = "3.79.0"
     }
   }
 }
@@ -17,7 +17,7 @@ variable "google_cloud_dns_zone_name" {}
 
 provider "google" {
   credentials = file(var.google_credential_file_name)
-  region      = "us-central1"
+  region      = "us-west1"
   project     = var.google_project
 }
 
@@ -57,8 +57,8 @@ resource "google_dns_record_set" "resource_recordset2" {
 
 resource "google_compute_instance" "tf-cloud-01" {
   name                      = "tf-cloud-01"
-  machine_type              = "f1-micro"
-  zone                      = "us-central1-a"
+  machine_type              = "e2-micro"
+  zone                      = "us-west1-a"
   tags                      = [google_compute_firewall.tf_firewall.name]
   allow_stopping_for_update = true
   boot_disk {
@@ -75,4 +75,18 @@ resource "google_compute_instance" "tf-cloud-01" {
       nat_ip = google_compute_address.tf_address.address
     }
   }
+}
+
+resource "google_logging_project_bucket_config" "pp_production" {
+  project        = var.google_project
+  location       = "global"
+  retention_days = 30
+  bucket_id      = "pp-production"
+}
+
+resource "google_logging_project_sink" "tf_sink" {
+  name                   = "tf-pp-sink"
+  destination            = "logging.googleapis.com/${google_logging_project_bucket_config.pp_production.id}"
+  filter                 = "logName = ${google_logging_project_bucket_config.pp_production.id}"
+  unique_writer_identity = true
 }

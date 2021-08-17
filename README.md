@@ -3,19 +3,17 @@ flowchart TD;
   subgraph "リスナー"
     listener
     browser
+    pecareco
   end
 
   subgraph "配信者"
     broadcaster
   end
 
-  Terraform.->docker
-  Terraform.->dns
-
   style pat fill:#0000
   subgraph pat["p@"]
     subgraph "p-at.net (Vercel)"
-      isr["Vercel ISR<br>(自動キャッシュ管理)"]
+      isr["Vercel CDN"]
       www["next.js"]
     end
 
@@ -23,18 +21,28 @@ flowchart TD;
     subgraph GCP
       direction LR
       dns["Cloud DNS"]
+      logger["Cloud Logger"]
 
-      subgraph docker["root.p-at.net (Docker)"]
+      subgraph docker["Docker"]
         root["rootモードPeerCast"];
-        nginx["Nginx"]
+        nginxroot["Nginx(root.p-at.net)"]
+        nginxinsecure["Nginx(insecure.p-at.net)"]
       end
     end
   end
 
+  Terraform
+
   listener["リスナーのPeerCast"]--pcp-->broadcaster
   broadcaster["配信者のPeerCast"]--pcp-->root
-  browser["PCYP"]--http/https-->isr
+  browser["PCYP"]--https-->isr
+  pecareco["PeCaRecorder"]--http-->nginxinsecure
+  nginxinsecure--https-->www
   isr--http-->www;
-  www--https-->nginx;
-  nginx--http-->root;
+  www--https-->nginxroot;
+  www--https-->logger
+  nginxroot--http-->root;
+  Terraform.->docker
+  Terraform.->dns
+  Terraform.->logger
 ```
