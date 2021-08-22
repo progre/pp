@@ -22,7 +22,7 @@ export async function getServerSideProps({
     severity: 'INFO',
   };
   await log.write(log.entry(metadata, txt));
-  handler(res, txt);
+  handler(res, txt, true);
   return { props: {} };
 }
 

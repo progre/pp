@@ -41,7 +41,7 @@ export async function getServerSideProps({
   const originURL = `${protocol}://${req.headers.host}/index.txt`;
   const originRes = await fetch(originURL);
   const originText = await originRes.text();
-  handler(res, insecureHeader() + '\n' + originText);
+  handler(res, insecureHeader() + '\n' + originText, false);
   return { props: {} };
 }
 
