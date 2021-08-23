@@ -17,22 +17,20 @@ flowchart TD;
       www["next.js"]
     end
 
-    style GCP fill:#0000
     subgraph GCP
-      direction LR
-      dns["Cloud DNS"]
-      logger["Cloud Logger"]
-
+      direction TB
       subgraph docker["Docker"]
         root["rootモードPeerCast"];
         nginxroot["Nginx(root.p-at.net)"]
         nginxinsecure["Nginx(insecure.p-at.net)"]
+        Certbot
       end
+      dns["Cloud DNS"]
+      logger["Cloud Logger"]
     end
   end
 
-  Terraform
-
+  Certbot.->nginxroot
   listener["リスナーのPeerCast"]--pcp-->broadcaster
   broadcaster["配信者のPeerCast"]--pcp-->root
   browser["PCYP"]--https-->isr
@@ -42,7 +40,5 @@ flowchart TD;
   www--https-->nginxroot;
   www--https-->logger
   nginxroot--http-->root;
-  Terraform.->docker
-  Terraform.->dns
-  Terraform.->logger
+  Certbot.->letsencrypt["Let's Encrypt"]
 ```
