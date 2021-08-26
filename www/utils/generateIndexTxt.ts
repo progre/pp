@@ -98,10 +98,7 @@ export default async function generateIndexTxt(): Promise<string> {
       }
     );
   });
-  let xml = '';
-  for await (const chunk of res) {
-    xml += chunk;
-  }
+  const xml = String(res.body);
   const now = new Date();
   const channels = await parseXml(xml, now);
   return parser.stringify(channels, now);

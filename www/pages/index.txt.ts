@@ -7,11 +7,14 @@ import handler from '../utils/handler';
 
 const logName = `pp-${vercelEnv}`;
 
-const logging = new Logging({
-  projectId: 'progreyp',
-  credentials: JSON.parse(gcpCredentials),
-});
-const log = logging.log(logName);
+const logging =
+  gcpCredentials == null
+    ? null
+    : new Logging({
+        projectId: 'progreyp',
+        credentials: JSON.parse(gcpCredentials),
+      });
+const log = logging?.log(logName) ?? null;
 
 export async function getServerSideProps({
   res,
@@ -21,7 +24,9 @@ export async function getServerSideProps({
     resource: { type: 'global' },
     severity: 'INFO',
   };
-  await log.write(log.entry(metadata, txt));
+  if (log != null) {
+    await log.write(log.entry(metadata, txt));
+  }
   handler(res, txt, true);
   return { props: {} };
 }
