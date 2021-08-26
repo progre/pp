@@ -1,6 +1,9 @@
 server {
-  listen 80 default_server;
+  listen 443 ssl default_server;
   server_name $ROOT_DOMAIN;
+
+  ssl_certificate     $ROOT_DOMAIN.crt;
+  ssl_certificate_key $ROOT_DOMAIN.key;
 
   location / {
     auth_basic "Restricted";

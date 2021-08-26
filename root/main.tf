@@ -7,7 +7,9 @@ terraform {
   }
 }
 
+variable "env_root_crt_file" {}
 variable "env_root_domain" {}
+variable "env_root_key_file" {}
 variable "env_insecure_domain" {}
 variable "env_email_address" {}
 variable "env_password" {}
@@ -67,7 +69,34 @@ resource "google_compute_instance" "tf-cloud-01" {
     }
   }
   metadata = {
-    gce-container-declaration = "spec:\n  containers:\n    - image: 'docker.io/progre/pp:latest'\n      stdin: false\n      tty: true\n      env:\n        - name: \"ROOT_DOMAIN\"\n          value: \"${var.env_root_domain}\"\n        - name: \"INSECURE_DOMAIN\"\n          value: \"${var.env_insecure_domain}\"\n        - name: \"EMAIL_ADDRESS\"\n          value: \"${var.env_email_address}\"\n        - name: \"PASSWORD\"\n          value: \"${var.env_password}\"\n      volumeMounts:\n        - name: dockersock\n          mountPath: /var/run/docker.sock\n  volumes:\n    - name: dockersock\n      hostPath:\n        path: /var/run/docker.sock\n  restartPolicy: Never\n"
+    gce-container-declaration = <<-EOT
+    spec:
+      containers:
+        - image: 'docker.io/progre/pp:latest'
+          stdin: false
+          tty: true
+          env:
+            - name: ROOT_DOMAIN
+              value: "${var.env_root_domain}"
+            - name: INSECURE_DOMAIN
+              value: "${var.env_insecure_domain}"
+            - name: EMAIL_ADDRESS
+              value: "${var.env_email_address}"
+            - name: PASSWORD
+              value: "${var.env_password}"
+            - name: ROOT_CRT
+              value: "${replace(file(var.env_root_crt_file), "\n", "\\n")}"
+            - name: ROOT_KEY
+              value: "${replace(file(var.env_root_key_file), "\n", "\\n")}"
+          volumeMounts:
+            - name: dockersock
+              mountPath: /var/run/docker.sock
+      volumes:
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+      restartPolicy: Never
+    EOT
   }
   network_interface {
     network = google_compute_network.tf_network.name

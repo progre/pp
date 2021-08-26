@@ -11,5 +11,5 @@ ADD nginx/cron.d/certbot /etc/cron.d/
 ADD nginx/run.sh /
 RUN chmod 755 run.sh
 
-EXPOSE 80 443
+EXPOSE 443
 CMD ["/run.sh"]

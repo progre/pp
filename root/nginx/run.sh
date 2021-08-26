@@ -9,9 +9,7 @@ popd
 
 htpasswd -b -c /etc/nginx/.htpasswd admin "$PASSWORD"
 
-if [ "$ROOT_DOMAIN" != localhost ]; then
-  certbot --nginx -n -m "$EMAIL_ADDRESS" --agree-tos -d "$ROOT_DOMAIN"
-  nginx -s quit
-fi
+echo -e "$ROOT_CRT" > "/etc/nginx/$ROOT_DOMAIN.crt"
+echo -e "$ROOT_KEY" > "/etc/nginx/$ROOT_DOMAIN.key"
 
 nginx -g "daemon off;"

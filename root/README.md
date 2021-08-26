@@ -1,10 +1,10 @@
 ```
-$ docker build --tag progre/pp-nginx:latest --file nginx/Dockerfile .
-$ docker build --tag progre/pp-peercast:latest --file peercast/Dockerfile .
-$ docker build --tag progre/pp:latest .
-$ docker push progre/pp-nginx:latest
-$ docker push progre/pp-peercast:latest
-$ docker push progre/pp:latest
+$ docker build --tag progre/pp-nginx:latest --file nginx/Dockerfile . && \
+  docker build --tag progre/pp-peercast:latest --file peercast/Dockerfile . && \
+  docker build --tag progre/pp:latest .
+$ docker push progre/pp-nginx:latest && \
+  docker push progre/pp-peercast:latest && \
+  docker push progre/pp:latest
 $ terraform init
 $ terraform apply -var-file="main.tfvars" -auto-approve
 ```

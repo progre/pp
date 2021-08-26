@@ -13,8 +13,9 @@ CMD peercast_password="$(openssl rand -base64 33)" && \
   --env EMAIL_ADDRESS \
   --env INSECURE_DOMAIN \
   --env PASSWORD \
+  --env ROOT_CRT \
   --env ROOT_DOMAIN \
-  --publish 80:80 \
+  --env ROOT_KEY \
   --publish 443:443 \
-  --restart no \
+  --restart always \
   progre/pp-nginx:latest

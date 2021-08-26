@@ -1,7 +1,8 @@
 import * as parser from 'peercast-yp-channels-parser';
 import { Channel } from 'peercast-yp-channels-parser';
+import request from 'request';
 import xml2js from 'xml2js';
-import { rootServerOrigin } from '../utils/env';
+import { ca, rootServerOrigin } from '../utils/env';
 
 function formatISO8601Like(date: Date): string {
   const formatter = new Intl.DateTimeFormat('ja-JP', {
@@ -85,8 +86,22 @@ async function parseXml(xml: string, now: Date): Promise<Channel[]> {
 }
 
 export default async function generateIndexTxt(): Promise<string> {
-  const res = await fetch(`${rootServerOrigin}/admin?cmd=viewxml`);
-  const xml = await res.text();
+  const res = await new Promise<request.Response>((resolve, reject) => {
+    request.get(
+      {
+        url: `${rootServerOrigin}/admin?cmd=viewxml`,
+        agentOptions: { ca },
+      },
+      (err, res) => {
+        if (err != null) reject(err);
+        resolve(res);
+      }
+    );
+  });
+  let xml = '';
+  for await (const chunk of res) {
+    xml += chunk;
+  }
   const now = new Date();
   const channels = await parseXml(xml, now);
   return parser.stringify(channels, now);
