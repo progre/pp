@@ -1,20 +1,20 @@
-# FROM ubuntu:latest
-FROM nginx:stable
-RUN apt update && \
-  apt install --yes apache2-utils certbot curl nginx python3-certbot-nginx && \
-  curl --remote-name --location https://github.com/plonk/peercast-yt/releases/download/v0.3.8/Peercast_YT-x86_64.AppImage && \
-  apt-get purge --yes curl && \
-  apt-get clean
-
-RUN rm /etc/nginx/conf.d/default.conf
-ADD nginx/root.conf.template /etc/nginx/conf.d/
-ADD nginx/insecure.conf.template /etc/nginx/conf.d/
-ADD cron.d/certbot /etc/cron.d/
-
-RUN chmod 755 Peercast_YT-x86_64.AppImage
-ADD peercast/peercast.ini.template /root/.config/peercast/
-ADD run.sh /
-RUN chmod 755 run.sh
-
-EXPOSE 80 443 7144
-CMD ["/run.sh"]
+FROM docker
+RUN apk update && apk add openssl
+CMD peercast_password="$(openssl rand -base64 33)" && \
+  docker run \
+  --detach \
+  --env PEERCAST_PASSWORD=$peercast_password \
+  --publish 7144:7144 \
+  --restart always \
+  progre/pp-peercast:latest && \
+  docker run \
+  --detach \
+  --env PEERCAST_PASSWORD=$peercast_password \
+  --env EMAIL_ADDRESS \
+  --env INSECURE_DOMAIN \
+  --env PASSWORD \
+  --env ROOT_DOMAIN \
+  --publish 80:80 \
+  --publish 443:443 \
+  --restart no \
+  progre/pp-nginx:latest

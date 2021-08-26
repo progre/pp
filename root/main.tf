@@ -67,7 +67,7 @@ resource "google_compute_instance" "tf-cloud-01" {
     }
   }
   metadata = {
-    gce-container-declaration = "spec:\n  containers:\n    - image: 'docker.io/progre/pp:latest'\n      stdin: false\n      tty: true\n      env:\n        - name: \"ROOT_DOMAIN\"\n          value: \"${var.env_root_domain}\"\n        - name: \"INSECURE_DOMAIN\"\n          value: \"${var.env_insecure_domain}\"\n        - name: \"EMAIL_ADDRESS\"\n          value: \"${var.env_email_address}\"\n        - name: \"PASSWORD\"\n          value: \"${var.env_password}\"\n  restartPolicy: Always\n"
+    gce-container-declaration = "spec:\n  containers:\n    - image: 'docker.io/progre/pp:latest'\n      stdin: false\n      tty: true\n      env:\n        - name: \"ROOT_DOMAIN\"\n          value: \"${var.env_root_domain}\"\n        - name: \"INSECURE_DOMAIN\"\n          value: \"${var.env_insecure_domain}\"\n        - name: \"EMAIL_ADDRESS\"\n          value: \"${var.env_email_address}\"\n        - name: \"PASSWORD\"\n          value: \"${var.env_password}\"\n      volumeMounts:\n        - name: dockersock\n          mountPath: /var/run/docker.sock\n  volumes:\n    - name: dockersock\n      hostPath:\n        path: /var/run/docker.sock\n  restartPolicy: Never\n"
   }
   network_interface {
     network = google_compute_network.tf_network.name
