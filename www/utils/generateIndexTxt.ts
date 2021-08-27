@@ -70,16 +70,29 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
       const channelAttr = x['$'];
       const trackAttr = x.track[0]['$'];
       const hostAttr = x.hits[0].host[0]['$'];
+      const genreSrc: string = channelAttr.genre;
+      let genre;
+      let naisho;
+      if (genreSrc.startsWith('pp?')) {
+        genre = /pp\?(.*)/.exec(genreSrc)?.[1] ?? '';
+        naisho = true;
+      } else if (genreSrc.startsWith('pp')) {
+        genre = /pp(.*)/.exec(genreSrc)?.[1] ?? '';
+        naisho = false;
+      } else {
+        genre = genreSrc;
+        naisho = false;
+      }
       return {
         name: channelAttr.name,
         id: channelAttr.id,
         ip: hostAttr.ip,
         url: channelAttr.url,
-        genre: channelAttr.genre,
+        genre,
         desc: channelAttr.desc,
         bandwidthType: '',
-        listeners: hostAttr.listeners,
-        relays: hostAttr.relays,
+        listeners: naisho ? '-1' : hostAttr.listeners,
+        relays: naisho ? '-1' : hostAttr.relays,
         bitrate: channelAttr.bitrate,
         type: channelAttr.type,
         track: {
