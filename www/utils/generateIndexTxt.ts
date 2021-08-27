@@ -10,11 +10,10 @@ function formatISO8601Like(date: Date): string {
     timeStyle: 'medium',
     timeZone: 'Asia/Tokyo',
   });
+  const parts = formatter.formatToParts(date).map((x) => x.value);
   return (
-    formatter
-      .format(date)
-      .replace(/\//g, '-')
-      .replace(/(?<=\d) (?=\d)/, 'T') + '+09:00'
+    `${parts[0]}-${parts[2]}-${parts[4]}` +
+    `T${parts[6].padStart(2, '0')}:${parts[8]}:${parts[10]}+09:00`
   );
 }
 
@@ -23,7 +22,7 @@ function uptimeToString(uptime: number): string {
   const hours = String(((uptime / 60 / 60) | 0) % 24).padStart(2, '0');
   const minutes = String(((uptime / 60) | 0) % 60).padStart(2, '0');
   const seconds = String(uptime % 60).padStart(2, '0');
-  return `${day}日+${hours}:${minutes}:${seconds}`;
+  return `${day}:${hours}:${minutes}:${seconds}`;
 }
 
 async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
