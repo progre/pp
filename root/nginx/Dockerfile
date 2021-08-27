@@ -10,5 +10,5 @@ ADD nginx/insecure.conf.template /etc/nginx/conf.d/
 ADD nginx/run.sh /
 RUN chmod 755 run.sh
 
-EXPOSE 443
+EXPOSE 80 443
 CMD ["/run.sh"]
