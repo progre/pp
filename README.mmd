@@ -1,4 +1,3 @@
-```mermaid
 flowchart TD;
   subgraph "リスナー"
     listener
@@ -11,7 +10,7 @@ flowchart TD;
   end
 
   style pat fill:#0000
-  subgraph pat["p@"]
+  subgraph pat["p@YP"]
     subgraph "p-at.net (Vercel)"
       isr["Vercel CDN"]
       www["next.js"]
@@ -21,12 +20,11 @@ flowchart TD;
       direction TB
       subgraph GCE
         subgraph docker1["Docker"]
-          nginxroot["Nginx(root.p-at.net)"]
-          nginxinsecure["Nginx(insecure.p-at.net)"]
-          Certbot
+          nginxroot["Nginx(https://root.p-at.net)"]
+          nginxinsecure["Nginx(http://insecure.p-at.net)"]
         end
         subgraph docker2["Docker"]
-          root["rootモードPeerCast"];
+          root["rootモードPeerCast(pcp://root.p-at.net)"];
         end
       end
       dns["Cloud DNS"]
@@ -34,15 +32,12 @@ flowchart TD;
     end
   end
 
-  Certbot.->nginxroot
   listener["リスナーのPeerCast"]--pcp-->broadcaster
   broadcaster["配信者のPeerCast"]--pcp-->root
   browser["PCYP"]--https-->isr
   pecareco["PCYP (PeCaRecorder等のhttps未対応のソフト)"]--http-->nginxinsecure
-  nginxinsecure--https-->www
+  nginxinsecure--https-->isr
   isr--http-->www;
   www--https-->logger
   www--https-->nginxroot;
   nginxroot--http-->root;
-  Certbot.->letsencrypt["Let's Encrypt"]
-```
