@@ -16,6 +16,7 @@ export async function pageView(
   const data = {
     v: '1',
     tid: GA_TRACKING_ID,
+    uid: ip,
     uip: ip,
     t: 'pageview',
     dh: req.headers.host,
@@ -25,7 +26,9 @@ export async function pageView(
   const res = await fetch(
     `https://www.google-analytics.com/${vercel ? '' : 'debug/'}collect?${query}`
   );
-  if (!vercel) {
+  if (res.status !== 200) {
+    console.error(await res.text());
+  } else if (!vercel) {
     console.log(ip, res.status, await res.text());
   }
 }
