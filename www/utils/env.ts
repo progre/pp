@@ -1,7 +1,6 @@
 import fs from 'fs';
 import zlib from 'zlib';
 
-export const gaCidSalt: string = process.env.GA_CID_SALT ?? 'salt';
 export const gcpCredentials: string | null =
   process.env.GCP_CREDENTIALS_BR != null
     ? zlib

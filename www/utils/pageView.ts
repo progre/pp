@@ -1,7 +1,6 @@
-import { createHash } from 'crypto';
 import { IncomingMessage } from 'http';
 import querystring from 'querystring';
-import { gaCidSalt, vercel } from '../utils/env';
+import { vercel } from '../utils/env';
 
 const GA_TRACKING_ID = 'UA-43486767-10';
 
@@ -17,9 +16,7 @@ export async function pageView(
   const data = {
     v: '1',
     tid: GA_TRACKING_ID,
-    cid: createHash('sha256')
-      .update(ip + gaCidSalt)
-      .digest('base64'),
+    uip: ip,
     t: 'pageview',
     dh: req.headers.host,
     dp: page,

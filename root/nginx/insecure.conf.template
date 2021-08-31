@@ -12,8 +12,8 @@ server {
     proxy_set_header X-Nginx-Real-IP $remote_addr;
     proxy_pass https://p-at.net/_internal/insecure.txt;
     proxy_ignore_headers cache-control;
-    proxy_cache zone1;
-    proxy_cache_valid 200 404 1m;
     add_header X-Cache-Status $upstream_cache_status;
+    # proxy_cache zone1;
+    # proxy_cache_valid 200 404 1m;
   }
 }
