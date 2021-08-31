@@ -1,6 +1,6 @@
-import { createHash } from 'node:crypto';
-import { IncomingMessage } from 'node:http';
-import querystring from 'node:querystring';
+import { createHash } from 'crypto';
+import { IncomingMessage } from 'http';
+import querystring from 'querystring';
 import { gaCidSalt, vercel } from '../utils/env';
 
 const GA_TRACKING_ID = 'UA-43486767-10';
