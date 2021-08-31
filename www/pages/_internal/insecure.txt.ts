@@ -37,9 +37,10 @@ function insecureHeader(): string {
 
 export async function getServerSideProps({
   req,
+  resolvedUrl,
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  await pageView(req.headers.host ?? '', '/_internal/insecure.txt', req);
+  await pageView(req, resolvedUrl);
   const originURL = `${protocol}://${req.headers.host}/_internal/index.txt`;
   const originRes = await fetch(originURL);
   const originText = await originRes.text();
