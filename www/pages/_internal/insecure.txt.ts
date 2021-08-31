@@ -2,6 +2,7 @@ import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import handler from '../../utils/handler';
 import { vercel } from '../../utils/env';
+import { pageView } from '../../utils/pageView';
 
 const protocol = `http${vercel ? 's' : ''}`;
 
@@ -38,7 +39,8 @@ export async function getServerSideProps({
   req,
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  const originURL = `${protocol}://${req.headers.host}/index.txt`;
+  await pageView(req.headers.host ?? '', '/_internal/insecure.txt', req);
+  const originURL = `${protocol}://${req.headers.host}/_internal/index.txt`;
   const originRes = await fetch(originURL);
   const originText = await originRes.text();
   handler(res, insecureHeader() + '\n' + originText, false);

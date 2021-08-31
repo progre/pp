@@ -1,33 +1,19 @@
-import { Logging } from '@google-cloud/logging';
-import { LogEntry } from '@google-cloud/logging/build/src/entry';
 import { GetServerSidePropsContext } from 'next';
-import { gcpCredentials, vercelEnv } from '../utils/env';
-import generateIndexTxt from '../utils/generateIndexTxt';
 import handler from '../utils/handler';
+import { vercel } from '../utils/env';
+import { pageView } from '../utils/pageView';
 
-const logName = `pp-${vercelEnv}`;
-
-const logging =
-  gcpCredentials == null
-    ? null
-    : new Logging({
-        projectId: 'progreyp',
-        credentials: JSON.parse(gcpCredentials),
-      });
-const log = logging?.log(logName) ?? null;
+const protocol = `http${vercel ? 's' : ''}`;
 
 export async function getServerSideProps({
+  req,
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  const txt = await generateIndexTxt();
-  const metadata: LogEntry = {
-    resource: { type: 'global' },
-    severity: 'INFO',
-  };
-  if (log != null) {
-    await log.write(log.entry(metadata, txt));
-  }
-  handler(res, txt, true);
+  await pageView(req.headers.host ?? '', '/index.txt', req);
+  const originURL = `${protocol}://${req.headers.host}/_internal/index.txt`;
+  const originRes = await fetch(originURL);
+  const originText = await originRes.text();
+  handler(res, originText, false);
   return { props: {} };
 }
 
