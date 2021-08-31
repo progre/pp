@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { IncomingMessage } from 'http';
 import querystring from 'querystring';
 import { vercel } from '../utils/env';
@@ -16,7 +17,9 @@ export async function pageView(
   const data = {
     v: '1',
     tid: GA_TRACKING_ID,
-    uid: ip,
+    cid: createHash('sha256')
+      .update(ip + 'Lj5ZU7g9')
+      .digest('base64'),
     uip: ip,
     t: 'pageview',
     dh: req.headers.host,
