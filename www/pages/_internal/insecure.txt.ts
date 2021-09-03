@@ -1,6 +1,6 @@
+import { Readable } from 'stream';
 import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
-import handler from '../../utils/handler';
 import { vercel } from '../../utils/env';
 import { pageView } from '../../utils/pageView';
 
@@ -43,8 +43,16 @@ export async function getServerSideProps({
   await pageView(req, resolvedUrl);
   const originURL = `${protocol}://${req.headers.host}/_internal/index.txt`;
   const originRes = await fetch(originURL);
-  const originText = await originRes.text();
-  handler(res, insecureHeader() + '\n' + originText, false);
+  res.setHeader('Content-Type', originRes.headers.get('Content-Type') ?? '');
+  res.shouldKeepAlive = false;
+  res.writeHead(originRes.status);
+  res.write(insecureHeader() + '\n');
+  const readable = originRes.body as unknown as Readable;
+  if (readable.addListener == null) throw new Error('node-fetch ではない');
+  for await (const buf of readable) {
+    res.write(buf);
+  }
+  res.end();
   return { props: {} };
 }
 
