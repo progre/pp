@@ -40,12 +40,14 @@ export async function getServerSideProps({
   resolvedUrl,
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
+  console.log('accept-encoding', req.headers['accept-encoding']);
   await pageView(req, resolvedUrl);
   const originURL = `${protocol}://${req.headers.host}/_internal/index.txt`;
   const originRes = await fetch(originURL);
-  res.setHeader('Content-Type', originRes.headers.get('Content-Type') ?? '');
-  res.shouldKeepAlive = false;
-  res.writeHead(originRes.status);
+  res.writeHead(originRes.status, [
+    ['Content-Type', originRes.headers.get('Content-Type') ?? ''],
+  ]);
+  console.log(res.getHeaders());
   res.write(insecureHeader() + '\n');
   const readable = originRes.body as unknown as Readable;
   if (readable.addListener == null) throw new Error('node-fetch ではない');
