@@ -15,6 +15,7 @@ export default class ContentEncoder {
       acceptEncodingRaw?.split(',').map((x) => x.trimEnd()) ?? [];
     this.contentEncoding =
       ['br', 'gzip'].find((x) => acceptEncoding.includes(x)) ?? null;
+    console.log(acceptEncodingRaw, this.contentEncoding);
   }
 
   headers(): string[][] {
