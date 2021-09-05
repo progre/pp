@@ -1,10 +1,10 @@
 import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import ContentEncoder from '../../utils/ContentEncoder';
-import { vercel } from '../../utils/env';
+import { vercelEnv } from '../../utils/env';
 import { pageView } from '../../utils/pageView';
 
-const protocol = `http${vercel ? 's' : ''}`;
+const protocol = `http${vercelEnv === 'local' ? '' : 's'}`;
 
 function insecureHeader(): string {
   const now = new Date();
