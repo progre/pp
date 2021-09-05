@@ -1,15 +1,8 @@
-import { ServerResponse } from 'http';
-import { Readable } from 'stream';
-import { promisify } from 'util';
-import zlib from 'zlib';
 import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
+import ContentEncoder from '../../utils/ContentEncoder';
 import { vercel } from '../../utils/env';
 import { pageView } from '../../utils/pageView';
-import { FetchResponse } from 'gaxios/build/src/common';
-
-const brotliCompress = promisify(zlib.brotliCompress);
-const gzip = promisify(zlib.gzip);
 
 const protocol = `http${vercel ? 's' : ''}`;
 
@@ -42,56 +35,23 @@ function insecureHeader(): string {
   return parser.stringify(channels, now);
 }
 
-async function write(
-  originRes: FetchResponse,
-  contentEncoding: string | null,
-  res: ServerResponse
-): Promise<void> {
-  switch (contentEncoding) {
-    case 'br': {
-      res.end(
-        await brotliCompress(insecureHeader() + '\n' + (await originRes.text()))
-      );
-      break;
-    }
-    case 'gzip': {
-      res.end(await gzip(insecureHeader() + '\n' + (await originRes.text())));
-      break;
-    }
-    case null: {
-      res.write(insecureHeader() + '\n');
-      const readable = originRes.body as unknown as Readable;
-      if (readable.addListener == null) throw new Error('node-fetch ではない');
-      for await (const buf of readable) {
-        res.write(buf);
-      }
-      res.end();
-      break;
-    }
-    default:
-      throw new Error();
-  }
-}
-
 export async function getServerSideProps({
   req,
   resolvedUrl,
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  const acceptEncoding = (
-    req.headers['accept-encoding'] as string | null
-  )?.split(',');
-  const contentEncoding =
-    ['br', 'gzip'].find((x) => acceptEncoding?.includes(x)) ?? null;
   await pageView(req, resolvedUrl);
+
+  const encoder = new ContentEncoder(
+    req.headers['accept-encoding'] as string | null
+  );
   const originURL = `${protocol}://${req.headers.host}/_internal/index.txt`;
   const originRes = await fetch(originURL);
   res.writeHead(originRes.status, [
     ['Content-Type', originRes.headers.get('Content-Type') ?? ''],
-    ...(contentEncoding == null ? [] : [['Content-Encoding', contentEncoding]]),
+    ...encoder.headers(),
   ]);
-  console.log(res.getHeaders());
-  write(originRes, contentEncoding, res);
+  await encoder.write(insecureHeader() + '\n', originRes, res);
   return { props: {} };
 }
 

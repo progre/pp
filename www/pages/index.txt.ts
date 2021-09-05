@@ -1,5 +1,6 @@
 import { GetServerSidePropsContext } from 'next';
 import { Readable } from 'stream';
+import ContentEncoder from '../utils/ContentEncoder';
 import { vercel } from '../utils/env';
 import { pageView } from '../utils/pageView';
 
@@ -11,11 +12,17 @@ export async function getServerSideProps({
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
   await pageView(req, resolvedUrl);
+
+  const encoder = new ContentEncoder(
+    req.headers['accept-encoding'] as string | null
+  );
   const originURL = `${protocol}://${req.headers.host}/_internal/index.txt`;
   const originRes = await fetch(originURL);
-  res.setHeader('Content-Type', originRes.headers.get('Content-Type') ?? '');
   res.shouldKeepAlive = false;
-  res.writeHead(originRes.status);
+  res.writeHead(originRes.status, [
+    ['Content-Type', originRes.headers.get('Content-Type') ?? ''],
+    ...encoder.headers(),
+  ]);
   const readable = originRes.body as unknown as Readable;
   if (readable.addListener == null) throw new Error('node-fetch ではない');
   for await (const buf of readable) {
