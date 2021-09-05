@@ -51,7 +51,7 @@ export async function getServerSideProps({
     ['Content-Type', originRes.headers.get('Content-Type') ?? ''],
     ...encoder.headers(),
   ]);
-  await encoder.write(insecureHeader() + '\n', originRes, res);
+  await encoder.end(insecureHeader() + '\n', originRes, res);
   return { props: {} };
 }
 

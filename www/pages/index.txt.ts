@@ -23,12 +23,7 @@ export async function getServerSideProps({
     ['Content-Type', originRes.headers.get('Content-Type') ?? ''],
     ...encoder.headers(),
   ]);
-  const readable = originRes.body as unknown as Readable;
-  if (readable.addListener == null) throw new Error('node-fetch ではない');
-  for await (const buf of readable) {
-    res.write(buf);
-  }
-  res.end();
+  await encoder.end('', originRes, res);
   return { props: {} };
 }
 

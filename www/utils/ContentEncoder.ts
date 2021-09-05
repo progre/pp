@@ -23,7 +23,7 @@ export default class ContentEncoder {
       : [['Content-Encoding', this.contentEncoding]];
   }
 
-  async write(
+  async end(
     contentHeader: string,
     originRes: FetchResponse,
     res: ServerResponse
