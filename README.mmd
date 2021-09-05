@@ -12,19 +12,19 @@ flowchart TD;
   style pat fill:#0000
   subgraph pat["p@YP"]
     subgraph "p-at.net (Vercel)"
-      isr["Vercel CDN"]
-      www["next.js"]
+      isr["Vercel CDN\n(https://p-at.net)"]
+      www["index.txt 配信用 HTTP サーバー\n(Next.js)"]
     end
 
     subgraph GCP
       direction TB
       subgraph GCE
         subgraph docker1["Docker"]
-          nginxroot["Nginx(https://root.p-at.net)"]
-          nginxinsecure["Nginx(http://insecure.p-at.net)"]
+          nginxroot["Nginx\n(https://root.p-at.net)"]
+          nginxinsecure["Nginx\n(http://insecure.p-at.net)"]
         end
         subgraph docker2["Docker"]
-          root["rootモードPeerCast(pcp://root.p-at.net)"];
+          root["root モード PeerCast\n(pcp://root.p-at.net)"];
         end
       end
       dns["Cloud DNS"]
@@ -32,10 +32,10 @@ flowchart TD;
     end
   end
 
-  listener["リスナーのPeerCast"]--pcp-->broadcaster
-  broadcaster["配信者のPeerCast"]--pcp-->root
+  listener["リスナーの PeerCast"]--pcp-->broadcaster
+  broadcaster["配信者の PeerCast"]--pcp-->root
   browser["PCYP"]--https-->isr
-  pecareco["PCYP (PeCaRecorder等のhttps未対応のソフト)"]--http-->nginxinsecure
+  pecareco["PeCaRecorder 等の https 未対応の PCYP"]--http-->nginxinsecure
   nginxinsecure--https-->isr
   isr--http-->www;
   www--https-->logger
