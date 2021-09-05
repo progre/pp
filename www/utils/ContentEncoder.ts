@@ -12,10 +12,9 @@ export default class ContentEncoder {
 
   constructor(acceptEncodingRaw: string | null) {
     const acceptEncoding =
-      acceptEncodingRaw?.split(',').map((x) => x.trimEnd()) ?? [];
+      acceptEncodingRaw?.split(',').map((x) => x.trimStart()) ?? [];
     this.contentEncoding =
       ['br', 'gzip'].find((x) => acceptEncoding.includes(x)) ?? null;
-    console.log(acceptEncodingRaw, this.contentEncoding);
   }
 
   headers(): string[][] {

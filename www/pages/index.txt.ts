@@ -23,7 +23,6 @@ export async function getServerSideProps({
     ['Content-Type', originRes.headers.get('Content-Type') ?? ''],
     ...encoder.headers(),
   ]);
-  console.log(res.getHeaders());
   await encoder.end('', originRes, res);
   return { props: {} };
 }
