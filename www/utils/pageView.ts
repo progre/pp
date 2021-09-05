@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import { IncomingMessage } from 'http';
 import querystring from 'querystring';
-import { vercel } from '../utils/env';
+import { vercelEnv } from '../utils/env';
 
 const GA_TRACKING_ID = 'UA-43486767-10';
 
@@ -27,11 +27,13 @@ export async function pageView(
   };
   const query = querystring.stringify(data);
   const res = await fetch(
-    `https://www.google-analytics.com/${vercel ? '' : 'debug/'}collect?${query}`
+    `https://www.google-analytics.com/${
+      vercelEnv === 'production' ? '' : 'debug/'
+    }collect?${query}`
   );
   if (res.status !== 200) {
     console.error(await res.text());
-  } else if (!vercel) {
+  } else if (vercelEnv !== 'production') {
     console.log(ip, res.status, await res.text());
   }
 }
