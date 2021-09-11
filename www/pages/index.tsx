@@ -7,6 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useMemo, useState } from 'react';
 import NextLink from 'next/link';
+import Head from 'next/head';
 import Footer from '../components/Footer';
 import dummy from '../utils/dummy';
 
@@ -16,6 +17,9 @@ export default function index(): JSX.Element {
 
   return (
     <Container maxWidth="sm">
+      <Head>
+        <title>p@ YP</title>
+      </Head>
       <CssBaseline />
       <Toolbar
         style={{

@@ -4,11 +4,15 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import NextLink from 'next/link';
+import Head from 'next/head';
 import Footer from '../components/Footer';
 
 export default function terms(): JSX.Element {
   return (
     <Container maxWidth="sm">
+      <Head>
+        <title>利用規約 - p@ YP</title>
+      </Head>
       <CssBaseline />
       <Toolbar style={{ paddingLeft: 0, height: 80 }}>
         <Button color="inherit" style={{ textTransform: 'initial' }}>
