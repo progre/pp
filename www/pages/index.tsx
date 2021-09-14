@@ -7,6 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useState } from 'react';
 import NextLink from 'next/link';
+import CopyBox from '../components/CopyBox';
 import Footer from '../components/Footer';
 import Head from '../components/Head';
 import dummy from '../utils/dummy';
@@ -115,11 +116,11 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
           お使いの PCYP に以下の URL を登録してください。※末尾の
           <code>index.txt</code> を含めるかどうかは各ソフトにより異なります
         </p>
-        <code>https://p-at.net/index.txt</code>
+        <CopyBox value="https://p-at.net/index.txt" />
         <p>
           <b>ただし PeCaRecorder の場合は以下の URL を指定してください</b>。
         </p>
-        <code>http://insecure.p-at.net/</code>
+        <CopyBox value="http://insecure.p-at.net/" />
         <h2>キャッシュの仕組み</h2>
         <p>
           チャンネル情報はキャッシュされているため、配信者が立てたチャンネル情報が即座に反映されないことがあります。
@@ -179,7 +180,7 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
                 PeerCast に掲載用 URL
                 に以下を登録し、掲載するように設定するとチャンネルを掲載できます。
               </p>
-              <code>pcp://root.p-at.net</code>
+              <CopyBox value="pcp://root.p-at.net" />
               <p>
                 他の YP よろしくジャンル欄を使って掲載の挙動を変更できます。
               </p>
