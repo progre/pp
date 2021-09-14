@@ -5,14 +5,14 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import NextLink from 'next/link';
 import Footer from '../components/Footer';
 import Head from '../components/Head';
 import dummy from '../utils/dummy';
+import { GetServerSidePropsContext } from 'next';
 
-export default function index(): JSX.Element {
-  const dummyIndexTxt = useMemo(() => dummy(), []);
+export default function index(props: { dummyIndexTxt: string }): JSX.Element {
   const [checkTerms, setCheckTerms] = useState(false);
 
   const description =
@@ -61,7 +61,7 @@ export default function index(): JSX.Element {
           userSelect: 'none',
         }}
       >
-        {dummyIndexTxt}
+        {props.dummyIndexTxt}
       </pre>
       <article id="about">
         <h1>p@ YP とは</h1>
@@ -228,4 +228,8 @@ export default function index(): JSX.Element {
       <Footer />
     </Container>
   );
+}
+
+export async function getServerSideProps({}: GetServerSidePropsContext): Promise<unknown> {
+  return { props: { dummyIndexTxt: dummy() } };
 }
