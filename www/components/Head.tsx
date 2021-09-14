@@ -34,7 +34,7 @@ export default function Head(props: {
       ) : (
         <></>
       )}
-      <meta property="og:image" content="/ogimage.png" />
+      <meta property="og:image" content="https://p-at.net/ogimage.png" />
     </NextHead>
   );
 }
