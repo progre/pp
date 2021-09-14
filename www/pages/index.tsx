@@ -229,6 +229,6 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
   );
 }
 
-index.getInitialProps = async () => ({
-  dummyIndexTxt: dummy(),
-});
+export async function getStaticProps(): Promise<unknown> {
+  return { props: { dummyIndexTxt: dummy() } };
+}
