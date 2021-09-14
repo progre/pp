@@ -10,7 +10,11 @@ import Head from '../components/Head';
 export default function terms(): JSX.Element {
   return (
     <Container maxWidth="sm">
-      <Head ogType="article" subTitle="利用規約" />
+      <Head
+        ogType="article"
+        subTitle="利用規約"
+        description="p@ YP にチャンネルを掲載するには利用規約に同意する必要があります。"
+      />
       <CssBaseline />
       <Toolbar style={{ paddingLeft: 0, height: 80 }}>
         <Button color="inherit" style={{ textTransform: 'initial' }}>

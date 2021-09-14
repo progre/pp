@@ -3,18 +3,17 @@ import NextHead from 'next/head';
 export default function Head(props: {
   ogType: 'website' | 'article';
   subTitle?: string;
-  description?: string;
+  description: string;
   keywords?: string;
 }): JSX.Element {
   const siteTitle = 'p@ YP';
+  const title = props.subTitle ? `${props.subTitle} - ${siteTitle}` : siteTitle;
   return (
     <NextHead>
       <meta charSet="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-      <title>
-        {props.subTitle ? `${props.subTitle} - ${siteTitle}` : siteTitle}
-      </title>
+      <title>{title}</title>
       {props.description ? (
         <meta name="description" content={props.description} />
       ) : (
@@ -28,7 +27,7 @@ export default function Head(props: {
 
       <meta property="og:site_name" content={siteTitle} />
       <meta property="og:type" content={props.ogType} />
-      <meta property="og:title" content={props.subTitle ?? siteTitle} />
+      <meta property="og:title" content={title} />
       {props.description ? (
         <meta property="og:description" content={props.description} />
       ) : (
