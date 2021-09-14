@@ -10,7 +10,6 @@ import NextLink from 'next/link';
 import Footer from '../components/Footer';
 import Head from '../components/Head';
 import dummy from '../utils/dummy';
-import { GetServerSidePropsContext } from 'next';
 
 export default function index(props: { dummyIndexTxt: string }): JSX.Element {
   const [checkTerms, setCheckTerms] = useState(false);
@@ -230,6 +229,6 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
   );
 }
 
-export async function getServerSideProps({}: GetServerSidePropsContext): Promise<unknown> {
-  return { props: { dummyIndexTxt: dummy() } };
-}
+index.getInitialProps = async () => ({
+  dummyIndexTxt: dummy(),
+});
