@@ -7,19 +7,21 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useMemo, useState } from 'react';
 import NextLink from 'next/link';
-import Head from 'next/head';
 import Footer from '../components/Footer';
+import Head from '../components/Head';
 import dummy from '../utils/dummy';
 
 export default function index(): JSX.Element {
   const dummyIndexTxt = useMemo(() => dummy(), []);
   const [checkTerms, setCheckTerms] = useState(false);
 
+  const description =
+    'p@ YP (Yellow Pages) は PeerCast のライブストリーミングチャンネルの掲載所です。現行の YP のサブ的な立ち位置で試験運用しています。ソースコードは AGPL で公開されています。';
+  const keywords =
+    'peercast,ピアキャスト,ピアキャス,livestreaming,livestream,ライブストリーム,ライブストリーミング,ライブ配信,生放送';
   return (
     <Container maxWidth="sm">
-      <Head>
-        <title>p@ YP</title>
-      </Head>
+      <Head ogType="website" description={description} keywords={keywords} />
       <CssBaseline />
       <Toolbar
         style={{
@@ -63,12 +65,7 @@ export default function index(): JSX.Element {
       </pre>
       <article id="about">
         <h1>p@ YP とは</h1>
-        <p>
-          p@ YP (Yellow Pages) は PeerCast
-          のライブストリーミングチャンネルの掲載所です。現行の YP
-          のサブ的な立ち位置で試験運用しています。ソースコードは AGPL
-          で公開されています。
-        </p>
+        <p>{description}</p>
         <p>
           <Link
             href="https://github.com/progre/pp"
