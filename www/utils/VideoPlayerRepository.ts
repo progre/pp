@@ -9,7 +9,7 @@ export interface VideoPlayerItem {
 }
 
 export default class VideoPlayerRepository {
-  static instance = new this();
+  static instance = new VideoPlayerRepository();
   #items: readonly VideoPlayerItem[] = [];
 
   find(channelId: string): VideoPlayerItem | null {
