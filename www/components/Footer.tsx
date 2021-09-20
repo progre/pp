@@ -25,9 +25,9 @@ export default function Footer(props: { rawLink?: boolean }): JSX.Element {
         <Link href="/terms" rawLink={props.rawLink}>
           利用規約
         </Link>
-        <Link href="/feed" rawLink>
+        {/* <Link href="/feed" rawLink>
           チャンネル一覧 (β)
-        </Link>
+        </Link> */}
       </p>
       <p style={{ marginTop: '2rem', textAlign: 'center' }}>© ぷろぐれ</p>
     </footer>
