@@ -1,0 +1,28 @@
+.content {
+  aspect-ratio: 16 / 14;
+  display: block !important;
+  margin: 0 8px 40px !important;
+}
+
+.image {
+  aspect-ratio: 16 / 9;
+  background-color: #333;
+  width: 100%;
+}
+
+.info {
+  display: flex;
+  margin-top: 12px;
+  gap: 12px;
+}
+
+.avator {
+  align-items: center;
+  background-color: #000;
+  border-radius: 18px;
+  color: #fff;
+  display: flex;
+  height: 36px;
+  justify-content: center;
+  min-width: 36px;
+}
