@@ -87,6 +87,10 @@ export default function feed(props: { channels: Channel[] }): JSX.Element {
           ))
         )}
       </div>
+      <iframe
+        style={{ position: 'absolute', width: 320, height: 240 }}
+        src="http://bbs.jpnkn.com/test/read.cgi/progre/1630679834/l50"
+      />
       <Footer rawLink />
       <MiniPlayers
         videoPlayers={videoPlayers}
