@@ -48,7 +48,7 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
       ip: '',
       url: 'https://twitter.com/progremaster',
       genre: '',
-      desc: 'きゃすけっとに向けて試験運用中',
+      desc: '正常運転',
       bandwidthType: '',
       listeners: -9,
       relays: -9,
