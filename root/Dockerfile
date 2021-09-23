@@ -1,6 +1,6 @@
 FROM docker
 RUN apk update && apk add openssl
-CMD peercast_password="$(openssl rand -base64 33)" && \
+CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   docker run \
   --detach \
   --env PEERCAST_PASSWORD=$peercast_password \
