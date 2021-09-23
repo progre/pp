@@ -4,6 +4,9 @@ import request from 'request';
 import xml2js from 'xml2js';
 import { ca, rootServerOrigin } from '../utils/env';
 
+const message =
+  '9/23 22:24 配信が三つしか建たない障害が発生しています(´・ω・｀) 今ある配信が落ち着いたら修正にトライします(´・ω・｀)';
+
 function formatISO8601Like(date: Date): string {
   const formatter = new Intl.DateTimeFormat('ja-JP', {
     dateStyle: 'short',
@@ -50,7 +53,7 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
       ip: '',
       url: 'https://twitter.com/progremaster',
       genre: '',
-      desc: '正常運転',
+      desc: message,
       bandwidthType: '',
       listeners: -9,
       relays: -9,
