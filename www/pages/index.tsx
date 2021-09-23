@@ -163,11 +163,11 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
           }
           label="利用規約の内容を確認し、同意した"
         />
-        <div style={{ minHeight: '18em' }}>
+        <div style={{ minHeight: '21em' }}>
           {!checkTerms ? (
             <div
               style={{
-                height: '17em',
+                height: '21em',
                 background: 'lightgray',
                 userSelect: 'none',
               }}
