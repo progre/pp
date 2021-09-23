@@ -25,7 +25,7 @@ broadcastMsg =
 icyMetaInterval = 8192
 broadcastID = 00A52417F4A74AB5967112CAF6B2E71F
 hostUpdateInterval = 120
-maxControlConnections = 3
+maxControlConnections = 1000
 rootHost =
 
 [Client]
