@@ -4,8 +4,7 @@ import request from 'request';
 import xml2js from 'xml2js';
 import { ca, rootServerOrigin } from '../utils/env';
 
-const message =
-  '9/23 22:24 配信が三つしか建たない障害が発生しています(´・ω・｀) 今ある配信が落ち着いたら修正にトライします(´・ω・｀)';
+const message = '9/23 23:45 配信が三つしか建たない障害は復旧しました(｀・ω・´)';
 
 function formatISO8601Like(date: Date): string {
   const formatter = new Intl.DateTimeFormat('ja-JP', {
