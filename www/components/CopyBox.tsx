@@ -1,8 +1,8 @@
-import IconButton from '@material-ui/core/IconButton';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import Tooltip from '@material-ui/core/Tooltip';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 
 export default function CopyBox(props: { value: string }): JSX.Element {

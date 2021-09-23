@@ -1,6 +1,6 @@
 import crypto from 'crypto';
-import { ButtonBase } from '@material-ui/core';
-import * as colors from '@material-ui/core/colors';
+import { ButtonBase } from '@mui/material';
+import * as colors from '@mui/material/colors';
 import { Channel } from 'peercast-yp-channels-parser';
 import React from 'react';
 import styles from './Item.module.css';

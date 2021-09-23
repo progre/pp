@@ -4,7 +4,7 @@ import {
   TextField,
   Toolbar,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { GetServerSidePropsResult } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import { Channel } from 'peercast-yp-channels-parser';

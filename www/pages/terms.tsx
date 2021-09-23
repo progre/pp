@@ -1,8 +1,8 @@
-import { Container, Link } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import { Container, Link } from '@mui/material';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 import NextLink from 'next/link';
 import Footer from '../components/Footer';
 import Head from '../components/Head';

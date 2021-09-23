@@ -1,5 +1,5 @@
-import { IconButton, Paper } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { IconButton, Paper } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import mpegts from 'mpegts.js';
 import React, { useEffect, useRef } from 'react';
 import { VideoPlayerItem } from '../../utils/VideoPlayerRepository';

@@ -1,4 +1,4 @@
-import { Link as MLink } from '@material-ui/core';
+import { Link as MLink } from '@mui/material';
 import NextLink from 'next/link';
 import { PropsWithChildren } from 'react';
 
