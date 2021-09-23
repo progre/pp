@@ -31,7 +31,9 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
     const root = await xml2js.parseStringPromise(xml);
     peercast = root.peercast;
   } catch (err) {
-    if (err.stack?.startsWith('Error: Unexpected close tag')) {
+    if (
+      (<{ stack?: string }>err).stack?.startsWith('Error: Unexpected close tag')
+    ) {
       throw new Error('xml_parse_error');
     }
     throw err;
