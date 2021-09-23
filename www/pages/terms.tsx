@@ -17,13 +17,15 @@ export default function terms(): JSX.Element {
       />
       <CssBaseline />
       <Toolbar style={{ paddingLeft: 0, height: 80 }}>
-        <Button color="inherit" style={{ textTransform: 'initial' }}>
-          <Typography variant="h6" color="inherit">
-            <NextLink href="/" passHref>
-              <Link>p@ YP</Link>
-            </NextLink>
-          </Typography>
-        </Button>
+        <NextLink href="/" passHref>
+          <Link underline="none">
+            <Button color="inherit" style={{ textTransform: 'initial' }}>
+              <Typography variant="h6" color="inherit">
+                p@ YP
+              </Typography>
+            </Button>
+          </Link>
+        </NextLink>
       </Toolbar>
 
       <div>

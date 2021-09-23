@@ -35,18 +35,20 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
           p@ YP
         </Typography>
         <div style={{ textAlign: 'right' }}>
-          <Button color="inherit" style={{ textTransform: 'initial' }}>
-            <Link href="#about">p@ YP とは</Link>
-          </Button>
-          <Button color="inherit">
-            <Link href="#listen">視聴方法</Link>
-          </Button>
-          <Button color="inherit">
-            <Link href="#broadcast">掲載方法</Link>
-          </Button>
-          <Button color="inherit">
-            <Link href="#contact">連絡先</Link>
-          </Button>
+          <Link href="#about" underline="none">
+            <Button color="inherit" style={{ textTransform: 'initial' }}>
+              p@ YP とは
+            </Button>
+          </Link>
+          <Link href="#listen" underline="none">
+            <Button color="inherit">視聴方法</Button>
+          </Link>
+          <Link href="#broadcast" underline="none">
+            <Button color="inherit">掲載方法</Button>
+          </Link>
+          <Link href="#contact" underline="none">
+            <Button color="inherit">連絡先</Button>
+          </Link>
         </div>
       </Toolbar>
       <pre
