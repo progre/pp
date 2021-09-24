@@ -32,7 +32,7 @@ function insecureHeader(): string {
       direct: false,
     },
   ];
-  return parser.stringify(channels, now);
+  return parser.stringify(channels, now) + '\n';
 }
 
 export async function getServerSideProps({

@@ -105,5 +105,5 @@ export default function dummy(): string {
       direct: false,
     })
   );
-  return parser.stringify(channels, now);
+  return parser.stringify(channels, now) + '\n';
 }

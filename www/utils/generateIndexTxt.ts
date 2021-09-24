@@ -107,7 +107,7 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
         },
         createdAt: now.getTime() - channelAttr.age * 1000,
         comment: channelAttr.comment,
-        direct: hostAttr.direct,
+        direct: hostAttr.direct === '1',
       };
     }),
   ];
@@ -184,12 +184,14 @@ export default async function generateIndexTxt(): Promise<string> {
     const xml = String(res.body);
     const now = new Date();
     const channels = await parseXml(xml, now);
-    return parser.stringify(<Channel[]>channels, now);
+    return parser.stringify(<Channel[]>channels, now) + '\n';
   } catch (err: unknown) {
     const now = new Date();
-    return parser.stringify(
-      <Channel[]>errorIndexTxtChannels(<{ stack: string }>err, now),
-      now
+    return (
+      parser.stringify(
+        <Channel[]>errorIndexTxtChannels(<{ stack: string }>err, now),
+        now
+      ) + '\n'
     );
   }
 }
