@@ -16,10 +16,7 @@ export default function ChannelList(props: {
           <ChannelView
             key={x.id}
             channel={x}
-            disabled={
-              console.log(x.bitrate, props.leftBandwidth) ||
-              x.bitrate > props.leftBandwidth
-            }
+            disabled={x.bitrate > props.leftBandwidth}
             onClick={() => props.onClickChannel(x.id)}
           />
         ))
