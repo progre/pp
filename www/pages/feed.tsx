@@ -3,17 +3,15 @@ import { GetServerSidePropsResult } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import { Channel } from 'peercast-yp-channels-parser';
 import React, { useEffect, useMemo, useState } from 'react';
+import ChannelList from '../components/feed/ChannelList';
 import HeadInfo from '../components/feed/HeadInfo';
-import Item from '../components/feed/Item';
 import Footer from '../components/Footer';
 import MiniPlayers from '../components/feed/MiniPlayers';
 import Head from '../components/Head';
+import uptest from '../utils/uptest';
 import VideoPlayerRepository, {
   VideoPlayerItem,
 } from '../utils/VideoPlayerRepository';
-
-import styles from './feed.module.css';
-import uptest from '../utils/uptest';
 
 const ORIGIN_URL = 'https://p-at.net/_internal/index.txt';
 
@@ -100,33 +98,24 @@ export default function feed(props: { channels: Channel[] }): JSX.Element {
           setDisabledCheckButton(false);
         }}
       />
-      <div className={styles.container}>
-        {props.channels.length === 0 ? (
-          <>いっこもチャンネルないです(´・ω・｀)</>
-        ) : (
-          props.channels.map((x) => (
-            <Item
-              key={x.id}
-              channel={x}
-              onClick={async () => {
-                if (videoPlayerRepos.find(x.id) != null) {
-                  return;
-                }
-                const createVideoPlayer = (
-                  await import('../utils/createVideoPlayer')
-                ).default;
-                const item = createVideoPlayer(
-                  `localhost:${peercastPort}`,
-                  x.id
-                );
-                videoPlayerRepos.push(item);
-                const videoPlayers = videoPlayerRepos.items();
-                setVideoPlayers(videoPlayers);
-              }}
-            />
-          ))
-        )}
-      </div>
+      <ChannelList
+        channels={props.channels}
+        leftBandwidth={bandwidth ?? 0}
+        onClickChannel={async (channelId) => {
+          if (videoPlayerRepos.find(channelId) != null) {
+            return;
+          }
+          const createVideoPlayer = (await import('../utils/createVideoPlayer'))
+            .default;
+          const item = createVideoPlayer(
+            `localhost:${peercastPort}`,
+            channelId
+          );
+          videoPlayerRepos.push(item);
+          const videoPlayers = videoPlayerRepos.items();
+          setVideoPlayers(videoPlayers);
+        }}
+      />
       <Footer rawLink />
       <MiniPlayers
         videoPlayers={videoPlayers}

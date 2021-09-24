@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { ButtonBase } from '@mui/material';
 import * as colors from '@mui/material/colors';
-import { Channel } from 'peercast-yp-channels-parser';
+import { Channel as ChannelEntity } from 'peercast-yp-channels-parser';
 import React from 'react';
 import styles from './Item.module.css';
 
@@ -30,8 +30,9 @@ function channelColor(src: string): [string, string] {
   return [backgroundColor, frontColor];
 }
 
-export default function Item(props: {
-  channel: Channel;
+export default function Channel(props: {
+  channel: ChannelEntity;
+  disabled: boolean;
   onClick(): void;
 }): JSX.Element {
   const [backgroundColor, color] = channelColor(props.channel.name);
@@ -39,6 +40,7 @@ export default function Item(props: {
     <ButtonBase
       className={styles.content}
       component="div"
+      disabled={props.disabled}
       onClick={props.onClick}
     >
       <div className={styles.image} style={{ color: 'gray' }}>
