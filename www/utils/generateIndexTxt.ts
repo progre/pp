@@ -3,6 +3,7 @@ import { Channel } from 'peercast-yp-channels-parser';
 import request from 'request';
 import xml2js from 'xml2js';
 import { ca, rootServerOrigin } from '../utils/env';
+import { error } from '../utils/logger';
 
 const message = '9/23 23:45 配信が三つしか建たない障害は復旧しました(｀・ω・´)';
 
@@ -136,7 +137,11 @@ function errorIndexTxtChannels(
     reason = 'PeerCast が落ちてます。';
   } else {
     reason = '原因調査中です。';
-    console.error(err);
+    error(
+      `unknownerror: ${err.message}, ${err.code}, ${JSON.stringify(err)}, ${
+        err.stack
+      }`
+    );
   }
   return [
     {
