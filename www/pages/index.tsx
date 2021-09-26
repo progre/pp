@@ -18,7 +18,7 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
   const description =
     'p@ YP は PeerCast のライブストリーミングチャンネルの掲載所です。現行の各 YP のサブ的な立ち位置で試験運用しています。ソースコードは AGPL で公開されています。';
   const keywords =
-    'peercast,ピアキャスト,ピアキャス,livestreaming,livestream,ライブストリーム,ライブストリーミング,ライブ配信,生放送';
+    'peercast,ピアキャスト,ピアキャス,yp,yellowpages,イエローページ,livestreaming,livestream,ライブストリーム,ライブストリーミング,ライブ配信,生放送';
   return (
     <Container maxWidth="sm">
       <Head ogType="website" description={description} keywords={keywords} />
