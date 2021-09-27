@@ -18,6 +18,11 @@ const infoMetadata: LogEntry = {
   severity: 'INFO',
 };
 
+const warningMetadata: LogEntry = {
+  resource: { type: 'global' },
+  severity: 'WARNING',
+};
+
 const errorMetadata: LogEntry = {
   resource: { type: 'global' },
   severity: 'ERROR',
@@ -28,6 +33,13 @@ export async function info(data: string): Promise<void> {
     return;
   }
   await log.write(log.entry(infoMetadata, data));
+}
+
+export async function warning(data: string): Promise<void> {
+  if (log == null) {
+    return;
+  }
+  await log.write(log.entry(warningMetadata, data));
 }
 
 export async function error(data: string): Promise<void> {
