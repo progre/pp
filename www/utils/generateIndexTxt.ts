@@ -72,14 +72,14 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...(<any[]>peercast.channels_found[0].channel ?? []).map((x): Channel => {
       const channelAttr = x['$'];
-      if (x.track[0] == null) {
+      if (x.track == null) {
         warning('x.track is undefined:');
         warning(JSON.stringify(x));
       }
-      if (x.hits[0] == null) {
+      if (x.hits == null) {
         warning('x.hits is undefined:');
         warning(JSON.stringify(x));
-      } else if (x.hits[0].host[0] == null) {
+      } else if (x.hits[0].host == null) {
         warning('x.hits[0].host is undefined:');
         warning(JSON.stringify(x));
       }
