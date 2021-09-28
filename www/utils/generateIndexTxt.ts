@@ -3,7 +3,7 @@ import { Channel } from 'peercast-yp-channels-parser';
 import request from 'request';
 import xml2js from 'xml2js';
 import { ca, rootServerOrigin } from '../utils/env';
-import { error, warning } from '../utils/logger';
+import { error } from '../utils/logger';
 
 const message = '9/23 23:45 配信が三つしか建たない障害は復旧しました(｀・ω・´)';
 
@@ -73,18 +73,15 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
     ...(<any[]>peercast.channels_found[0].channel ?? []).map((x): Channel => {
       const channelAttr = x['$'];
       if (x.track == null) {
-        warning('x.track is undefined:');
-        warning(JSON.stringify(x));
+        error('x.track is undefined:');
+        error(JSON.stringify(x));
       }
       if (x.hits == null) {
-        warning('x.hits is undefined:');
-        warning(JSON.stringify(x));
-      } else if (x.hits[0].host == null) {
-        warning('x.hits[0].host is undefined:');
-        warning(JSON.stringify(x));
+        error('x.hits is undefined:');
+        error(JSON.stringify(x));
       }
-      const trackAttr = x.track[0]?.['$'] ?? null;
-      const hostAttr = x.hits[0]?.host[0]?.['$'] ?? null;
+      const trackAttr = x.track[0]['$'];
+      const hostAttr = x.hits[0].host?.[0]['$'] ?? null;
       const genreSrc: string = channelAttr.genre;
       let genre;
       let naisho;
@@ -111,10 +108,10 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
         bitrate: channelAttr.bitrate,
         type: channelAttr.type,
         track: {
-          creator: trackAttr?.artist ?? '',
-          album: trackAttr?.album ?? '',
-          title: trackAttr?.title ?? '',
-          url: trackAttr?.contact ?? '',
+          creator: trackAttr.artist,
+          album: trackAttr.album,
+          title: trackAttr.title,
+          url: trackAttr.contact,
           // genre: trackAttr.genre,
         },
         createdAt: now.getTime() - channelAttr.age * 1000,
