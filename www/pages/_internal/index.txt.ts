@@ -7,7 +7,7 @@ export async function getServerSideProps({
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
   const txt = await generateIndexTxt();
-  await info(txt);
+  info(txt);
   handler(res, txt, true);
   return { props: {} };
 }
