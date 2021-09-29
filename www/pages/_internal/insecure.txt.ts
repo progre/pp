@@ -2,6 +2,7 @@ import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import ContentEncoder from '../../utils/ContentEncoder';
 import { vercelEnv } from '../../utils/env';
+import { warning } from '../../utils/logger';
 import { pageView } from '../../utils/pageView';
 
 const protocol = `http${vercelEnv === 'local' ? '' : 's'}`;
@@ -46,7 +47,12 @@ export async function getServerSideProps({
     req.headers['accept-encoding'] as string | null
   );
   const originURL = `${protocol}://${req.headers.host}/_internal/index.txt`;
+  const handle = setTimeout(
+    () => warning('Warning. Response is too late. /_internal/index.txt'),
+    8000
+  );
   const originRes = await fetch(originURL);
+  clearTimeout(handle);
   res.writeHead(originRes.status, [
     ['Content-Type', originRes.headers.get('Content-Type') ?? ''],
     ...encoder.headers(),
