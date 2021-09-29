@@ -1,16 +1,51 @@
 import mpegts from 'mpegts.js';
+import { ReadableStream as PolyfillReadableStream } from 'web-streams-polyfill/ponyfill';
+import createReadableStreamLoader from './mpegts/ReadableStreamLoader';
 import { VideoPlayerItem } from './VideoPlayerRepository';
-// const mpegts = (await import('mpegts.js')).default;
+
+function wrap(src: ReadableStream<Uint8Array>): PolyfillReadableStream {
+  const reader = src.getReader();
+  return new PolyfillReadableStream({
+    async start(controller): Promise<void> {
+      for (;;) {
+        const { done, value } = await reader.read();
+        // データを消費する必要がなくなったら、ストリームを閉じます
+        if (done) {
+          controller.close();
+          return;
+        }
+        // 次のデータチャンクを対象のストリームのキューに入れます
+        controller.enqueue(value);
+      }
+    },
+  });
+}
 
 export default function createVideoPlayer(
   peercastHost: string,
   channelId: string
 ): VideoPlayerItem {
-  const player = mpegts.createPlayer({
-    type: 'flv',
-    // isLive: true,
-    url: `http://${peercastHost}/stream/${channelId}.flv`,
-  });
+  const abortController = new AbortController();
+  const readableStreamFactory = async (): Promise<PolyfillReadableStream> => {
+    const res = await fetch(`http://${peercastHost}/stream/${channelId}.flv`, {
+      signal: abortController.signal,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return wrap(res.body!);
+  };
+
+  const player = mpegts.createPlayer(
+    {
+      type: 'flv',
+      // isLive: true,
+    },
+    {
+      customLoader: createReadableStreamLoader(
+        readableStreamFactory,
+        abortController
+      ),
+    }
+  );
   const video = document.createElement('video');
   video.style.width = '100%';
   video.style.height = '100%';
