@@ -14,6 +14,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "request": "^2.88.2",
+    "web-streams-polyfill": "^3.1.1",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
