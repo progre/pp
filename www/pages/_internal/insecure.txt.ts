@@ -43,16 +43,16 @@ export async function getServerSideProps({
 }: GetServerSidePropsContext): Promise<unknown> {
   await pageView(req, resolvedUrl);
 
-  const encoder = new ContentEncoder(
-    req.headers['accept-encoding'] as string | null
-  );
-  const originURL = `${protocol}://${req.headers.host}/_internal/index.txt`;
   const handle = setTimeout(
     () => warning('Warning. Response is too late. /_internal/index.txt'),
     8000
   );
+  const originURL = `${protocol}://${req.headers.host}/_internal/index.txt`;
   const originRes = await fetch(originURL);
   clearTimeout(handle);
+  const encoder = new ContentEncoder(
+    req.headers['accept-encoding'] as string | null
+  );
   res.writeHead(originRes.status, [
     ['Content-Type', originRes.headers.get('Content-Type') ?? ''],
     ...encoder.headers(),
