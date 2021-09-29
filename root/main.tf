@@ -116,6 +116,6 @@ resource "google_logging_project_bucket_config" "pp_production" {
 resource "google_logging_project_sink" "tf_sink" {
   name                   = "tf-pp-sink"
   destination            = "logging.googleapis.com/${google_logging_project_bucket_config.pp_production.id}"
-  filter                 = "logName = ${google_logging_project_bucket_config.pp_production.id}"
+  filter                 = "logName = projects/${var.google_project}/logs/pp-production"
   unique_writer_identity = true
 }
