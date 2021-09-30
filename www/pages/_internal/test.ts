@@ -10,7 +10,8 @@ export async function getServerSideProps({
 }: GetServerSidePropsContext): Promise<unknown> {
   if (cachedIndexTxt != null && Date.now() < cachedTime + 60 * 1000) {
     console.log('Cache hit');
-    return cachedIndexTxt;
+    handler(res, 'Cache hit', false);
+    return { props: {} };
   }
   const txt = dummy();
   cachedTime = Date.now();

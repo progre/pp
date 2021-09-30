@@ -23,29 +23,18 @@ export default class ContentEncoder {
       : [['Content-Encoding', this.contentEncoding]];
   }
 
-  async end(
-    contentHeader: string,
-    originRes: FetchResponse,
-    res: ServerResponse
-  ): Promise<void> {
+  async end(res: ServerResponse, content: string): Promise<void> {
     switch (this.contentEncoding) {
       case 'br': {
-        res.end(await brotliCompress(contentHeader + (await originRes.text())));
+        res.end(await brotliCompress(content));
         break;
       }
       case 'gzip': {
-        res.end(await gzip(contentHeader + (await originRes.text())));
+        res.end(await gzip(content));
         break;
       }
       case null: {
-        res.write(contentHeader);
-        const readable = originRes.body as unknown as Readable;
-        if (readable.addListener == null)
-          throw new Error('node-fetch ではない');
-        for await (const buf of readable) {
-          res.write(buf);
-        }
-        res.end();
+        res.end(content);
         break;
       }
       default:
