@@ -63,8 +63,12 @@ export default async function fetchIndexTxt(
     const originURL = `${protocol}://${host}/_internal/index.txt`;
     const originRes = await fetchWithTimeout(originURL, 8000);
     const body = await originRes.text();
-    cachedIndexTxt = body;
-    cachedTime = Date.now();
+    const vercelCache = originRes.headers.get('x-vercel-cache');
+    console.log(vercelCache);
+    if (vercelCache === 'HIT') {
+      cachedIndexTxt = body;
+      cachedTime = Date.now();
+    }
     const contentType = originRes.headers.get('Content-Type') ?? '';
     return { status: originRes.status, contentType, body };
   } catch (x) {
