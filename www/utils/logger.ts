@@ -32,6 +32,7 @@ export async function info(data: string): Promise<void> {
   if (log == null) {
     return;
   }
+  console.log(data);
   await log.write(log.entry(infoMetadata, data));
 }
 
@@ -39,6 +40,7 @@ export async function warning(data: string): Promise<void> {
   if (log == null) {
     return;
   }
+  console.warn(data);
   await log.write(log.entry(warningMetadata, data));
 }
 
@@ -46,5 +48,6 @@ export async function error(data: string): Promise<void> {
   if (log == null) {
     return;
   }
+  console.error(data);
   await log.write(log.entry(errorMetadata, data));
 }
