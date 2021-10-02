@@ -38,7 +38,7 @@ export async function getServerSideProps({
   resolvedUrl,
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  await pageView(req, resolvedUrl);
+  pageView(req, resolvedUrl);
 
   const { status, contentType, body } = await fetchIndexTxt(
     req.headers.host ?? ''
