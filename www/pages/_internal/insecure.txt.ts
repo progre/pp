@@ -38,22 +38,15 @@ export async function getServerSideProps({
   resolvedUrl,
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  await Promise.all([
+  const [_, { status, contentType, body }] = await Promise.all([
     pageView(req, resolvedUrl),
-    (async () => {
-      const { status, contentType, body } = await fetchIndexTxt(
-        req.headers.host ?? ''
-      );
-      const encoder = new ContentEncoder(
-        req.headers['accept-encoding'] as string | null
-      );
-      res.writeHead(status, [
-        ['Content-Type', contentType],
-        ...encoder.headers(),
-      ]);
-      await encoder.end(res, insecureHeader() + body);
-    })(),
+    fetchIndexTxt(req.headers.host ?? ''),
   ]);
+  const encoder = new ContentEncoder(
+    req.headers['accept-encoding'] as string | null
+  );
+  res.writeHead(status, [['Content-Type', contentType], ...encoder.headers()]);
+  await encoder.end(res, insecureHeader() + body);
   return { props: {} };
 }
 
