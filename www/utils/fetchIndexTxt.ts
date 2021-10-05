@@ -1,26 +1,12 @@
-import { AbortController } from 'node-abort-controller';
 import * as parser from 'peercast-yp-channels-parser';
 import { vercelEnv } from './env';
+import fetchWithTimeout from './fetchWithTimeout';
 import { info, warning } from './logger';
 
 const protocol = `http${vercelEnv === 'local' ? '' : 's'}`;
 
 let cachedIndexTxt: string | null = null;
 let cachedTime = 0;
-
-async function fetchWithTimeout(
-  url: string,
-  timeout: number
-): Promise<Response> {
-  const abortController = new AbortController();
-  const handle = setTimeout(() => {
-    abortController.abort();
-  }, timeout);
-  const signal = abortController.signal;
-  const res = await fetch(url, { signal });
-  clearTimeout(handle);
-  return res;
-}
 
 function timeoutMessage(): string {
   const now = new Date();

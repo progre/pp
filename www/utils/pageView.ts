@@ -2,6 +2,7 @@ import { createHash } from 'crypto';
 import { IncomingMessage } from 'http';
 import querystring from 'querystring';
 import { vercelEnv } from '../utils/env';
+import fetchWithTimeout from './fetchWithTimeout';
 
 const GA_TRACKING_ID = 'UA-43486767-10';
 
@@ -26,11 +27,22 @@ export async function pageView(
     dp: page,
   };
   const query = querystring.stringify(data);
-  const res = await fetch(
-    `https://www.google-analytics.com/${
-      vercelEnv === 'production' ? '' : 'debug/'
-    }collect?${query}`
-  );
+  let res;
+  try {
+    res = await fetchWithTimeout(
+      `https://www.google-analytics.com/${
+        vercelEnv === 'production' ? '' : 'debug/'
+      }collect?${query}`,
+      8000
+    );
+  } catch (e) {
+    const err = <{ name?: string }>e;
+    if (err.name !== 'AbortError') {
+      throw err;
+    }
+    console.error('Analytics timeout', query);
+    return;
+  }
   if (res.status !== 200) {
     console.error(await res.text());
   } else if (vercelEnv !== 'production') {
