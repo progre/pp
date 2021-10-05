@@ -1,6 +1,6 @@
 import { Logging } from '@google-cloud/logging';
 import { LogEntry } from '@google-cloud/logging/build/src/entry';
-import { gcpCredentials, vercelEnv } from './env';
+import { gcpCredentials, vercelEnv } from '../env';
 
 const logName = `pp-${vercelEnv}`;
 

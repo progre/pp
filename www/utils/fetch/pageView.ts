@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import { IncomingMessage } from 'http';
 import querystring from 'querystring';
-import { vercelEnv } from '../utils/env';
+import { vercelEnv } from '../env';
 import fetchWithTimeout from './fetchWithTimeout';
 
 const GA_TRACKING_ID = 'UA-43486767-10';

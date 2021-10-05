@@ -1,6 +1,6 @@
 import * as parser from 'peercast-yp-channels-parser';
-import pAtStatus from './channel/pAtStatus';
-import { vercelEnv } from './env';
+import pAtStatus from '../channel/pAtStatus';
+import { vercelEnv } from '../env';
 import fetchWithTimeout from './fetchWithTimeout';
 import { info, warning } from './logger';
 

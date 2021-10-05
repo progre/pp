@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
-import generateIndexTxt from '../../utils/generateIndexTxt';
-import handler from '../../utils/handler';
-import { info } from '../../utils/logger';
+import generateIndexTxt from '../../utils/fetch/generateIndexTxt';
+import { info } from '../../utils/fetch/logger';
+import handler from '../../utils/http/handler';
 
 export async function getServerSideProps({
   res,

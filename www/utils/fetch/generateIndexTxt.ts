@@ -2,9 +2,9 @@ import * as parser from 'peercast-yp-channels-parser';
 import { Channel } from 'peercast-yp-channels-parser';
 import request from 'request';
 import xml2js from 'xml2js';
-import { ca, rootServerOrigin } from '../utils/env';
-import { error } from '../utils/logger';
-import pAtStatus from './channel/pAtStatus';
+import pAtStatus from '../channel/pAtStatus';
+import { ca, rootServerOrigin } from '../env';
+import { error } from './logger';
 
 const message = '9/23 23:45 配信が三つしか建たない障害は復旧しました(｀・ω・´)';
 

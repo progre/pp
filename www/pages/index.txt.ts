@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
-import ContentEncoder from '../utils/ContentEncoder';
-import fetchIndexTxt from '../utils/fetchIndexTxt';
-import { pageView } from '../utils/pageView';
+import fetchIndexTxt from '../utils/fetch/fetchIndexTxt';
+import { pageView } from '../utils/fetch/pageView';
+import ContentEncoder from '../utils/http/ContentEncoder';
 
 export async function getServerSideProps({
   req,

@@ -8,7 +8,7 @@ import HeadInfo from '../components/feed/HeadInfo';
 import Footer from '../components/Footer';
 import MiniPlayers from '../components/feed/MiniPlayers';
 import Head from '../components/Head';
-import uptest from '../utils/uptest';
+import uptest from '../utils/fetch/uptest';
 import VideoPlayerRepository, {
   VideoPlayerItem,
 } from '../utils/VideoPlayerRepository';

@@ -1,8 +1,6 @@
 import { ServerResponse } from 'http';
-import { Readable } from 'stream';
 import { promisify } from 'util';
 import zlib from 'zlib';
-import { FetchResponse } from 'gaxios/build/src/common';
 
 const brotliCompress = promisify(zlib.brotliCompress);
 const gzip = promisify(zlib.gzip);

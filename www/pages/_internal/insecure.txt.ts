@@ -1,9 +1,9 @@
 import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import pAtInsecure from '../../utils/channel/pAtInsecure';
-import ContentEncoder from '../../utils/ContentEncoder';
-import fetchIndexTxt from '../../utils/fetchIndexTxt';
-import { pageView } from '../../utils/pageView';
+import fetchIndexTxt from '../../utils/fetch/fetchIndexTxt';
+import { pageView } from '../../utils/fetch/pageView';
+import ContentEncoder from '../../utils/http/ContentEncoder';
 
 export async function getServerSideProps({
   req,
