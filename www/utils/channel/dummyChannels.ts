@@ -1,5 +1,4 @@
 import arrayShuffle from 'array-shuffle';
-import * as parser from 'peercast-yp-channels-parser';
 import { Channel } from 'peercast-yp-channels-parser';
 
 function generateId(): string {
@@ -39,8 +38,7 @@ function generateHiragana(): string {
     .join('');
 }
 
-export default function dummy(): string {
-  const now = new Date();
+export default function dummyChannels(now: Date): Channel[] {
   const channelNames = arrayShuffle([
     'ざーか狂',
     'あらの',
@@ -78,7 +76,7 @@ export default function dummy(): string {
     '解析を祈る者',
     '寿影使い',
   ]);
-  const channels = channelNames.map(
+  return channelNames.map(
     (x): Channel => ({
       name: x,
       id: generateId(),
@@ -105,5 +103,4 @@ export default function dummy(): string {
       direct: false,
     })
   );
-  return parser.stringify(channels, now) + '\n';
 }

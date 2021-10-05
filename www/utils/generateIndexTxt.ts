@@ -4,6 +4,7 @@ import request from 'request';
 import xml2js from 'xml2js';
 import { ca, rootServerOrigin } from '../utils/env';
 import { error } from '../utils/logger';
+import pAtStatus from './channel/pAtStatus';
 
 const message = '9/23 23:45 配信が三つしか建たない障害は復旧しました(｀・ω・´)';
 
@@ -47,28 +48,11 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
   const uptime = peercast.servent[0]['$'].uptime;
   const uptimeStr = uptimeToString(uptime);
   return [
-    {
-      name: 'p@◆Status',
-      id: '00000000000000000000000000000000',
-      ip: '',
-      url: 'https://twitter.com/progremaster',
-      genre: '',
-      desc: message,
-      bandwidthType: '',
-      listeners: -9,
-      relays: -9,
-      bitrate: 0,
-      type: 'RAW',
-      track: {
-        creator: '',
-        album: '',
-        title: '',
-        url: '',
-      },
-      createdAt: now.getTime(),
-      comment: `Uptime: ${uptimeStr} Updated: ${formatISO8601Like(now)}`,
-      direct: false,
-    },
+    pAtStatus(
+      message,
+      `Uptime: ${uptimeStr} Updated: ${formatISO8601Like(now)}`,
+      now
+    ),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...(<any[]>peercast.channels_found[0].channel ?? []).map((x): Channel => {
       const channelAttr = x['$'];
@@ -152,28 +136,11 @@ function errorIndexTxtChannels(
     );
   }
   return [
-    {
-      name: 'p@◆Status',
-      id: '00000000000000000000000000000000',
-      ip: '',
-      url: 'https://twitter.com/progremaster',
-      genre: `■お知らせ: 障害が発生しています🥺。${reason}暫くチャンネルは建てられません。復旧までしばらくお待ちください…`,
-      desc: '',
-      bandwidthType: '',
-      listeners: -9,
-      relays: -9,
-      bitrate: 0,
-      type: 'RAW',
-      track: {
-        creator: '',
-        album: '',
-        title: '',
-        url: '',
-      },
-      createdAt: now.getTime(),
-      comment: `Updated: ${formatISO8601Like(now)}`,
-      direct: false,
-    },
+    pAtStatus(
+      `■お知らせ: 障害が発生しています🥺。${reason}暫くチャンネルは建てられません。復旧までしばらくお待ちください…`,
+      `Updated: ${formatISO8601Like(now)}`,
+      now
+    ),
   ];
 }
 

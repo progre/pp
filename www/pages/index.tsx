@@ -5,12 +5,13 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import * as parser from 'peercast-yp-channels-parser';
 import { useState } from 'react';
 import NextLink from 'next/link';
 import CopyBox from '../components/CopyBox';
 import Footer from '../components/Footer';
 import Head from '../components/Head';
-import dummy from '../utils/dummy';
+import dummyChannels from '../utils/channel/dummyChannels';
 
 export default function index(props: { dummyIndexTxt: string }): JSX.Element {
   const [checkTerms, setCheckTerms] = useState(false);
@@ -233,5 +234,8 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
 }
 
 export async function getStaticProps(): Promise<unknown> {
-  return { props: { dummyIndexTxt: dummy() } };
+  const now = new Date();
+  return {
+    props: { dummyIndexTxt: parser.stringify(dummyChannels(now), now) + '\n' },
+  };
 }

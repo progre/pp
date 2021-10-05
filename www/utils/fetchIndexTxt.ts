@@ -1,4 +1,5 @@
 import * as parser from 'peercast-yp-channels-parser';
+import pAtStatus from './channel/pAtStatus';
 import { vercelEnv } from './env';
 import fetchWithTimeout from './fetchWithTimeout';
 import { info, warning } from './logger';
@@ -11,28 +12,11 @@ let cachedTime = 0;
 function timeoutMessage(): string {
   const now = new Date();
   const channels = [
-    {
-      name: 'p@◆Status',
-      id: '00000000000000000000000000000000',
-      ip: '',
-      url: 'https://twitter.com/progremaster',
-      genre: '',
-      desc: 'サーバーがばっふぁっふぁしてます(´・ω・｀)。暫くしてからやり直してください。',
-      bandwidthType: '',
-      listeners: -9,
-      relays: -9,
-      bitrate: 0,
-      type: 'RAW',
-      track: {
-        creator: '',
-        album: '',
-        title: '',
-        url: '',
-      },
-      createdAt: now.getTime(),
-      comment: '',
-      direct: false,
-    },
+    pAtStatus(
+      'サーバーがばっふぁっふぁしてます(´・ω・｀)。暫くしてからやり直してください。',
+      '',
+      now
+    ),
   ];
   return parser.stringify(channels, now) + '\n';
 }

@@ -1,11 +1,13 @@
 import { GetServerSidePropsContext } from 'next';
-import dummy from '../../utils/dummy';
+import * as parser from 'peercast-yp-channels-parser';
+import dummyChannels from '../../utils/channel/dummyChannels';
 import handler from '../../utils/handler';
 
 export async function getServerSideProps({
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  const txt = dummy();
+  const now = new Date();
+  const txt = parser.stringify(dummyChannels(now), now) + '\n';
   handler(res, txt, false);
   return { props: {} };
 }
