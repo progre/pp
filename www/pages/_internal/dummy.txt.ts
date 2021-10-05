@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import dummyChannels from '../../utils/channel/dummyChannels';
-import handler from '../../utils/handler';
+import handler from '../../utils/http/handler';
 
 export async function getServerSideProps({
   res,
