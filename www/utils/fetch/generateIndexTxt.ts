@@ -1,10 +1,13 @@
 import * as parser from 'peercast-yp-channels-parser';
 import { Channel } from 'peercast-yp-channels-parser';
-import request from 'request';
+import request_ from 'request';
 import xml2js from 'xml2js';
+import { promisify } from 'util';
 import pAtStatus from '../channel/pAtStatus';
 import { ca, rootServerOrigin } from '../env';
-import { error } from './logger';
+import { error, info } from './logger';
+
+const request = promisify(request_);
 
 const message = '9/23 23:45 配信が三つしか建たない障害は復旧しました(｀・ω・´)';
 
@@ -144,27 +147,23 @@ function errorIndexTxtChannels(
   ];
 }
 
+async function fetchSelfSigned(url: string): Promise<string> {
+  const res = await request({ url, agentOptions: { ca } });
+  if (res.statusCode !== 200) {
+    throw new Error(`${res.statusCode}`);
+  }
+  return String(res.body);
+}
+
 export default async function generateIndexTxt(): Promise<string> {
   try {
-    const res = await new Promise<request.Response>((resolve, reject) => {
-      request.get(
-        {
-          url: `${rootServerOrigin}/admin?cmd=viewxml`,
-          agentOptions: { ca },
-        },
-        (err, res) => {
-          if (err != null) reject(err);
-          resolve(res);
-        }
-      );
-    });
-    if (res.statusCode !== 200) {
-      throw new Error(`${res.statusCode}`);
-    }
-    const xml = String(res.body);
+    const xml = await fetchSelfSigned(`${rootServerOrigin}/admin?cmd=viewxml`);
+    info(xml);
     const now = new Date();
     const channels = await parseXml(xml, now);
-    return parser.stringify(<Channel[]>channels, now) + '\n';
+    const indexTxt = parser.stringify(<Channel[]>channels, now) + '\n';
+    info(indexTxt);
+    return indexTxt;
   } catch (err: unknown) {
     const now = new Date();
     return (
