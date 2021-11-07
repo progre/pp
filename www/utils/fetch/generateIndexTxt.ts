@@ -9,7 +9,7 @@ import { error, info } from './logger';
 
 const request = promisify(request_);
 
-const message = '9/23 23:45 配信が三つしか建たない障害は復旧しました(｀・ω・´)';
+const message = '通常営業';
 
 function formatISO8601Like(date: Date): string {
   const formatter = new Intl.DateTimeFormat('ja-JP', {
@@ -57,55 +57,65 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
       now
     ),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...(<any[]>peercast.channels_found[0].channel ?? []).map((x): Channel => {
-      const channelAttr = x['$'];
-      if (x.track == null) {
-        error('x.track is undefined:');
-        error(JSON.stringify(x));
-      }
-      if (x.hits == null) {
-        error('x.hits is undefined:');
-        error(JSON.stringify(x));
-      }
-      const trackAttr = x.track[0]['$'];
-      const hostAttr = x.hits[0].host?.[0]['$'] ?? null;
-      const genreSrc: string = channelAttr.genre;
-      let genre;
-      let naisho;
-      if (genreSrc.startsWith('pp?')) {
-        genre = /pp\?(.*)/.exec(genreSrc)?.[1] ?? '';
-        naisho = true;
-      } else if (genreSrc.startsWith('pp')) {
-        genre = /pp(.*)/.exec(genreSrc)?.[1] ?? '';
-        naisho = false;
-      } else {
-        genre = genreSrc;
-        naisho = false;
-      }
-      return {
-        name: channelAttr.name,
-        id: channelAttr.id,
-        ip: hostAttr?.ip ?? '',
-        url: channelAttr.url,
-        genre,
-        desc: channelAttr.desc,
-        bandwidthType: '',
-        listeners: naisho ? -1 : Number(hostAttr?.listeners ?? '0'),
-        relays: naisho ? -1 : Number(hostAttr?.relays ?? '0'),
-        bitrate: channelAttr.bitrate,
-        type: channelAttr.type,
-        track: {
-          creator: trackAttr.artist,
-          album: trackAttr.album,
-          title: trackAttr.title,
-          url: trackAttr.contact,
-          // genre: trackAttr.genre,
-        },
-        createdAt: now.getTime() - channelAttr.age * 1000,
-        comment: channelAttr.comment,
-        direct: hostAttr?.direct === '1',
-      };
-    }),
+    ...(<any[]>peercast.channels_found[0].channel ?? [])
+      .filter((x) => {
+        const hitsAttr = x.hits?.[0]?.$;
+        const newest = parseInt(hitsAttr?.newest, 10);
+        if (Number.isNaN(newest)) {
+          return false;
+        }
+        // hosts = 0 かつ newest != 0 は異常値なのでスキップする
+        return parseInt(hitsAttr?.hosts, 10) > 0 || newest === 0;
+      })
+      .map((x): Channel => {
+        const channelAttr = x['$'];
+        if (x.track == null) {
+          error('x.track is undefined:');
+          error(JSON.stringify(x));
+        }
+        if (x.hits == null) {
+          error('x.hits is undefined:');
+          error(JSON.stringify(x));
+        }
+        const trackAttr = x.track[0]['$'];
+        const hostAttr = x.hits[0].host?.[0]['$'] ?? null;
+        const genreSrc: string = channelAttr.genre;
+        let genre;
+        let naisho;
+        if (genreSrc.startsWith('pp?')) {
+          genre = /pp\?(.*)/.exec(genreSrc)?.[1] ?? '';
+          naisho = true;
+        } else if (genreSrc.startsWith('pp')) {
+          genre = /pp(.*)/.exec(genreSrc)?.[1] ?? '';
+          naisho = false;
+        } else {
+          genre = genreSrc;
+          naisho = false;
+        }
+        return {
+          name: channelAttr.name,
+          id: channelAttr.id,
+          ip: hostAttr?.ip ?? '',
+          url: channelAttr.url,
+          genre,
+          desc: channelAttr.desc,
+          bandwidthType: '',
+          listeners: naisho ? -1 : Number(hostAttr?.listeners ?? '0'),
+          relays: naisho ? -1 : Number(hostAttr?.relays ?? '0'),
+          bitrate: channelAttr.bitrate,
+          type: channelAttr.type,
+          track: {
+            creator: trackAttr.artist,
+            album: trackAttr.album,
+            title: trackAttr.title,
+            url: trackAttr.contact,
+            // genre: trackAttr.genre,
+          },
+          createdAt: now.getTime() - channelAttr.age * 1000,
+          comment: channelAttr.comment,
+          direct: hostAttr?.direct === '1',
+        };
+      }),
   ];
 }
 
