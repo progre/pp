@@ -167,6 +167,7 @@ async function fetchSelfSigned(url: string): Promise<string> {
 
 export default async function generateIndexTxt(): Promise<string> {
   try {
+    throw new Error();
     const xml = await fetchSelfSigned(`${rootServerOrigin}/admin?cmd=viewxml`);
     info(xml);
     const now = new Date();
