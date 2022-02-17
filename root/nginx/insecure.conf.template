@@ -14,8 +14,8 @@ server {
 
   location /index.txt {
     proxy_pass https://p-at.net/_internal/insecure.txt;
-    # proxy_cache zone1;
-    # proxy_cache_valid 200 404 1m;
+    proxy_cache zone1;
+    proxy_cache_valid 200 404 1m;
   }
 
   location / {
