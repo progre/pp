@@ -1,0 +1,37 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [main, ci]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker images
+        run: |
+          cd root/
+          docker build --tag progre/pp-nginx:latest --file nginx/Dockerfile . && \
+          docker build --tag progre/pp-peercast:latest --file peercast/Dockerfile . && \
+          docker build --tag progre/pp:latest .
+      - name: Login to Docker Hub
+        uses: actions-hub/docker/login@master
+        env:
+          DOCKER_USERNAME: progre
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_REGISTRY_URL: docker.io
+      - name: Push pp-nginx:latest
+        uses: actions-hub/docker@master
+        with:
+          args: push progre/pp-nginx:latest
+      - name: Push pp-peercast:latest
+        uses: actions-hub/docker@master
+        with:
+          args: push progre/pp-peercast:latest
+      - name: Push pp:latest
+        uses: actions-hub/docker@master
+        with:
+          args: push progre/pp:latest
