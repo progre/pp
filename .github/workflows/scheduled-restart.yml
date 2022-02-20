@@ -1,0 +1,73 @@
+name: Scheduled restart
+on:
+  schedule:
+    # UTC
+    - cron: "0 21 * * *"
+
+jobs:
+  check_channels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: denoland/setup-deno@v1
+      - uses: actions/checkout@v2
+      - name: Check number of channels
+        id: num_channels
+        run: echo "::set-output name=value::$(scripts/num-channels.ts)"
+      - name: Warn if some channels are broadcasting
+        if: steps.num_channels.outputs.value > 0
+        run: echo '::warning::${{ steps.num_channels.outputs.value }} チャンネルが配信中のため再起動を中止しました。'
+    outputs:
+      num_channels: ${{ steps.num_channels.outputs.value }}
+  restart:
+    needs: check_channels
+    if: needs.check_channels.outputs.num_channels == 0
+    runs-on: ubuntu-latest
+    steps:
+      - uses: hashicorp/setup-terraform@v1
+      - uses: actions/checkout@v2
+      - name: Extract secrets
+        run: |
+          cd root/ && \
+          echo '${{ secrets.TF_TERRAFORM_TFVARS }}' > terraform.tfvars && \
+          mkdir secrets/ && \
+          echo '${{ secrets.TF_GOOGLE_CREDENTIAL_FILE }}' > secrets/google_credential.json && \
+          echo '${{ secrets.TF_ROOT_CRT_FILE }}' > secrets/root.crt && \
+          echo '${{ secrets.TF_ROOT_KEY_FILE }}' > secrets/root.key
+      - name: Reverse terraform
+        run: |
+          insecure_domain=$(sed --null-data --regexp-extended 's/^.+env_insecure_domain + = "([^\"]+)".*$/\1/' root/terraform.tfvars) && \
+          root_domain=$(sed --null-data --regexp-extended 's/^.+env_root_domain + = "([^\"]+)".*$/\1/' root/terraform.tfvars) && \
+          dns_zone_name=$(sed --null-data --regexp-extended 's/^.+google_cloud_dns_zone_name + = "([^\"]+)".*$/\1/' root/terraform.tfvars) && \
+          environment_target=$(sed --null-data --regexp-extended 's/^.+google_environment_target + = "([^\"]+)".*$/\1/' root/terraform.tfvars) && \
+          project=$(sed --null-data --regexp-extended 's/^.+google_project + = "([^\"]+)".*$/\1/' root/terraform.tfvars) && \
+          cd root/ && \
+          terraform init && \
+          terraform import \
+            google_compute_network.tf_network \
+            projects/$project/global/networks/terraform-network && \
+          terraform import \
+            google_compute_firewall.tf_firewall \
+            projects/$project/global/firewalls/tf-firewall && \
+          terraform import \
+            google_compute_address.tf_address \
+            projects/$project/regions/us-west1/addresses/ipv4-address && \
+          terraform import \
+            google_dns_record_set.resource_recordset \
+            projects/$project/managedZones/$dns_zone_name/rrsets/$root_domain./A && \
+          terraform import \
+            google_dns_record_set.resource_recordset2 \
+            projects/$project/managedZones/$dns_zone_name/rrsets/$insecure_domain./A && \
+          terraform import \
+            google_compute_instance.tf_cloud_01 \
+            projects/$project/zones/us-west1-a/instances/pp-$environment_target && \
+          terraform import \
+            google_logging_project_bucket_config.tf_bucket \
+            projects/$project/locations/global/buckets/pp-$environment_target && \
+          terraform import \
+            google_logging_project_sink.tf_sink \
+            projects/$project/sinks/tf-pp-sink
+      - name: Terraform
+        run: |
+          cd root/ && \
+          terraform taint google_compute_instance.tf_cloud_01 && \
+          terraform apply -auto-approve | sed --regexp-extended 's/value: \"[^\"]+\"/value: \"****\"/g'

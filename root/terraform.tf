@@ -7,15 +7,16 @@ terraform {
   }
 }
 
-variable "env_root_crt_file" {}
-variable "env_root_domain" {}
-variable "env_root_key_file" {}
 variable "env_insecure_domain" {}
 variable "env_email_address" {}
 variable "env_password" {}
-variable "google_credential_file_name" {}
-variable "google_project" {}
+variable "env_root_crt_file_name" {}
+variable "env_root_domain" {}
+variable "env_root_key_file_name" {}
 variable "google_cloud_dns_zone_name" {}
+variable "google_credential_file_name" {}
+variable "google_environment_target" {}
+variable "google_project" {}
 
 provider "google" {
   credentials = file(var.google_credential_file_name)
@@ -57,8 +58,8 @@ resource "google_dns_record_set" "resource_recordset2" {
   ttl          = 86400
 }
 
-resource "google_compute_instance" "tf-cloud-01" {
-  name                      = "tf-cloud-01"
+resource "google_compute_instance" "tf_cloud_01" {
+  name                      = "pp-${var.google_environment_target}"
   machine_type              = "e2-micro"
   zone                      = "us-west1-a"
   tags                      = [google_compute_firewall.tf_firewall.name]
@@ -85,9 +86,9 @@ resource "google_compute_instance" "tf-cloud-01" {
             - name: PASSWORD
               value: "${var.env_password}"
             - name: ROOT_CRT
-              value: "${replace(file(var.env_root_crt_file), "\n", "\\n")}"
+              value: "${replace(file(var.env_root_crt_file_name), "\n", "\\n")}"
             - name: ROOT_KEY
-              value: "${replace(file(var.env_root_key_file), "\n", "\\n")}"
+              value: "${replace(file(var.env_root_key_file_name), "\n", "\\n")}"
           volumeMounts:
             - name: dockersock
               mountPath: /var/run/docker.sock
@@ -106,16 +107,16 @@ resource "google_compute_instance" "tf-cloud-01" {
   }
 }
 
-resource "google_logging_project_bucket_config" "pp_production" {
+resource "google_logging_project_bucket_config" "tf_bucket" {
   project        = var.google_project
   location       = "global"
   retention_days = 30
-  bucket_id      = "pp-production"
+  bucket_id      = "pp-${var.google_environment_target}"
 }
 
 resource "google_logging_project_sink" "tf_sink" {
   name                   = "tf-pp-sink"
-  destination            = "logging.googleapis.com/${google_logging_project_bucket_config.pp_production.id}"
-  filter                 = "logName = projects/${var.google_project}/logs/pp-production"
+  destination            = "logging.googleapis.com/${google_logging_project_bucket_config.tf_bucket.id}"
+  filter                 = "logName = projects/${var.google_project}/logs/pp-${var.google_environment_target}"
   unique_writer_identity = true
 }
