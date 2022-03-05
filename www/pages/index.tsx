@@ -226,11 +226,11 @@ export default function index(props: Props): JSX.Element {
         <h1>連絡先</h1>
         <div>
           <Link
-            href="https://twitter.com/progremaster"
+            href="https://twitter.com/p_at_yp"
             target="_blank"
             rel="noreferrer"
           >
-            @progremaster
+            @p_at_yp
           </Link>
         </div>
         <div

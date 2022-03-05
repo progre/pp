@@ -17,7 +17,7 @@ function Link(
 
 export default function Footer(props: { rawLink?: boolean }): JSX.Element {
   return (
-    <footer style={{ margin: '8rem 0 4rem' }}>
+    <footer style={{ margin: '8rem 0 0' }}>
       <p style={{ display: 'flex', gap: '2rem' }}>
         <Link href="/" rawLink={props.rawLink}>
           p@ YP
@@ -29,7 +29,17 @@ export default function Footer(props: { rawLink?: boolean }): JSX.Element {
           チャンネル一覧 (β)
         </Link> */}
       </p>
-      <p style={{ marginTop: '2rem', textAlign: 'center' }}>© ぷろぐれ</p>
+      <p style={{ marginTop: '2rem', textAlign: 'center' }}>
+        ©
+        <a
+          style={{ marginLeft: '0.25em' }}
+          href="https://twitter.com/progremaster"
+          target="_blank"
+          rel="noreferrer"
+        >
+          ぷろぐれ
+        </a>
+      </p>
     </footer>
   );
 }
