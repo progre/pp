@@ -5,16 +5,25 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { GetServerSidePropsResult } from 'next';
+import NextLink from 'next/link';
 import * as parser from 'peercast-yp-channels-parser';
 import { useState } from 'react';
-import NextLink from 'next/link';
 import CopyBox from '../components/CopyBox';
 import Footer from '../components/Footer';
 import Head from '../components/Head';
+import SupportEmail from '../components/SupportEmail';
 import dummyChannels from '../utils/channel/dummyChannels';
+import { decrypt, encrypt } from '../utils/simplecrypt';
 
-export default function index(props: { dummyIndexTxt: string }): JSX.Element {
+interface Props {
+  dummyIndexTxt: string;
+  cipheredSupportEmail: string;
+}
+
+export default function index(props: Props): JSX.Element {
   const [checkTerms, setCheckTerms] = useState(false);
+  const [shownSupportEmail, setShownSupportEmail] = useState(false);
 
   const description =
     'p@ YP は PeerCast のライブストリーミングチャンネルの掲載所です。現行の各 YP のサブ的な立ち位置で試験運用しています。ソースコードは AGPL で公開されています。';
@@ -215,7 +224,7 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
       </article>
       <article id="contact" style={{ marginTop: '6rem' }}>
         <h1>連絡先</h1>
-        <p>
+        <div>
           <Link
             href="https://twitter.com/progremaster"
             target="_blank"
@@ -223,7 +232,29 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
           >
             @progremaster
           </Link>
-        </p>
+        </div>
+        <div
+          style={{ display: 'flex', alignItems: 'center', marginTop: '1ex' }}
+        >
+          <small style={{ fontSize: '11px', color: '#999' }}>
+            ※メールでのご連絡をご希望の方は
+          </small>
+          <button
+            style={{
+              fontSize: '7px',
+              padding: 0,
+              color: '#777',
+              marginLeft: '0.5em',
+              marginRight: '0.5em',
+            }}
+            onClick={() => setShownSupportEmail(!shownSupportEmail)}
+          >
+            こちら
+          </button>
+          {!shownSupportEmail ? null : (
+            <SupportEmail email={decrypt(props.cipheredSupportEmail)} />
+          )}
+        </div>
         <p>
           各ライブストリームの内容については各ライブストリームの配信者にお問い合わせください。
         </p>
@@ -233,9 +264,17 @@ export default function index(props: { dummyIndexTxt: string }): JSX.Element {
   );
 }
 
-export async function getStaticProps(): Promise<unknown> {
+export async function getStaticProps(): Promise<
+  GetServerSidePropsResult<Props>
+> {
   const now = new Date();
   return {
-    props: { dummyIndexTxt: parser.stringify(dummyChannels(now), now) + '\n' },
+    props: {
+      dummyIndexTxt: parser.stringify(dummyChannels(now), now) + '\n',
+      cipheredSupportEmail: encrypt(
+        process.env.SUPPORT_EMAIL ??
+          '(現在メールでのサポートを受け付けておりません)'
+      ),
+    },
   };
 }
