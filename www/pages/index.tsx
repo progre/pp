@@ -26,7 +26,7 @@ export default function index(props: Props): JSX.Element {
   const [shownSupportEmail, setShownSupportEmail] = useState(false);
 
   const description =
-    'p@ YP は PeerCast のライブストリーミングチャンネルの掲載所です。現行の各 YP のサブ的な立ち位置で試験運用しています。ソースコードは AGPL で公開されています。';
+    'p@ YP は PeerCast のライブストリーミングチャンネルの掲載所です。ソースコードは AGPL で公開されています。';
   const keywords =
     'peercast,ピアキャスト,ピアキャス,yp,yellowpages,イエローページ,livestreaming,livestream,ライブストリーム,ライブストリーミング,ライブ配信,生放送';
   return (
@@ -125,25 +125,16 @@ export default function index(props: Props): JSX.Element {
           </li>
         </ul>
         <p>
-          お使いの PCYP に以下の URL を登録してください。※末尾の
-          <code>index.txt</code> を含めるかどうかは各ソフトにより異なります
+          お使いのソフトウェアに以下の URL を登録してください。
+          <br />
+          末尾の<code>index.txt</code>
+          を含めるかどうかは各ソフトウェアにより異なります。
         </p>
         <CopyBox value="https://p-at.net/index.txt" />
         <p>
-          <b>ただし PeCaRecorder の場合は以下の URL を指定してください</b>。
+          ※<b>PeCaRecorder のみ</b>以下の URL を登録してください。
         </p>
         <CopyBox value="http://insecure.p-at.net/" />
-        <h2>キャッシュの仕組み</h2>
-        <p>
-          チャンネル情報はキャッシュされているため、配信者が立てたチャンネル情報が即座に反映されないことがあります。
-        </p>
-        <p>
-          キャッシュの期間は1分です。
-          キャッシュが作られて1分経過した後の最初のアクセス時は
-          <b>キャッシュが返ります</b>。
-          それと同時にサーバーではキャッシュの更新が始まり、次回のアクセス時に新しいチャンネル情報を取得できます。
-          従って、頻繁にアクセスされている時には1分強でチャンネル情報が更新されますが、アクセスがなければ2回アクセスしなければ最新のチャンネル情報を取得できません。
-        </p>
       </article>
       <article id="broadcast" style={{ marginTop: '6rem' }}>
         <h1>掲載方法</h1>
@@ -164,20 +155,22 @@ export default function index(props: Props): JSX.Element {
           </strong>
         </p>
         <FormControlLabel
+          style={{ pointerEvents: 'none' }}
           control={
             <Checkbox
+              style={{ pointerEvents: 'all' }}
               checked={checkTerms}
               onChange={(ev) => setCheckTerms(ev.target.checked)}
               color="primary"
             />
           }
-          label="利用規約の内容を確認し、同意した"
+          label={'利用規約の内容を確認し、同意した'}
         />
-        <div style={{ minHeight: '21em' }}>
+        <div style={{ minHeight: '22rem' }}>
           {!checkTerms ? (
             <div
               style={{
-                height: '21em',
+                height: '22rem',
                 background: 'lightgray',
                 userSelect: 'none',
               }}
@@ -189,37 +182,55 @@ export default function index(props: Props): JSX.Element {
           ) : (
             <div>
               <p>
-                PeerCast に掲載用 URL
-                に以下を登録し、掲載するように設定するとチャンネルを掲載できます。
+                お使いの PeerCast に配信掲載 URL として以下の URL
+                を登録してください。
               </p>
               <CopyBox value="pcp://root.p-at.net" />
               <p>
-                他の YP よろしくジャンル欄を使って掲載の挙動を変更できます。
+                以下の書式に従ってチャンネルのジャンルを設定すると、掲載の仕方を変更できます。
               </p>
-              <samp>書式) [pp][?][Genre]</samp>
-              <p>
-                ジャンルの先頭に pp
-                が付いているとこの書式が有効になります。ない場合はそのままジャンルとして扱われます。
-                ? をつけるとリスナー数を秘匿できます。
-              </p>
+              <samp>書式) [pp[?]][Genre]</samp>
+              <br />
               <samp>例) pp?ゲーム</samp>
+              <table style={{ margin: '1rem' }}>
+                <tbody>
+                  <tr>
+                    <td style={{ display: 'block' }}>pp</td>
+                    <td style={{ paddingLeft: '1rem' }}>
+                      以下のオプションを使用することを示す記号です。掲載の仕方を変更する場合に付けてください。
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ display: 'block', paddingTop: '0.5rem' }}>
+                      ?
+                    </td>
+                    <td style={{ paddingTop: '0.5rem', paddingLeft: '1rem' }}>
+                      リスナー数を秘匿できます。
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           )}
         </div>
-        <h2>制約事項</h2>
-        <p>
-          IPv4 と IPv6
-          を同時に掲載しようとするとうまくいかないようです。どちらかに絞るか他の
-          YP と併用するとうまくいきます。 バックエンドは peercast-yt
-          なのでポート0配信も可能です。但しポート0配信はリスナー側も peercast-yt
-          でかつ YP の設定も一致している必要があるため、 p@ YP では非推奨です。
-        </p>
         <h2>心得</h2>
         <p>
-          やばいの（著作権的に一発アウトなものや動画を直接垂れ流すなど）を掲載するのはお控えください。
-          御存知の通りチャンネルを掲載すると配信者の IP
-          アドレスが載るので、何か問題が起きたらうちへの発信者情報開示請求をすっ飛ばして直接
-          ISP とのやり取りが始まるはずですのでそのつもりで。
+          やばいの（著作権的に一発アウトなものの垂れ流しなど）を掲載するのはお控えください。
+        </p>
+        <h2>制約事項</h2>
+        <p>
+          p@ YP に IPv4 チャンネルと IPv6
+          チャンネルを同時に掲載することはできません。
+          <br />
+          これは技術的な問題によるものです。他の YP
+          と併用して掲載するとうまくいきます。
+          <br />
+          <br />
+          本家 PeerCast 系統のポート 0 配信も可能ですが、推奨しません。
+          <br />
+          バックエンドは peercast-yt
+          なので受け付けは可能ですが、リスナー個々人も本系 PeerCast
+          系統を使用して利用 YP を正しく設定する必要があります。
         </p>
       </article>
       <article id="contact" style={{ marginTop: '6rem' }}>
@@ -256,7 +267,11 @@ export default function index(props: Props): JSX.Element {
           )}
         </div>
         <p>
-          各ライブストリームの内容については各ライブストリームの配信者にお問い合わせください。
+          ※各ライブストリームの内容について配信者と連絡を取りたい場合は、掲載情報
+          ( https://p-at.net/index.txt ) に掲載されているコンタクト URL や IP
+          アドレスをご確認いただき、配信者に直接ご連絡していただきますようお願いいたします。
+          p@ YP
+          は各ライブストリームの内容について関知しておらず、掲載されている情報以上の個人情報を収集しておりません。
         </p>
       </article>
       <Footer />
