@@ -39,7 +39,7 @@ resource "google_compute_firewall" "tf_firewall" {
 }
 
 resource "google_compute_address" "tf_address" {
-  name = "ipv4-address"
+  name = "${var.google_environment_target}-ipv4-address"
 }
 
 resource "google_dns_record_set" "resource_recordset" {
