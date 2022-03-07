@@ -25,7 +25,7 @@ provider "google" {
 }
 
 resource "google_compute_network" "tf_network" {
-  name = "terraform-network"
+  name = "tf-network"
 }
 
 resource "google_compute_firewall" "tf_firewall" {
@@ -39,7 +39,7 @@ resource "google_compute_firewall" "tf_firewall" {
 }
 
 resource "google_compute_address" "tf_address" {
-  name = "${var.google_environment_target}-ipv4-address"
+  name = "tf-${var.google_environment_target}-ipv4-address"
 }
 
 resource "google_dns_record_set" "resource_recordset" {
@@ -47,7 +47,7 @@ resource "google_dns_record_set" "resource_recordset" {
   name         = "${var.env_root_domain}."
   type         = "A"
   rrdatas      = [google_compute_address.tf_address.address]
-  ttl          = 86400
+  ttl          = 300
 }
 
 resource "google_dns_record_set" "resource_recordset2" {
@@ -55,11 +55,11 @@ resource "google_dns_record_set" "resource_recordset2" {
   name         = "${var.env_insecure_domain}."
   type         = "A"
   rrdatas      = [google_compute_address.tf_address.address]
-  ttl          = 86400
+  ttl          = 300
 }
 
 resource "google_compute_instance" "tf_cloud_01" {
-  name                      = "pp-${var.google_environment_target}"
+  name                      = "tf-${var.google_environment_target}"
   machine_type              = "e2-micro"
   zone                      = "us-west1-a"
   tags                      = [google_compute_firewall.tf_firewall.name]
