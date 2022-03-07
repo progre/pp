@@ -28,6 +28,7 @@ jobs:
       - name: Extract secrets
         env:
           - GOOGLE_ENVIRONMENT_TARGET: production
+          - GOOGLE_POWER: true
           - TF_GOOGLE_CREDENTIAL_FILE: ${{ secrets.TF_GOOGLE_CREDENTIAL_FILE }}
           - TF_ROOT_CRT_FILE: ${{ secrets.TF_ROOT_CRT_FILE }}
           - TF_ROOT_KEY_FILE: ${{ secrets.TF_ROOT_KEY_FILE }}
