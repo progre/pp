@@ -19,12 +19,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Extract secrets
         env:
-          - GOOGLE_ENVIRONMENT_TARGET: development
-          - GOOGLE_POWER: ${{ github.event.inputs.power }}
-          - TF_GOOGLE_CREDENTIAL_FILE: ${{ secrets.TF_GOOGLE_CREDENTIAL_FILE }}
-          - TF_ROOT_CRT_FILE: ${{ secrets.TF_ROOT_CRT_FILE }}
-          - TF_ROOT_KEY_FILE: ${{ secrets.TF_ROOT_KEY_FILE }}
-          - TF_TERRAFORM_TFVARS: ${{ secrets.TF_TERRAFORM_TFVARS }}
+          GOOGLE_ENVIRONMENT_TARGET: development
+          GOOGLE_POWER: ${{ github.event.inputs.power }}
+          TF_GOOGLE_CREDENTIAL_FILE: ${{ secrets.TF_GOOGLE_CREDENTIAL_FILE }}
+          TF_ROOT_CRT_FILE: ${{ secrets.TF_ROOT_CRT_FILE }}
+          TF_ROOT_KEY_FILE: ${{ secrets.TF_ROOT_KEY_FILE }}
+          TF_TERRAFORM_TFVARS: ${{ secrets.TF_TERRAFORM_TFVARS }}
         run: ./scripts/extract-secrets.sh
       - name: Reverse terraform
         run: ./scripts/reverse-terraform.sh
