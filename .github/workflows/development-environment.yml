@@ -12,7 +12,7 @@ on:
           - false
 
 jobs:
-  restart:
+  job:
     runs-on: ubuntu-latest
     steps:
       - uses: hashicorp/setup-terraform@v1
@@ -32,3 +32,6 @@ jobs:
         run: |
           cd root/ && \
           terraform plan | sed --regexp-extended 's/value: \"[^\"]+\"/value: \"****\"/g'
+      - name: Print outputs
+        run: |
+          [ ${{ github.event.inputs.power }} = true ] && echo '::notice::サーバーは起動状態です' || echo '::notice::サーバーは停止状態です'
