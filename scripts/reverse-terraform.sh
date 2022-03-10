@@ -38,4 +38,5 @@ terraform import \
   || echo skip
 terraform import \
   google_logging_project_sink.tf_sink \
-  "projects/$project/sinks/tf-pp-sink"
+  "projects/$project/sinks/tf-sink-$environment_target" \
+  || echo skip
