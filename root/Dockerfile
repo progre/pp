@@ -27,6 +27,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   docker run \
   --detach \
   --env ROOT_DOMAIN \
+  --env TZ=Asia/Tokyo \
   --log-driver=fluentd \
   --mount type=volume,src=pp-nginx,dst=/etc/nginx/conf.d/ \
   --publish 80:80 \
