@@ -3,9 +3,22 @@
 #       従って、テンプレートファイルを詰めた init 用のコンテナーを実行し、ボリュームに成果物を保存する。
 
 FROM ubuntu:latest
+
 RUN apt update && \
-  apt install --yes gettext && \
+  apt install --yes apache2-utils gettext && \
   apt-get clean
+
 ADD init/fluent-bit/fluent-bit.conf.template /work/fluent-bit/
-WORKDIR /work/
-CMD envsubst \$LOGFLARE_API_KEY < fluent-bit/fluent-bit.conf.template > /output/fluent-bit/etc/fluent-bit.conf
+ADD init/nginx/insecure.conf.template /work/nginx/
+ADD init/nginx/root.conf.template /work/nginx/
+ADD init/nginx/run.sh /work/nginx/
+RUN chmod 755 /work/nginx/run.sh
+
+CMD envsubst \$LOGFLARE_API_KEY < /work/fluent-bit/fluent-bit.conf.template > /output/fluent-bit/fluent-bit.conf && \
+  envsubst \$INSECURE_DOMAIN < /work/nginx/insecure.conf.template > /output/nginx/insecure.conf && \
+  PEERCAST_BASIC_AUTH=$(echo -n "admin:$PEERCAST_PASSWORD" | base64) \
+  envsubst "\$\$PEERCAST_BASIC_AUTH \$\$ROOT_DOMAIN" < /work/nginx/root.conf.template > /output/nginx/root.conf && \
+  htpasswd -b -c /output/nginx/.htpasswd admin "$PASSWORD" && \
+  echo "$ROOT_CRT" > "/output/nginx/$ROOT_DOMAIN.crt" && \
+  echo "$ROOT_KEY" > "/output/nginx/$ROOT_DOMAIN.key" && \
+  cp /work/nginx/run.sh /output/nginx/run.sh

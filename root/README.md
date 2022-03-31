@@ -1,10 +1,8 @@
 ```
 $ docker build --tag progre/pp-init:latest --file Dockerfile.init . && \
-  docker build --tag progre/pp-nginx:latest --file Dockerfile.nginx . && \
   docker build --tag progre/pp-peercast:latest --file Dockerfile.peercast . && \
   docker build --tag progre/pp:latest .
 $ docker push progre/pp-init:latest && \
-  docker push progre/pp-nginx:latest && \
   docker push progre/pp-peercast:latest && \
   docker push progre/pp:latest
 $ terraform init

@@ -15,7 +15,6 @@ jobs:
         run: |
           cd root/
           docker build --tag progre/pp-init:latest --file Dockerfile.init . && \
-          docker build --tag progre/pp-nginx:latest --file Dockerfile.nginx . && \
           docker build --tag progre/pp-peercast:latest --file Dockerfile.peercast . && \
           docker build --tag progre/pp:latest .
       - name: Login to Docker Hub
@@ -28,10 +27,6 @@ jobs:
         uses: actions-hub/docker@master
         with:
           args: push progre/pp-init:latest
-      - name: Push pp-nginx:latest
-        uses: actions-hub/docker@master
-        with:
-          args: push progre/pp-nginx:latest
       - name: Push pp-peercast:latest
         uses: actions-hub/docker@master
         with:
