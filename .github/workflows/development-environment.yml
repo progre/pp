@@ -21,6 +21,7 @@ jobs:
         env:
           GOOGLE_ENVIRONMENT_TARGET: development
           GOOGLE_POWER: ${{ github.event.inputs.power }}
+          LOGFLARE_URI: /logs/json?api_key=${{ secrets.LOGFLARE_API_KEY }}&source=f57030a7-1bc8-4600-a11b-29518e2e42c4
           TF_GOOGLE_CREDENTIAL_FILE: ${{ secrets.TF_GOOGLE_CREDENTIAL_FILE }}
           TF_ROOT_CRT_FILE: ${{ secrets.TF_ROOT_CRT_FILE }}
           TF_ROOT_KEY_FILE: ${{ secrets.TF_ROOT_KEY_FILE }}

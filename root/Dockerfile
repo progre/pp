@@ -3,7 +3,7 @@ RUN apk update && apk add openssl
 CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   docker run \
   --env INSECURE_DOMAIN \
-  --env LOGFLARE_API_KEY \
+  --env LOGFLARE_URI \
   --env PASSWORD \
   --env PEERCAST_PASSWORD=$peercast_password \
   --env ROOT_CRT \

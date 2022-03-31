@@ -9,11 +9,11 @@ terraform {
 
 variable "env_insecure_domain" {}
 variable "env_email_address" {}
-variable "env_logflare_api_key" {}
 variable "env_password" {}
 variable "env_root_crt_file_name" {}
 variable "env_root_domain" {}
 variable "env_root_key_file_name" {}
+variable "logflare_uri" {}
 variable "google_cloud_dns_zone_name" {}
 variable "google_credential_file_name" {}
 variable "google_environment_target" {}
@@ -91,8 +91,8 @@ resource "google_compute_instance" "tf_cloud_01" {
               value: "${var.env_email_address}"
             - name: INSECURE_DOMAIN
               value: "${var.env_insecure_domain}"
-            - name: LOGFLARE_API_KEY
-              value: "${var.env_logflare_api_key}"
+            - name: LOGFLARE_URI
+              value: "${var.logflare_uri}"
             - name: PASSWORD
               value: "${var.env_password}"
             - name: ROOT_CRT
