@@ -9,6 +9,7 @@ terraform {
 
 variable "env_insecure_domain" {}
 variable "env_email_address" {}
+variable "env_logflare_api_key" {}
 variable "env_password" {}
 variable "env_root_crt_file_name" {}
 variable "env_root_domain" {}
@@ -86,16 +87,18 @@ resource "google_compute_instance" "tf_cloud_01" {
           stdin: false
           tty: true
           env:
-            - name: ROOT_DOMAIN
-              value: "${var.env_root_domain}"
-            - name: INSECURE_DOMAIN
-              value: "${var.env_insecure_domain}"
             - name: EMAIL_ADDRESS
               value: "${var.env_email_address}"
+            - name: INSECURE_DOMAIN
+              value: "${var.env_insecure_domain}"
+            - name: LOGFLARE_API_KEY
+              value: "${var.env_logflare_api_key}"
             - name: PASSWORD
               value: "${var.env_password}"
             - name: ROOT_CRT
               value: "${replace(file(var.env_root_crt_file_name), "\n", "\\n")}"
+            - name: ROOT_DOMAIN
+              value: "${var.env_root_domain}"
             - name: ROOT_KEY
               value: "${replace(file(var.env_root_key_file_name), "\n", "\\n")}"
           volumeMounts:

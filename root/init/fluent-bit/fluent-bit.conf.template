@@ -1,0 +1,14 @@
+[INPUT]
+    Name forward
+
+[OUTPUT]
+    Name http
+    Match *
+    tls On
+    Host api.logflare.app
+    Port 443
+    URI /logs/json?api_key=$LOGFLARE_API_KEY&source=c565ddc7-1d34-4fd2-9e68-0b6339577dfa
+    Format json
+    Retry_Limit 5
+    json_date_format iso8601
+    json_date_key timestamp

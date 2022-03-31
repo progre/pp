@@ -1,8 +1,10 @@
 ```
-$ docker build --tag progre/pp-nginx:latest --file nginx/Dockerfile . && \
+$ docker build --tag progre/pp-init:latest --file init/Dockerfile . && \
+  docker build --tag progre/pp-nginx:latest --file nginx/Dockerfile . && \
   docker build --tag progre/pp-peercast:latest --file peercast/Dockerfile . && \
   docker build --tag progre/pp:latest .
-$ docker push progre/pp-nginx:latest && \
+$ docker push progre/pp-init:latest && \
+  docker push progre/pp-nginx:latest && \
   docker push progre/pp-peercast:latest && \
   docker push progre/pp:latest
 $ terraform init
@@ -18,6 +20,12 @@ $ docker run -it \
   --env EMAIL_ADDRESS=hoge@example.com \
   --env PASSWORD=hoge \
   progre/pp:latest
+```
+
+VM の再構築
+```
+$ terraform taint -var-file="main.tfvars" google_compute_instance.tf-cloud-01
+$ terraform apply -var-file="main.tfvars" -auto-approve
 ```
 
 pcp://root.p-at.net
