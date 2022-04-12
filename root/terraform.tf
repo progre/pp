@@ -120,7 +120,7 @@ resource "google_compute_instance" "tf_cloud_01" {
 }
 
 resource "google_logging_project_bucket_config" "tf_bucket" {
-  project        = var.google_project
+  project        = "projects/${var.google_project}"
   location       = "global"
   retention_days = 30
   bucket_id      = "pp-${var.google_environment_target}"
