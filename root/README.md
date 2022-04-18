@@ -1,3 +1,13 @@
+## 環境変数の流れ
+
+```mermaid
+flowchart TD
+
+action["GitHub/Settings/Actions secrets (GUI)"] -->|secrets パラメーター| workflow1["GitHub Workflows (.yml)"] -->|環境変数| workflow2["GitHub Workflows (CI スクリプト)"] -->|terraform.tfvars| terraform["GitHub Workflows (Terraform)"] -->|環境変数| docker["Docker"]
+```
+
+## ビルド
+
 ```
 $ docker build --tag progre/pp-init:latest --file Dockerfile.init . && \
   docker build --tag progre/pp-peercast:latest --file Dockerfile.peercast . && \
