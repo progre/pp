@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { GetServerSidePropsResult } from 'next';
 import NextLink from 'next/link';
 import * as parser from 'peercast-yp-channels-parser';
@@ -233,6 +234,37 @@ export default function index(props: Props): JSX.Element {
           系統を使用して利用 YP を正しく設定する必要があります。
         </p>
       </article>
+      <article style={{ marginTop: '6rem' }}>
+        <h1>支援のお願い</h1>
+        <p>
+          p@ YP は広告等を掲載せずに個人によって運営されています。
+          皆様からの支援はより良いサービスを長期的に提供する助けになります。
+        </p>
+        <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+          <li>
+            <a target="_blank" href="https://progre.fanbox.cc/">
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<FavoriteIcon />}
+              >
+                PIXIV FANBOX で支援する
+              </Button>
+            </a>
+          </li>
+          <li style={{ marginTop: '1ex' }}>
+            <a target="_blank" href="https://github.com/sponsors/progre">
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<FavoriteIcon />}
+              >
+                GitHub で支援する
+              </Button>
+            </a>
+          </li>
+        </ul>
+      </article>
       <article id="contact" style={{ marginTop: '6rem' }}>
         <h1>連絡先</h1>
         <div>
@@ -269,8 +301,8 @@ export default function index(props: Props): JSX.Element {
         <p>
           ※各ライブストリームの内容について配信者と連絡を取りたい場合は、掲載情報
           ( https://p-at.net/index.txt ) に掲載されているコンタクト URL や IP
-          アドレスをご確認いただき、配信者に直接ご連絡していただきますようお願いいたします。
-          p@ YP
+          アドレスをご確認いただき、配信者に直接ご連絡していただきますようお願いいたします。p@
+          YP
           は各ライブストリームの内容について関知しておらず、掲載されている情報以上の個人情報を収集しておりません。
         </p>
       </article>
