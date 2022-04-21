@@ -1,0 +1,23 @@
+name: "[Schedule] Health check"
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+
+jobs:
+  health_check:
+    name: Health check
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl --head https://p-at.net/index.txt && \
+          curl --head http://insecure.p-at.net/index.txt
+  channels:
+    name: Channels
+    needs: health_check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: denoland/setup-deno@v1
+      - uses: actions/checkout@v2
+      - run: |
+          echo ::notice::$(scripts/channel-names.ts)

@@ -1,4 +1,4 @@
-name: Scheduled restart
+name: "[Schedule] Restart"
 on:
   schedule:
     # UTC

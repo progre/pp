@@ -1,4 +1,4 @@
-name: Development environment
+name: "[Manual] Development environment"
 
 on:
   workflow_dispatch:
