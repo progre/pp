@@ -1,12 +1,11 @@
 #!/bin/bash -eux
 
-insecure_domain=$(sed --null-data --regexp-extended 's/^.+env_insecure_domain += "([^\"]+)".*$/\1/' root/terraform.tfvars)
-root_domain=$(sed --null-data --regexp-extended 's/^.+env_root_domain += "([^\"]+)".*$/\1/' root/terraform.tfvars)
-dns_zone_name=$(sed --null-data --regexp-extended 's/^.+google_cloud_dns_zone_name += "([^\"]+)".*$/\1/' root/terraform.tfvars)
-environment_target=$(sed --null-data --regexp-extended 's/^.+google_environment_target += "([^\"]+)".*$/\1/' root/terraform.tfvars)
-project=$(sed --null-data --regexp-extended 's/^.+google_project += "([^\"]+)".*$/\1/' root/terraform.tfvars)
+insecure_domain=$(sed --null-data --regexp-extended 's/^.+env_insecure_domain += "([^\"]+)".*$/\1/' terraform.tfvars)
+root_domain=$(sed --null-data --regexp-extended 's/^.+env_root_domain += "([^\"]+)".*$/\1/' terraform.tfvars)
+dns_zone_name=$(sed --null-data --regexp-extended 's/^.+google_cloud_dns_zone_name += "([^\"]+)".*$/\1/' terraform.tfvars)
+environment_target=$(sed --null-data --regexp-extended 's/^.+google_environment_target += "([^\"]+)".*$/\1/' terraform.tfvars)
+project=$(sed --null-data --regexp-extended 's/^.+google_project += "([^\"]+)".*$/\1/' terraform.tfvars)
 
-cd root/
 terraform init
 terraform import \
   google_compute_network.tf_network \

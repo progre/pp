@@ -26,12 +26,14 @@ jobs:
           TF_ROOT_CRT_FILE: ${{ secrets.TF_ROOT_CRT_FILE }}
           TF_ROOT_KEY_FILE: ${{ secrets.TF_ROOT_KEY_FILE }}
           TF_TERRAFORM_TFVARS: ${{ secrets.TF_TERRAFORM_TFVARS }}
+        working-directory: ./root
         run: ./scripts/extract-secrets.sh
       - name: Reverse terraform
+        working-directory: ./root
         run: ./scripts/reverse-terraform.sh
       - name: Terraform
+        working-directory: ./root
         run: |
-          cd root/ && \
           terraform apply -auto-approve | sed --regexp-extended 's/value: \"[^\"]+\"/value: \"****\"/g'
       - name: Print outputs
         run: |
