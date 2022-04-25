@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:focal
 RUN apt update && \
   apt install --yes gettext curl && \
   curl --remote-name --location https://github.com/plonk/peercast-yt/releases/download/v0.3.8/Peercast_YT-x86_64.AppImage && \
