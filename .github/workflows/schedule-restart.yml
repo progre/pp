@@ -2,7 +2,7 @@ name: "[Schedule] Restart"
 on:
   schedule:
     # UTC
-    - cron: "0 21 * * *"
+    - cron: "0 23 * * *"
 
 jobs:
   check_channels:
