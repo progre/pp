@@ -2,7 +2,8 @@ name: "[Schedule] Health check"
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    # JST 0 0-7,9-23 * * *
+    - cron: "0 0-22 * * *"
 
 jobs:
   health_check:
