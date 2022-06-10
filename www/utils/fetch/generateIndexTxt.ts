@@ -79,29 +79,16 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
         }
         const trackAttr = x.track[0]['$'];
         const hostAttr = x.hits[0].host?.[0]['$'] ?? null;
-        const genreSrc: string = channelAttr.genre;
-        let genre;
-        let naisho;
-        if (genreSrc.startsWith('pp?')) {
-          genre = /pp\?(.*)/.exec(genreSrc)?.[1] ?? '';
-          naisho = true;
-        } else if (genreSrc.startsWith('pp')) {
-          genre = /pp(.*)/.exec(genreSrc)?.[1] ?? '';
-          naisho = false;
-        } else {
-          genre = genreSrc;
-          naisho = false;
-        }
         return {
           name: channelAttr.name,
           id: channelAttr.id,
           ip: hostAttr?.ip ?? '',
           url: channelAttr.url,
-          genre,
+          genre: channelAttr.genre,
           desc: channelAttr.desc,
           bandwidthType: '',
-          listeners: naisho ? -1 : Number(hostAttr?.listeners ?? '0'),
-          relays: naisho ? -1 : Number(hostAttr?.relays ?? '0'),
+          listeners: Number(hostAttr?.listeners ?? '0'),
+          relays: Number(hostAttr?.relays ?? '0'),
           bitrate: channelAttr.bitrate,
           type: channelAttr.type,
           track: {
@@ -117,6 +104,28 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
         };
       }),
   ];
+}
+
+function modifyChannel(channel: Channel): Channel {
+  const genreSrc = channel.genre;
+  let genre;
+  let naisho;
+  if (genreSrc.startsWith('pp?')) {
+    genre = /pp\?(.*)/.exec(genreSrc)?.[1] ?? '';
+    naisho = true;
+  } else if (genreSrc.startsWith('pp')) {
+    genre = /pp(.*)/.exec(genreSrc)?.[1] ?? '';
+    naisho = false;
+  } else {
+    genre = genreSrc;
+    naisho = false;
+  }
+  return {
+    ...channel,
+    genre,
+    listeners: naisho ? -1 : channel.listeners,
+    relays: naisho ? -1 : channel.relays,
+  };
 }
 
 function errorIndexTxtChannels(
@@ -170,7 +179,7 @@ export default async function generateIndexTxt(): Promise<string> {
     const xml = await fetchSelfSigned(`${rootServerOrigin}/admin?cmd=viewxml`);
     info(xml);
     const now = new Date();
-    const channels = await parseXml(xml, now);
+    const channels = (await parseXml(xml, now)).map((x) => modifyChannel(x));
     const indexTxt = parser.stringify(<Channel[]>channels, now) + '\n';
     info(indexTxt);
     return indexTxt;
