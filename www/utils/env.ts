@@ -1,6 +1,8 @@
 import fs from 'fs';
 import zlib from 'zlib';
 
+export const decliningChannels =
+  process.env.DECLINING_CHANNELS?.split(',')?.map((x) => x.trim()) ?? [];
 export const gcpCredentials: string | null =
   process.env.GCP_CREDENTIALS_BR != null
     ? zlib

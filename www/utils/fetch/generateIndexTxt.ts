@@ -4,7 +4,7 @@ import request_ from 'request';
 import xml2js from 'xml2js';
 import { promisify } from 'util';
 import pAtStatus from '../channel/pAtStatus';
-import { ca, rootServerOrigin } from '../env';
+import { ca, decliningChannels, rootServerOrigin } from '../env';
 import { error, info } from './logger';
 
 const request = promisify(request_);
@@ -123,6 +123,11 @@ function modifyChannel(channel: Channel): Channel {
   return {
     ...channel,
     genre,
+    ip:
+      decliningChannels
+        .filter((x) => (x.includes('.') ? x === channel.ip : x === channel.id))
+        .map(() => channel.ip.replace(/:[0-9]+$/, '\x3a\x30'))
+        .find(() => 7144) ?? channel.ip,
     listeners: naisho ? -1 : channel.listeners,
     relays: naisho ? -1 : channel.relays,
   };
