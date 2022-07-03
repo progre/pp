@@ -6,6 +6,7 @@ import { promisify } from 'util';
 import pAtStatus from '../channel/pAtStatus';
 import { ca, decliningChannels, rootServerOrigin } from '../env';
 import { error, info } from './logger';
+import handshake from '../pcp/handshake';
 
 const request = promisify(request_);
 
@@ -106,7 +107,7 @@ async function parseXml(xml: string, now: Date): Promise<readonly Channel[]> {
   ];
 }
 
-function modifyChannel(channel: Channel): Channel {
+async function modifyChannel(channel: Channel): Promise<Channel> {
   const genreSrc = channel.genre;
   let genre;
   let naisho;
@@ -120,8 +121,14 @@ function modifyChannel(channel: Channel): Channel {
     genre = genreSrc;
     naisho = false;
   }
+  let closed = false;
+  if (channel.relays === 0) {
+    closed = !(await handshake(channel.ip));
+    console.log(`Conn check(${channel.ip}): ${closed ? 'NG' : 'OK'}`);
+  }
   return {
     ...channel,
+    name: closed ? `${channel.name}【接続チェック失敗】` : channel.name,
     genre,
     ip:
       decliningChannels
@@ -184,11 +191,14 @@ export default async function generateIndexTxt(): Promise<string> {
     const xml = await fetchSelfSigned(`${rootServerOrigin}/admin?cmd=viewxml`);
     info(xml);
     const now = new Date();
-    const channels = (await parseXml(xml, now)).map((x) => modifyChannel(x));
+    const channels = await Promise.all(
+      (await parseXml(xml, now)).map((x) => modifyChannel(x))
+    );
     const indexTxt = parser.stringify(<Channel[]>channels, now) + '\n';
     info(indexTxt);
     return indexTxt;
   } catch (err: unknown) {
+    console.error(err);
     const now = new Date();
     return (
       parser.stringify(
