@@ -3,6 +3,7 @@ on:
   schedule:
     # UTC
     - cron: "0 23 * * *"
+  workflow_dispatch: {}
 
 jobs:
   check_channels:
