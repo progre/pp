@@ -135,7 +135,7 @@ export default function index(props: Props): JSX.Element {
         <p>
           ※<b>PeCaRecorder のみ</b>以下の URL を登録してください。
         </p>
-        <CopyBox value="http://insecure.p-at.net/" />
+        <CopyBox value="http://p-at.net/" />
       </article>
       <article id="broadcast" style={{ marginTop: '6rem' }}>
         <h1>掲載方法</h1>
