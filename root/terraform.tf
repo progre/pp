@@ -53,7 +53,7 @@ resource "google_dns_record_set" "resource_recordset" {
   name         = "${var.env_root_domain}."
   type         = "A"
   rrdatas      = [google_compute_address.tf_address[0].address]
-  ttl          = 300
+  ttl          = 21600
 }
 
 resource "google_dns_record_set" "resource_recordset2" {
@@ -63,7 +63,7 @@ resource "google_dns_record_set" "resource_recordset2" {
   name         = "${var.env_insecure_domain}."
   type         = "A"
   rrdatas      = [google_compute_address.tf_address[0].address]
-  ttl          = 300
+  ttl          = 21600
 }
 
 resource "google_compute_instance" "tf_cloud_01" {
