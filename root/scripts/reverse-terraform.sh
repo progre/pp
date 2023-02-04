@@ -1,7 +1,5 @@
 #!/bin/bash -eux
 
-insecure_domain=$(sed --null-data --regexp-extended 's/^.+env_insecure_domain += "([^\"]+)".*$/\1/' terraform.tfvars)
-root_domain=$(sed --null-data --regexp-extended 's/^.+env_root_domain += "([^\"]+)".*$/\1/' terraform.tfvars)
 dns_zone_name=$(sed --null-data --regexp-extended 's/^.+google_cloud_dns_zone_name += "([^\"]+)".*$/\1/' terraform.tfvars)
 environment_target=$(sed --null-data --regexp-extended 's/^.+google_environment_target += "([^\"]+)".*$/\1/' terraform.tfvars)
 project=$(sed --null-data --regexp-extended 's/^.+google_project += "([^\"]+)".*$/\1/' terraform.tfvars)
@@ -21,10 +19,10 @@ terraform import \
 if [ "$environment_target" = 'production' ]; then
   terraform import \
     google_dns_record_set.resource_recordset \
-    "projects/$project/managedZones/$dns_zone_name/rrsets/$root_domain./A"
+    "projects/$project/managedZones/$dns_zone_name/rrsets/root.p-at.net./A"
   terraform import \
     google_dns_record_set.resource_recordset2 \
-    "projects/$project/managedZones/$dns_zone_name/rrsets/$insecure_domain./A"
+    "projects/$project/managedZones/$dns_zone_name/rrsets/insecure.p-at.net./A"
 fi
 
 terraform import \
