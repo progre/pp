@@ -2,12 +2,12 @@ import { Channel } from 'peercast-yp-channels-parser';
 
 export default function pAtInsecure(now: Date): Channel {
   return {
-    name: 'p@◆Insecure',
+    name: 'p@◆Warning',
     id: '00000000000000000000000000000000',
     ip: '',
-    url: 'https://p-at.net/index.txt',
+    url: 'https://p-at.net/',
     genre: '',
-    desc: '通信は暗号化されていません',
+    desc: 'この URL は廃止されます。http://p-at.net/ に修正してください。',
     bandwidthType: '',
     listeners: -9,
     relays: -9,
