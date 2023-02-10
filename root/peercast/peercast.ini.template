@@ -1,6 +1,6 @@
 [Server]
 serverName =
-serverPort = 7144
+serverPort = $PORT
 autoServe = Yes
 forceIP =
 isRoot = Yes

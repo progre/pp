@@ -18,6 +18,7 @@ jobs:
         run: |
           docker build --tag progre/pp-init:latest --file Dockerfile.init . && \
           docker build --tag progre/pp-peercast:latest --file Dockerfile.peercast . && \
+          docker build --tag progre/pp-peercast:next --file Dockerfile.peercastnext . && \
           docker build --tag progre/pp:latest .
       - name: Login to Docker Hub
         uses: actions-hub/docker/login@master
@@ -33,6 +34,10 @@ jobs:
         uses: actions-hub/docker@master
         with:
           args: push progre/pp-peercast:latest
+      - name: Push pp-peercast:next
+        uses: actions-hub/docker@master
+        with:
+          args: push progre/pp-peercast:next
       - name: Push pp:latest
         uses: actions-hub/docker@master
         with:

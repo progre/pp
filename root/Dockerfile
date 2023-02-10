@@ -21,9 +21,17 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   docker run \
   --detach \
   --env PEERCAST_PASSWORD=$peercast_password \
+  --env PORT=7144 \
   --publish 7144:7144 \
   --restart always \
   progre/pp-peercast:latest && \
+  docker run \
+  --detach \
+  --env PEERCAST_PASSWORD=$peercast_password \
+  --env PORT=7146 \
+  --publish 7146:7146 \
+  --restart always \
+  progre/pp-peercast:next && \
   docker run \
   --detach \
   --env ROOT_DOMAIN \
