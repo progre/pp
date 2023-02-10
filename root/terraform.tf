@@ -34,7 +34,7 @@ resource "google_compute_firewall" "tf_firewall" {
   target_tags = ["tf-firewall"]
   allow {
     protocol = "tcp"
-    ports    = ["22", "80", "443", "7144"]
+    ports    = ["22", "80", "443", "7144", "7146"]
   }
 }
 
