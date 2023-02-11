@@ -6,7 +6,7 @@ export default function handler(
   enableCacheControl: boolean
 ): void {
   if (enableCacheControl) {
-    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
+    res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
   }
   res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
   res.shouldKeepAlive = false;
