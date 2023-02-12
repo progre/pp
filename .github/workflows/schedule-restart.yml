@@ -1,9 +1,9 @@
-name: "[Schedule] Restart"
+name: "[Schedule/Manual] Restart"
 on:
   schedule:
     # UTC
     - cron: "0 23 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
 
 jobs:
   check_channels:
@@ -23,7 +23,7 @@ jobs:
   restart:
     name: Restart
     needs: check_channels
-    if: needs.check_channels.outputs.num_channels == 0
+    if: github.event_name == 'workflow_dispatch' || needs.check_channels.outputs.num_channels == 0
     runs-on: ubuntu-latest
     steps:
       - uses: hashicorp/setup-terraform@v2
