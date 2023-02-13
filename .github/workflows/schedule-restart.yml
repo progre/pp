@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: denoland/setup-deno@v1
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Check number of channels
         id: num_channels
-        run: echo "::set-output name=value::$(scripts/num-channels.ts)"
+        run: echo "$(scripts/num-channels.ts)" >> $GITHUB_OUTPUT
       - name: Warn if some channels are broadcasting
-        if: steps.num_channels.outputs.value > 0
+        if: github.event_name != 'workflow_dispatch' && steps.num_channels.outputs.value > 0
         run: echo '::warning::${{ steps.num_channels.outputs.value }} チャンネルが配信中のため再起動を中止しました。'
     outputs:
       num_channels: ${{ steps.num_channels.outputs.value }}
@@ -29,7 +29,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.2.9
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Extract secrets
         env:
           GOOGLE_ENVIRONMENT_TARGET: production
