@@ -40,6 +40,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   --mount type=volume,src=pp-nginx,dst=/etc/nginx/conf.d/ \
   --publish 80:80 \
   --publish 443:443 \
+  --publish 7443:7443 \
   --restart always \
   nginx:stable \
   /etc/nginx/conf.d/run.sh
