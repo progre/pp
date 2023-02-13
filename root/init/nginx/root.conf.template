@@ -21,7 +21,7 @@ server {
 }
 
 server {
-  listen 7443 ssl default_server;
+  listen 7443 ssl;
   server_name $ROOT_DOMAIN;
 
   ssl_certificate     $ROOT_DOMAIN.crt;
