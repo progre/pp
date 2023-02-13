@@ -18,6 +18,9 @@ jobs:
       - name: Warn if some channels are broadcasting
         if: github.event_name != 'workflow_dispatch' && steps.num_channels.outputs.value > 0
         run: echo '::warning::${{ steps.num_channels.outputs.value }} チャンネルが配信中のため再起動を中止しました。'
+      - name: Warn if some channels are broadcasting
+        if: github.event_name == 'workflow_dispatch' && steps.num_channels.outputs.value > 0
+        run: echo '::warning::${{ steps.num_channels.outputs.value }} チャンネルが配信中ですが、手動実行なので再起動します。'
     outputs:
       num_channels: ${{ steps.num_channels.outputs.value }}
   restart:
