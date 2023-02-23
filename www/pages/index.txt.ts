@@ -1,18 +1,22 @@
 import { GetServerSidePropsContext } from 'next';
-import generateIndexTxt from '../utils/fetch/generateIndexTxt';
+import fetchIndexTxt from '../utils/fetch/fetchIndexTxt';
 import { pageView } from '../utils/fetch/pageView';
-import handler from '../utils/http/handler';
+import ContentEncoder from '../utils/http/ContentEncoder';
 
 export async function getServerSideProps({
   req,
   resolvedUrl,
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  const [_, txt] = await Promise.all([
+  const [_, { status, contentType, body }] = await Promise.all([
     pageView(req, resolvedUrl),
-    generateIndexTxt(),
+    fetchIndexTxt(req.headers.host ?? ''),
   ]);
-  handler(res, txt, true);
+  const encoder = new ContentEncoder(
+    req.headers['accept-encoding'] as string | null
+  );
+  res.writeHead(status, [['Content-Type', contentType], ...encoder.headers()]);
+  await encoder.end(res, body);
   return { props: {} };
 }
 
