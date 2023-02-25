@@ -1,26 +1,22 @@
 import { GetServerSidePropsContext } from 'next';
 import * as parser from 'peercast-yp-channels-parser';
 import pAtInsecure from '../../utils/channel/pAtInsecure';
-import fetchIndexTxt from '../../utils/fetch/fetchIndexTxt';
+import generateIndexTxt from '../../utils/fetch/generateIndexTxt';
 import { pageView } from '../../utils/fetch/pageView';
-import ContentEncoder from '../../utils/http/ContentEncoder';
+import handler from '../../utils/http/handler';
 
 export async function getServerSideProps({
   req,
   resolvedUrl,
   res,
 }: GetServerSidePropsContext): Promise<unknown> {
-  const [_, { status, contentType, body }] = await Promise.all([
+  const [_, txt] = await Promise.all([
     pageView(req, resolvedUrl),
-    fetchIndexTxt(req.headers.host ?? ''),
+    generateIndexTxt(),
   ]);
-  const encoder = new ContentEncoder(
-    req.headers['accept-encoding'] as string | null
-  );
-  res.writeHead(status, [['Content-Type', contentType], ...encoder.headers()]);
   const now = new Date();
   const insecureHeader = parser.stringify([pAtInsecure(now)], now) + '\n';
-  await encoder.end(res, insecureHeader + body);
+  handler(res, insecureHeader + txt, true);
   return { props: {} };
 }
 
