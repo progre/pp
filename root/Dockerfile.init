@@ -8,11 +8,13 @@ RUN apt update && \
   apt install --yes apache2-utils gettext && \
   apt-get clean
 
-ADD init/fluent-bit/fluent-bit.conf.template /work/fluent-bit/
-ADD init/nginx/insecure.conf.template /work/nginx/
-ADD init/nginx/root.conf.template /work/nginx/
-ADD init/nginx/run.sh /work/nginx/
-RUN chmod 755 /work/nginx/run.sh
+COPY init/fluent-bit/fluent-bit.conf.template /work/fluent-bit/
+COPY init/nginx/insecure.conf.template /work/nginx/
+COPY init/nginx/root.conf.template /work/nginx/
+COPY init/nginx/run.sh /work/nginx/
+RUN chmod +x /work/nginx/run.sh
+COPY init/cron/certbot-certonly-reload.sh /etc/cron.monthly/
+RUN chmod +x /etc/cron.monthly/certbot-certonly-reload.sh
 
 CMD envsubst \$LOGFLARE_URI < /work/fluent-bit/fluent-bit.conf.template > /output/fluent-bit/fluent-bit.conf && \
   envsubst \$INSECURE_DOMAIN < /work/nginx/insecure.conf.template > /output/nginx/insecure.conf && \
