@@ -19,7 +19,9 @@ server {
     proxy_cache_valid 200 404 5m;
   }
 
-  location / {
-    proxy_pass https://p-at.net/;
+  location /.well-known/acme-challenge/ {
+    root   /usr/share/nginx/html/.well-known/acme-challenge;
   }
+
+  return 301 https://p-at.net/;
 }
