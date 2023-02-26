@@ -14,6 +14,19 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   progre/pp-init:latest && \
   \
   docker run \
+  --rm \
+  --mount type=volume,src=pp-letsencrypt,dst=/etc/letsencrypt \
+  --publish 80:80 \
+  --publish 443:443 \
+  certbot/certbot \
+  certonly \
+  --agree-tos \
+  --domain "$ROOT_DOMAIN" \
+  --email "$EMAIL_ADDRESS" \
+  --no-eff-email \
+  --standalone && \
+  \
+  docker run \
   --detach \
   --mount type=volume,src=pp-fluent-bit,dst=/fluent-bit/etc/ \
   --name fluent-bit \
@@ -44,6 +57,8 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   --env ROOT_DOMAIN \
   --env TZ=Asia/Tokyo \
   --log-driver=fluentd \
+  --mount type=volume,src=pp-acme-challenge,dst=/usr/share/nginx/html/.well-known/acme-challenge,readonly \
+  --mount type=volume,src=pp-letsencrypt,dst=/etc/letsencrypt,readonly \
   --mount type=volume,src=pp-nginx,dst=/etc/nginx/conf.d/ \
   --name nginx \
   --publish 80:80 \
