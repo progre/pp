@@ -13,8 +13,6 @@ COPY init/nginx/insecure.conf.template /work/nginx/
 COPY init/nginx/root.conf.template /work/nginx/
 COPY init/nginx/run.sh /work/nginx/
 RUN chmod +x /work/nginx/run.sh
-COPY init/cron/certbot-certonly-reload.sh /etc/cron.monthly/
-RUN chmod +x /etc/cron.monthly/certbot-certonly-reload.sh
 
 CMD envsubst \$LOGFLARE_URI < /work/fluent-bit/fluent-bit.conf.template > /output/fluent-bit/fluent-bit.conf && \
   envsubst \$INSECURE_DOMAIN < /work/nginx/insecure.conf.template > /output/nginx/insecure.conf && \

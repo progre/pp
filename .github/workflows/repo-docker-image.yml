@@ -16,6 +16,7 @@ jobs:
       - name: Build the Docker images
         working-directory: ./root
         run: |
+          docker build --tag progre/pp-cron:latest --file Dockerfile.cron . && \
           docker build --tag progre/pp-init:latest --file Dockerfile.init . && \
           docker build --tag progre/pp-peercast:latest --file Dockerfile.peercast . && \
           docker build --tag progre/pp-peercast:next --file Dockerfile.peercastnext . && \
