@@ -76,7 +76,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   docker run \
   --detach \
   --env TZ=Asia/Tokyo \
-  --mount type=volume,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
   --name cron \
   --restart always \
   progre/pp-cron:latest
