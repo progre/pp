@@ -1,12 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 
 docker run \
   --rm \
-  --mount type=volume,src=pp-acme-challenge,dst=/usr/share/nginx/html/.well-known/acme-challenge,readonly \
-  --mount type=volume,src=pp-letsencrypt,dst=/etc/letsencrypt,readonly \
+  --mount type=volume,src=pp-acme-challenge,dst=/usr/share/nginx/html/.well-known/acme-challenge \
+  --mount type=volume,src=pp-letsencrypt,dst=/etc/letsencrypt \
   certbot/certbot \
   certonly \
-  --domain test.prgrssv.net \
+  --domain "$ROOT_DOMAIN" \
   --force-renewal \
   --webroot \
   --webroot-path /usr/share/nginx/html
