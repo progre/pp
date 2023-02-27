@@ -27,19 +27,13 @@ jobs:
           DOCKER_USERNAME: progre
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DOCKER_REGISTRY_URL: docker.io
-      - name: Push pp-init:latest
+      - name: Push containers
         uses: actions-hub/docker@master
         with:
-          args: push progre/pp-init:latest
-      - name: Push pp-peercast:latest
-        uses: actions-hub/docker@master
-        with:
-          args: push progre/pp-peercast:latest
-      - name: Push pp-peercast:next
-        uses: actions-hub/docker@master
-        with:
-          args: push progre/pp-peercast:next
-      - name: Push pp:latest
-        uses: actions-hub/docker@master
-        with:
-          args: push progre/pp:latest
+          args: "push {{ item }}"
+        with_items:
+          - progre/pp-cron:latest
+          - progre/pp-init:latest
+          - progre/pp-peercast:latest
+          - progre/pp-peercast:next
+          - progre/pp:latest
