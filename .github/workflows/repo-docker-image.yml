@@ -12,6 +12,14 @@ on:
 jobs:
   job:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+          - progre/pp-cron:latest
+          - progre/pp-init:latest
+          - progre/pp-peercast:latest
+          - progre/pp-peercast:next
+          - progre/pp:latest
     steps:
       - uses: actions/checkout@v2
       - name: Build the Docker images
@@ -31,10 +39,4 @@ jobs:
       - name: Push containers
         uses: actions-hub/docker@master
         with:
-          args: "push {{ item }}"
-        with_items:
-          - progre/pp-cron:latest
-          - progre/pp-init:latest
-          - progre/pp-peercast:latest
-          - progre/pp-peercast:next
-          - progre/pp:latest
+          args: "push {{ matrix.image }}"
