@@ -15,21 +15,17 @@ jobs:
     strategy:
       matrix:
         image:
-          - progre/pp-cron:latest
-          - progre/pp-init:latest
-          - progre/pp-peercast:latest
-          - progre/pp-peercast:next
-          - progre/pp:latest
+          - { tag: "progre/pp-cron:latest", file: "Dockerfile.cron" }
+          - { tag: "progre/pp-init:latest", file: "Dockerfile.init" }
+          - { tag: "progre/pp-peercast:latest", file: "Dockerfile.peercast" }
+          - { tag: "progre/pp-peercast:next", file: "Dockerfile.peercastnext" }
+          - { tag: "progre/pp:latest", file: "Dockerfile" }
     steps:
       - uses: actions/checkout@v2
       - name: Build the Docker images
         working-directory: ./root
         run: |
-          docker build --tag progre/pp-cron:latest --file Dockerfile.cron . && \
-          docker build --tag progre/pp-init:latest --file Dockerfile.init . && \
-          docker build --tag progre/pp-peercast:latest --file Dockerfile.peercast . && \
-          docker build --tag progre/pp-peercast:next --file Dockerfile.peercastnext . && \
-          docker build --tag progre/pp:latest .
+          docker build --tag ${{ matrix.image.tag }} --file ${{ matrix.image.file }} .
       - name: Login to Docker Hub
         uses: actions-hub/docker/login@master
         env:
@@ -39,4 +35,4 @@ jobs:
       - name: Push containers
         uses: actions-hub/docker@master
         with:
-          args: "push {{ matrix.image }}"
+          args: push ${{ matrix.image.tag }}
