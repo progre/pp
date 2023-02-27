@@ -4,9 +4,10 @@ on:
   push:
     branches: [main]
     paths:
+      - .github/workflows/repo-docker-image.yml
       - root/**
   pull_request:
-    branches: [main]
+    branches: []
 
 jobs:
   job:
