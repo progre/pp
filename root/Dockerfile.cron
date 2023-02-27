@@ -1,0 +1,6 @@
+FROM docker:cli
+
+COPY init/cron/certbot-certonly-reload.sh /etc/periodic/monthly/
+RUN chmod +x /etc/periodic/monthly/certbot-certonly-reload.sh
+
+CMD crond -f

@@ -9,12 +9,14 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   --env ROOT_CRT \
   --env ROOT_DOMAIN \
   --env ROOT_KEY \
+  --env TZ=Asia/Tokyo \
   --mount type=volume,src=pp-fluent-bit,dst=/output/fluent-bit/ \
   --mount type=volume,src=pp-nginx,dst=/output/nginx/ \
   progre/pp-init:latest && \
   \
   docker run \
   --rm \
+  --env TZ=Asia/Tokyo \
   --mount type=volume,src=pp-letsencrypt,dst=/etc/letsencrypt \
   --publish 80:80 \
   --publish 443:443 \
@@ -28,6 +30,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   \
   docker run \
   --detach \
+  --env TZ=Asia/Tokyo \
   --mount type=volume,src=pp-fluent-bit,dst=/fluent-bit/etc/ \
   --name fluent-bit \
   --publish 24224:24224 \
@@ -38,6 +41,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   --detach \
   --env PEERCAST_PASSWORD=$peercast_password \
   --env PORT=7144 \
+  --env TZ=Asia/Tokyo \
   --name peercast \
   --publish 7144:7144 \
   --restart always \
@@ -47,6 +51,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   --detach \
   --env PEERCAST_PASSWORD=$peercast_password \
   --env PORT=7146 \
+  --env TZ=Asia/Tokyo \
   --name peercast-next \
   --publish 7146:7146 \
   --restart always \
@@ -66,4 +71,12 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   --publish 7443:7443 \
   --restart always \
   nginx:stable \
-  /etc/nginx/conf.d/run.sh
+  /etc/nginx/conf.d/run.sh && \
+  \
+  docker run \
+  --detach \
+  --env TZ=Asia/Tokyo \
+  --mount type=volume,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  --name cron \
+  --restart always \
+  progre/pp-cron:latest
