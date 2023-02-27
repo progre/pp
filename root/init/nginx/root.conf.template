@@ -41,3 +41,16 @@ server {
     root /usr/share/nginx/html;
   }
 }
+
+server {
+  listen 80;
+  server_name $ROOT_DOMAIN;
+
+  location /.well-known/acme-challenge/ {
+    root /usr/share/nginx/html/;
+  }
+
+  location / {
+    return 303 https://p-at.net/;
+  }
+}
