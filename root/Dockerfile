@@ -14,20 +14,20 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   --mount type=volume,src=pp-nginx,dst=/output/nginx/ \
   progre/pp-init:latest && \
   \
-  docker run \
-  --rm \
-  --env TZ=Asia/Tokyo \
-  --mount type=volume,src=pp-letsencrypt,dst=/etc/letsencrypt \
-  --publish 80:80 \
-  --publish 443:443 \
-  certbot/certbot \
-  certonly \
-  --agree-tos \
-  --domain "$ROOT_DOMAIN" \
-  --email "$EMAIL_ADDRESS" \
-  --no-eff-email \
-  --standalone && \
-  \
+  # docker run \
+  # --rm \
+  # --env TZ=Asia/Tokyo \
+  # --mount type=volume,src=pp-letsencrypt,dst=/etc/letsencrypt \
+  # --publish 80:80 \
+  # --publish 443:443 \
+  # certbot/certbot \
+  # certonly \
+  # --agree-tos \
+  # --domain "$ROOT_DOMAIN" \
+  # --email "$EMAIL_ADDRESS" \
+  # --no-eff-email \
+  # --standalone && \
+  # \
   docker run \
   --detach \
   --env TZ=Asia/Tokyo \
