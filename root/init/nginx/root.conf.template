@@ -24,8 +24,10 @@ server {
   listen 7443 ssl;
   server_name $ROOT_DOMAIN;
 
-  ssl_certificate /etc/letsencrypt/live/$ROOT_DOMAIN/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/$ROOT_DOMAIN/privkey.pem;
+  # ssl_certificate /etc/letsencrypt/live/$ROOT_DOMAIN/fullchain.pem;
+  # ssl_certificate_key /etc/letsencrypt/live/$ROOT_DOMAIN/privkey.pem;
+  ssl_certificate     $ROOT_DOMAIN.crt;
+  ssl_certificate_key $ROOT_DOMAIN.key;
 
   location / {
     auth_basic "Restricted";
