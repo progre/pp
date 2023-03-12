@@ -147,8 +147,9 @@ pub struct ChannelsFound {
 
 #[derive(Deserialize, Debug)]
 pub struct Peercast {
+    /** PeerCastStation */
     #[serde(rename = "@session")]
-    pub session: String,
+    pub session: Option<String>,
 
     pub servent: Servent,
     pub bandwidth: Bandwidth,
