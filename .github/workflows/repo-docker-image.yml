@@ -17,6 +17,10 @@ jobs:
         image:
           - { tag: "progre/pp-cron:latest", file: "Dockerfile.cron" }
           - { tag: "progre/pp-init:latest", file: "Dockerfile.init" }
+          - {
+              tag: "progre/pp-generate-index-txt:latest",
+              file: "Dockerfile.generate-index-txt",
+            }
           - { tag: "progre/pp-peercast:latest", file: "Dockerfile.peercast" }
           - { tag: "progre/pp-peercast:next", file: "Dockerfile.peercastnext" }
           - { tag: "progre/pp:latest", file: "Dockerfile" }

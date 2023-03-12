@@ -12,6 +12,7 @@ variable "env_password" {}
 variable "env_root_crt_file_name" {}
 variable "env_root_key_file_name" {}
 variable "logflare_uri" {}
+variable "generate_index_txt_google_application_credentials" {}
 variable "google_cloud_dns_zone_name" {}
 variable "google_credential_file_name" {}
 variable "google_environment_target" {}
@@ -87,6 +88,10 @@ resource "google_compute_instance" "tf_cloud_01" {
           env:
             - name: EMAIL_ADDRESS
               value: "${var.env_email_address}"
+            - name: GENERATE_INDEX_TXT_BUCKET_NAME
+              value: "p-at-net"
+            - name: GENERATE_INDEX_TXT_GOOGLE_APPLICATION_CREDENTIALS
+              value: "${var.generate_index_txt_google_application_credentials}"
             - name: INSECURE_DOMAIN
               value: "insecure.p-at.net"
             - name: LOGFLARE_URI

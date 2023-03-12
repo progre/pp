@@ -1,0 +1,10 @@
+FROM rust:latest AS builder
+COPY generate-index-txt/src/ /work/src/
+COPY generate-index-txt/Cargo.lock /work/Cargo.lock
+COPY generate-index-txt/Cargo.toml /work/Cargo.toml
+WORKDIR /work
+RUN cargo build --release
+
+FROM debian:stable-slim
+COPY --from=builder /work/target/release/generate-index-txt /
+CMD /generate-index-txt
