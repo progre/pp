@@ -123,7 +123,7 @@ pub struct Channel {
     pub bcflags: u32,
 
     pub hits: Hits,
-    pub relay: (),
+    pub relay: Option<()>,
     pub track: Track,
 }
 
