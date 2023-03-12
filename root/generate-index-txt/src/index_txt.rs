@@ -1,6 +1,6 @@
 use std::time::SystemTime;
 
-use chrono::{DateTime, FixedOffset, Utc};
+use chrono::{DateTime, FixedOffset, SecondsFormat, Utc};
 use regex::Regex;
 
 use crate::peercast_xml::{Channel, Peercast};
@@ -37,6 +37,26 @@ fn encode(src: &str) -> String {
         .finish()
 }
 
+fn age_to_string(age_secs: u32) -> String {
+    let age_minutes = age_secs / 60;
+    let part_of_hours = age_minutes / 60;
+    let part_of_minutes = age_minutes % 60;
+    format!("{}:{:02}", part_of_hours, part_of_minutes)
+}
+
+fn uptime_to_string(uptime_secs: u32) -> String {
+    let uptime_minutes = uptime_secs / 60;
+    let uptime_hours = uptime_minutes / 60;
+    let part_of_day = uptime_hours / 24;
+    let part_of_hours = uptime_hours % 24;
+    let part_of_minutes = uptime_minutes % 60;
+    let part_of_seconds = uptime_secs % 60;
+    format!(
+        "{}:{:02}:{:02}:{:02}",
+        part_of_day, part_of_hours, part_of_minutes, part_of_seconds
+    )
+}
+
 impl IndexTxtChannel {
     fn into_string(self) -> String {
         let percent_encoded_name = encode(&self.name);
@@ -56,7 +76,7 @@ impl IndexTxtChannel {
             self.track_title,
             self.track_contact,
             percent_encoded_name,
-            self.age.to_string(),
+            age_to_string(self.age),
             "click".into(),
             self.comment,
             if self.direct { "1" } else { "0" }.into(),
@@ -90,14 +110,6 @@ impl From<Channel> for IndexTxtChannel {
     }
 }
 
-fn uptime_to_string(uptime: u32) -> String {
-    let day = (uptime as f64 / 60.0 / 60.0 / 24.0) as u32;
-    let hours = format!("{:02}", (((uptime as f64 / 60.0 / 60.0) as u32) % 24));
-    let minutes = format!("{:02}", ((uptime as f64 / 60.0) as u32) % 60);
-    let seconds = format!("{:02}", uptime % 60);
-    format!("{}:{}:{}:{}", day, hours, minutes, seconds)
-}
-
 fn p_at_status(desc: String, comment: String) -> IndexTxtChannel {
     IndexTxtChannel {
         name: "p@◆Status".into(),
@@ -125,7 +137,11 @@ fn to_header_virtual_channel(uptime: u32, now: SystemTime) -> IndexTxtChannel {
     let uptime_string = uptime_to_string(uptime);
     p_at_status(
         MESSAGE.into(),
-        format!("Uptime: {} Updated: {}", uptime_string, now.to_rfc3339()),
+        format!(
+            "Uptime={} Updated={}",
+            uptime_string,
+            now.to_rfc3339_opts(SecondsFormat::Secs, true)
+        ),
     )
 }
 
