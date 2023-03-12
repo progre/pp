@@ -113,8 +113,12 @@ pub struct Channel {
     pub uptime: u32,
     #[serde(rename = "@age")]
     pub age: u32,
+    /** peercast */
+    #[serde(rename = "@skips")]
+    pub skips: Option<u32>,
+    /** PeerCastStation */
     #[serde(rename = "@skip")]
-    pub skip: u32,
+    pub skip: Option<u32>,
     #[serde(rename = "@bcflags")]
     pub bcflags: u32,
 
