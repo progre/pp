@@ -76,7 +76,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   docker run \
   --detach \
   --env GENERATE_INDEX_TXT_BUCKET_NAME \
-  --env GOOGLE_APPLICATION_CREDENTIALS=$GENERATE_INDEX_TXT_GOOGLE_APPLICATION_CREDENTIALS \
+  --env GOOGLE_APPLICATION_CREDENTIALS_JSON=$GENERATE_INDEX_TXT_GOOGLE_APPLICATION_CREDENTIALS_JSON \
   --env PEERCAST_PASSWORD=$peercast_password \
   --env TZ=Asia/Tokyo \
   --name generate-index-txt \

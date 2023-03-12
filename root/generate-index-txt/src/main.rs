@@ -15,7 +15,7 @@ const ORIGIN: &str = "http://172.17.0.1:7144";
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    env::var("GOOGLE_APPLICATION_CREDENTIALS").expect("GOOGLE_APPLICATION_CREDENTIALS");
+    env::var("GOOGLE_APPLICATION_CREDENTIALS_JSON").expect("GOOGLE_APPLICATION_CREDENTIALS_JSON");
     let bucket =
         env::var("GENERATE_INDEX_TXT_BUCKET_NAME").expect("GENERATE_INDEX_TXT_BUCKET_NAME");
     let peercast_password = env::var("PEERCAST_PASSWORD").expect("PEERCAST_PASSWORD");
