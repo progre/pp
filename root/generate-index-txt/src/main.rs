@@ -20,6 +20,7 @@ async fn main() -> Result<()> {
         env::var("GENERATE_INDEX_TXT_BUCKET_NAME").expect("GENERATE_INDEX_TXT_BUCKET_NAME");
     let peercast_password = env::var("PEERCAST_PASSWORD").expect("PEERCAST_PASSWORD");
 
+    let update_interval = 10 * 60;
     loop {
         {
             let xml = reqwest::Client::new()
@@ -42,9 +43,9 @@ async fn main() -> Result<()> {
                     "text/plain; charset=UTF-8",
                 )
                 .await?;
-            object.cache_control = Some("max-age=600".into());
+            object.cache_control = Some(format!("max-age={}", update_interval + 60)); // 次のファイルをアップロードして cache_control を設定する時間の余裕を持つ
             client.object().update(&object).await?;
         }
-        sleep(Duration::from_secs(10 * 60)).await;
+        sleep(Duration::from_secs(update_interval)).await;
     }
 }
