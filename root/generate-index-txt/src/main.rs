@@ -32,7 +32,8 @@ async fn main() -> Result<()> {
 
             let peercast: Peercast = quick_xml::de::from_str(&xml)?;
             let index_txt = to_index_txt(peercast, SystemTime::now());
-            cloud_storage::Client::new()
+            let client = cloud_storage::Client::new();
+            let mut object = client
                 .object()
                 .create(
                     &bucket,
@@ -41,6 +42,8 @@ async fn main() -> Result<()> {
                     "text/plain; charset=UTF-8",
                 )
                 .await?;
+            object.cache_control = Some("max-age=600".into());
+            client.object().update(&object).await?;
         }
         sleep(Duration::from_secs(10 * 60)).await;
     }
