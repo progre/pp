@@ -5,7 +5,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   --env INSECURE_DOMAIN \
   --env LOGFLARE_URI \
   --env PASSWORD \
-  --env PEERCAST_PASSWORD=$peercast_password \
+  --env "PEERCAST_PASSWORD=$peercast_password" \
   --env ROOT_CRT \
   --env ROOT_DOMAIN \
   --env ROOT_KEY \
@@ -39,7 +39,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   \
   docker run \
   --detach \
-  --env PEERCAST_PASSWORD=$peercast_password \
+  --env "PEERCAST_PASSWORD=$peercast_password" \
   --env PORT=7144 \
   --env TZ=Asia/Tokyo \
   --name peercast \
@@ -49,7 +49,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   \
   docker run \
   --detach \
-  --env PEERCAST_PASSWORD=$peercast_password \
+  --env "PEERCAST_PASSWORD=$peercast_password" \
   --env PORT=7146 \
   --env TZ=Asia/Tokyo \
   --name peercast-next \
@@ -76,8 +76,8 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   docker run \
   --detach \
   --env GENERATE_INDEX_TXT_BUCKET_NAME \
-  --env GOOGLE_APPLICATION_CREDENTIALS_JSON=$GENERATE_INDEX_TXT_GOOGLE_APPLICATION_CREDENTIALS_JSON \
-  --env PEERCAST_PASSWORD=$peercast_password \
+  --env "GOOGLE_APPLICATION_CREDENTIALS_JSON=$GENERATE_INDEX_TXT_GOOGLE_APPLICATION_CREDENTIALS_JSON" \
+  --env "PEERCAST_PASSWORD=$peercast_password" \
   --env TZ=Asia/Tokyo \
   --name generate-index-txt \
   --restart always \
