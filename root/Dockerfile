@@ -81,7 +81,7 @@ CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   --env TZ=Asia/Tokyo \
   --name generate-index-txt \
   --restart always \
-  progre/pp-generate-index-txt:latest \
+  progre/pp-generate-index-txt:latest && \
   \
   docker run \
   --detach \
