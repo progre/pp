@@ -3,12 +3,10 @@ mod p_at;
 mod peercast_xml;
 mod utils;
 
-use std::{
-    env,
-    time::{Duration, SystemTime},
-};
+use std::{env, time::Duration};
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
+use chrono::DateTime;
 use p_at::to_index_txt;
 use tokio::time::sleep;
 
@@ -26,16 +24,21 @@ async fn main() -> Result<()> {
     let update_interval = 10 * 60;
     loop {
         {
-            let xml = reqwest::Client::new()
+            let res = reqwest::Client::new()
                 .get(format!("{}/admin?cmd=viewxml", ORIGIN))
                 .basic_auth("admin", Some(&peercast_password))
                 .send()
-                .await?
-                .text()
                 .await?;
+            let date = DateTime::parse_from_rfc2822(
+                res.headers()
+                    .get("Date")
+                    .ok_or_else(|| anyhow!("Date is not found"))?
+                    .to_str()?,
+            )?;
+            let xml = res.text().await?;
 
             let peercast: Peercast = quick_xml::de::from_str(&xml)?;
-            let index_txt = to_index_txt(peercast, SystemTime::now());
+            let index_txt = to_index_txt(peercast, date);
             let client = cloud_storage::Client::new();
             let mut object = client
                 .object()

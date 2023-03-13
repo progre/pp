@@ -1,6 +1,4 @@
-use std::time::SystemTime;
-
-use chrono::{DateTime, FixedOffset, SecondsFormat, Utc};
+use chrono::{DateTime, FixedOffset, SecondsFormat};
 use regex::Regex;
 
 use crate::{index_txt::IndexTxtChannel, peercast_xml::Peercast, utils::to_day_to_secs_string};
@@ -29,15 +27,15 @@ fn p_at_status(desc: String, comment: String) -> IndexTxtChannel {
     }
 }
 
-fn to_header_virtual_channel(uptime: u32, now: SystemTime) -> IndexTxtChannel {
-    let now = DateTime::<Utc>::from(now).with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap());
+fn to_header_virtual_channel(uptime: u32, date: DateTime<FixedOffset>) -> IndexTxtChannel {
+    let date = date.with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap());
     let uptime_string = to_day_to_secs_string(uptime);
     p_at_status(
         MESSAGE.into(),
         format!(
             "Uptime={} Updated={}",
             uptime_string,
-            now.to_rfc3339_opts(SecondsFormat::Secs, true)
+            date.to_rfc3339_opts(SecondsFormat::Secs, true)
         ),
     )
 }
@@ -75,8 +73,8 @@ fn modify_channel(mut channel: IndexTxtChannel) -> IndexTxtChannel {
     channel
 }
 
-pub fn to_index_txt(peercast: Peercast, now: SystemTime) -> String {
-    let header_virtual_channel = to_header_virtual_channel(peercast.servent.uptime, now);
+pub fn to_index_txt(peercast: Peercast, date: DateTime<FixedOffset>) -> String {
+    let header_virtual_channel = to_header_virtual_channel(peercast.servent.uptime, date);
     vec![header_virtual_channel]
         .into_iter()
         .chain(
