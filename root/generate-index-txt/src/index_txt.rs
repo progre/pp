@@ -1,34 +1,27 @@
-use std::time::SystemTime;
+use crate::{peercast_xml::Channel, utils::to_minutes_to_secs_string};
 
-use chrono::{DateTime, FixedOffset, SecondsFormat, Utc};
-use regex::Regex;
-
-use crate::peercast_xml::{Channel, Peercast};
-
-const MESSAGE: &str = "index.txt の生成フローを改善するテスト";
-
-struct IndexTxtChannel {
-    name: String,
-    id: String,
-    ip: String,
-    url: String,
-    genre: String,
-    desc: String,
-    listeners: i32,
-    relays: i32,
-    bitrate: u32,
-    type_: String,
-    track_artist: String,
-    track_album: String,
-    track_title: String,
-    track_contact: String,
+pub struct IndexTxtChannel {
+    pub name: String,
+    pub id: String,
+    pub ip: String,
+    pub url: String,
+    pub genre: String,
+    pub desc: String,
+    pub listeners: i32,
+    pub relays: i32,
+    pub bitrate: u32,
+    pub type_: String,
+    pub track_artist: String,
+    pub track_album: String,
+    pub track_title: String,
+    pub track_contact: String,
     /**
      * NOTE: 似たパラメーターとして channel.age, channel.uptime, host.uptime がある。
      *       数回の観測では、channel.age は host.uptime よりも古く、channel.uptime は 0 固定だった。
      */
-    age: u32,
-    comment: String,
-    direct: bool,
+    pub age: u32,
+    pub comment: String,
+    pub direct: bool,
 }
 
 fn encode(src: &str) -> String {
@@ -37,28 +30,8 @@ fn encode(src: &str) -> String {
         .finish()
 }
 
-fn age_to_string(age_secs: u32) -> String {
-    let age_minutes = age_secs / 60;
-    let part_of_hours = age_minutes / 60;
-    let part_of_minutes = age_minutes % 60;
-    format!("{}:{:02}", part_of_hours, part_of_minutes)
-}
-
-fn uptime_to_string(uptime_secs: u32) -> String {
-    let uptime_minutes = uptime_secs / 60;
-    let uptime_hours = uptime_minutes / 60;
-    let part_of_day = uptime_hours / 24;
-    let part_of_hours = uptime_hours % 24;
-    let part_of_minutes = uptime_minutes % 60;
-    let part_of_seconds = uptime_secs % 60;
-    format!(
-        "{}:{:02}:{:02}:{:02}",
-        part_of_day, part_of_hours, part_of_minutes, part_of_seconds
-    )
-}
-
 impl IndexTxtChannel {
-    fn into_string(self) -> String {
+    pub fn into_string(self) -> String {
         let percent_encoded_name = encode(&self.name);
         [
             self.name,
@@ -76,7 +49,7 @@ impl IndexTxtChannel {
             self.track_title,
             self.track_contact,
             percent_encoded_name,
-            age_to_string(self.age),
+            to_minutes_to_secs_string(self.age),
             "click".into(),
             self.comment,
             if self.direct { "1" } else { "0" }.into(),
@@ -108,96 +81,4 @@ impl From<Channel> for IndexTxtChannel {
             direct: host.map(|host| host.direct).unwrap_or_default() == 1,
         }
     }
-}
-
-fn p_at_status(desc: String, comment: String) -> IndexTxtChannel {
-    IndexTxtChannel {
-        name: "p@◆Status".into(),
-        id: "00000000000000000000000000000000".into(),
-        ip: "".into(),
-        url: "https://mastodon-japan.net/@p_at".into(),
-        genre: "".into(),
-        desc,
-        listeners: -9,
-        relays: -9,
-        bitrate: 0,
-        type_: "RAW".into(),
-        track_artist: "".into(),
-        track_album: "".into(),
-        track_title: "".into(),
-        track_contact: "".into(),
-        age: 0,
-        comment,
-        direct: false,
-    }
-}
-
-fn to_header_virtual_channel(uptime: u32, now: SystemTime) -> IndexTxtChannel {
-    let now = DateTime::<Utc>::from(now).with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap());
-    let uptime_string = uptime_to_string(uptime);
-    p_at_status(
-        MESSAGE.into(),
-        format!(
-            "Uptime={} Updated={}",
-            uptime_string,
-            now.to_rfc3339_opts(SecondsFormat::Secs, true)
-        ),
-    )
-}
-
-fn modify_channel(mut channel: IndexTxtChannel) -> IndexTxtChannel {
-    let genre_src = channel.genre;
-    let genre: String;
-    let naisho;
-    if let Some(genre_in_src) = {
-        Regex::new(r"pp\?(.*)")
-            .unwrap()
-            .captures(&genre_src)
-            .and_then(|x| x.get(1))
-    } {
-        genre = genre_in_src.as_str().to_owned();
-        naisho = true;
-    } else if let Some(genre_in_src) = {
-        Regex::new(r"pp(.*)")
-            .unwrap()
-            .captures(&genre_src)
-            .and_then(|x| x.get(1))
-    } {
-        genre = genre_in_src.as_str().to_owned();
-        naisho = false;
-    } else {
-        genre = genre_src;
-        naisho = false;
-    }
-
-    channel.genre = genre;
-    if naisho {
-        channel.listeners = -1;
-        channel.relays = -1;
-    }
-    channel
-}
-
-fn index_txt_channels_to_index_txt(channels: Vec<IndexTxtChannel>) -> String {
-    channels
-        .into_iter()
-        .map(|channel| channel.into_string() + "\n")
-        .collect::<Vec<_>>()
-        .join("")
-}
-
-pub fn to_index_txt(peercast: Peercast, now: SystemTime) -> String {
-    let header_virtual_channel = to_header_virtual_channel(peercast.servent.uptime, now);
-    let index_txt_channels = vec![header_virtual_channel]
-        .into_iter()
-        .chain(
-            peercast
-                .channels_found
-                .channel
-                .into_iter()
-                .map(|x| x.into())
-                .map(modify_channel),
-        )
-        .collect();
-    index_txt_channels_to_index_txt(index_txt_channels)
 }
