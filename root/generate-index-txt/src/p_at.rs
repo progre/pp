@@ -44,7 +44,7 @@ fn insecure_p_at_statuses() -> [IndexTxtChannel; 3] {
             track_album: "".into(),
             track_title: "".into(),
             track_contact: "".into(),
-            age: 2 - number,
+            age: number - 1,
             comment: "".into(),
             direct: false,
         }
