@@ -1,5 +1,4 @@
-pub fn to_minutes_to_secs_string(age_secs: u32) -> String {
-    let age_minutes = age_secs / 60;
+pub fn to_minutes_to_secs_string(age_minutes: u32) -> String {
     let part_of_hours = age_minutes / 60;
     let part_of_minutes = age_minutes % 60;
     format!("{}:{:02}", part_of_hours, part_of_minutes)

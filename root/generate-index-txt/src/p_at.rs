@@ -21,7 +21,7 @@ fn p_at_status(desc: String, comment: String) -> IndexTxtChannel {
         track_album: "".into(),
         track_title: "".into(),
         track_contact: "".into(),
-        age: 0,
+        age_minutes: 0,
         comment,
         direct: false,
     }
@@ -30,7 +30,7 @@ fn p_at_status(desc: String, comment: String) -> IndexTxtChannel {
 fn insecure_p_at_statuses() -> [IndexTxtChannel; 3] {
     fn channel(number: u32, desc: &str) -> IndexTxtChannel {
         IndexTxtChannel {
-            name: format!("p@◆Warning ({})", number),
+            name: format!("p@◆Warning ※必ずお読みください ({})", number),
             id: "00000000000000000000000000000000".into(),
             ip: "".into(),
             url: "https://p-at.net".into(),
@@ -44,7 +44,7 @@ fn insecure_p_at_statuses() -> [IndexTxtChannel; 3] {
             track_album: "".into(),
             track_title: "".into(),
             track_contact: "".into(),
-            age: number - 1,
+            age_minutes: 0,
             comment: "".into(),
             direct: false,
         }

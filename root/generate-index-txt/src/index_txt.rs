@@ -19,7 +19,7 @@ pub struct IndexTxtChannel {
      * NOTE: 似たパラメーターとして channel.age, channel.uptime, host.uptime がある。
      *       数回の観測では、channel.age は host.uptime よりも古く、channel.uptime は 0 固定だった。
      */
-    pub age: u32,
+    pub age_minutes: u32,
     pub comment: String,
     pub direct: bool,
 }
@@ -49,7 +49,7 @@ impl IndexTxtChannel {
             self.track_title,
             self.track_contact,
             percent_encoded_name,
-            to_minutes_to_secs_string(self.age),
+            to_minutes_to_secs_string(self.age_minutes),
             "click".into(),
             self.comment,
             if self.direct { "1" } else { "0" }.into(),
@@ -76,7 +76,7 @@ impl From<Channel> for IndexTxtChannel {
             track_album: value.track.album,
             track_title: value.track.title,
             track_contact: value.track.contact,
-            age: value.age,
+            age_minutes: value.age / 60,
             comment: value.comment,
             direct: host.map(|host| host.direct).unwrap_or_default() == 1,
         }
@@ -101,7 +101,7 @@ impl From<&Channel> for IndexTxtChannel {
             track_album: value.track.album.clone(),
             track_title: value.track.title.clone(),
             track_contact: value.track.contact.clone(),
-            age: value.age,
+            age_minutes: value.age / 60,
             comment: value.comment.clone(),
             direct: host.map(|host| host.direct).unwrap_or_default() == 1,
         }
