@@ -21,17 +21,17 @@ const ORIGIN: &str = "http://172.17.0.1:7144";
 async fn write<'a>(
     client: &'a ObjectClient<'a>,
     bucket: &str,
-    filename: &str,
+    path: &str,
     data: Vec<u8>,
     max_age: u32,
 ) -> Result<()> {
-    let temp = format!("{}.temp", filename);
+    let temp = format!("{}.temp", path);
     let mut object = client
         .create(bucket, data, &temp, "text/plain; charset=UTF-8")
         .await?;
     object.cache_control = Some(format!("max-age={}", max_age));
     client.update(&object).await?;
-    client.rewrite(&object, bucket, filename).await?;
+    client.rewrite(&object, bucket, path).await?;
     client.delete(bucket, &temp).await?;
     Ok(())
 }
@@ -73,7 +73,7 @@ async fn main() -> Result<()> {
                 write(
                     &client,
                     &bucket,
-                    "insecure.txt",
+                    "insecure/index.txt",
                     insecure_txt.into(),
                     update_interval + 10,
                 )
