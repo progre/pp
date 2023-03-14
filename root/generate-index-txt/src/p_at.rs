@@ -61,7 +61,6 @@ fn insecure_p_at_statuses() -> [IndexTxtChannel; 3] {
 }
 
 fn to_header_virtual_channel(uptime: u32, date: DateTime<FixedOffset>) -> IndexTxtChannel {
-    let date = date.with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap());
     let uptime_string = to_day_to_secs_string(uptime);
     p_at_status(
         MESSAGE.into(),
