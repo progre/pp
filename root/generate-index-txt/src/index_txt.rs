@@ -82,3 +82,28 @@ impl From<Channel> for IndexTxtChannel {
         }
     }
 }
+
+impl From<&Channel> for IndexTxtChannel {
+    fn from(value: &Channel) -> Self {
+        let host = value.hits.host.get(0);
+        Self {
+            name: value.name.clone(),
+            id: value.id.clone(),
+            ip: host.map(|host| host.ip.to_string()).unwrap_or_default(),
+            url: value.url.clone(),
+            genre: value.genre.clone(),
+            desc: value.desc.clone(),
+            listeners: host.map(|host| host.listeners).unwrap_or_default() as i32,
+            relays: host.map(|host| host.relays).unwrap_or_default() as i32,
+            bitrate: value.bitrate,
+            type_: value.type_.clone(),
+            track_artist: value.track.artist.clone(),
+            track_album: value.track.album.clone(),
+            track_title: value.track.title.clone(),
+            track_contact: value.track.contact.clone(),
+            age: value.age,
+            comment: value.comment.clone(),
+            direct: host.map(|host| host.direct).unwrap_or_default() == 1,
+        }
+    }
+}

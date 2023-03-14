@@ -7,7 +7,7 @@ use std::{env, time::Duration};
 
 use anyhow::{anyhow, Result};
 use chrono::DateTime;
-use p_at::to_index_txt;
+use p_at::{to_index_txt, to_insecure_txt};
 use tokio::time::sleep;
 
 use crate::peercast_xml::Peercast;
@@ -38,7 +38,9 @@ async fn main() -> Result<()> {
             let xml = res.text().await?;
 
             let peercast: Peercast = quick_xml::de::from_str(&xml)?;
-            let index_txt = to_index_txt(peercast, date);
+            let index_txt = to_index_txt(&peercast, date);
+            let insecure_txt = to_insecure_txt(&peercast, date);
+
             let client = cloud_storage::Client::new();
             let mut object = client
                 .object()
@@ -49,7 +51,18 @@ async fn main() -> Result<()> {
                     "text/plain; charset=UTF-8",
                 )
                 .await?;
-            object.cache_control = Some(format!("max-age={}", update_interval + 60)); // 次のファイルをアップロードして cache_control を設定する時間の余裕を持つ
+            object.cache_control = Some(format!("max-age={}", update_interval));
+            client.object().update(&object).await?;
+            let mut object = client
+                .object()
+                .create(
+                    &bucket,
+                    insecure_txt.into(),
+                    "insecure.txt",
+                    "text/plain; charset=UTF-8",
+                )
+                .await?;
+            object.cache_control = Some(format!("max-age={}", update_interval));
             client.object().update(&object).await?;
         }
         sleep(Duration::from_secs(update_interval)).await;

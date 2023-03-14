@@ -27,6 +27,39 @@ fn p_at_status(desc: String, comment: String) -> IndexTxtChannel {
     }
 }
 
+fn insecure_p_at_statuses() -> [IndexTxtChannel; 3] {
+    fn channel(number: u32, desc: &str) -> IndexTxtChannel {
+        IndexTxtChannel {
+            name: format!("p@◆Warning ({})", number),
+            id: "00000000000000000000000000000000".into(),
+            ip: "".into(),
+            url: "https://p-at.net".into(),
+            genre: "".into(),
+            desc: desc.into(),
+            listeners: 10000 - number as i32,
+            relays: 10000 - number as i32,
+            bitrate: 0,
+            type_: "RAW".into(),
+            track_artist: "".into(),
+            track_album: "".into(),
+            track_title: "".into(),
+            track_contact: "".into(),
+            age: 2 - number,
+            comment: "".into(),
+            direct: false,
+        }
+    }
+
+    [
+        channel(1, "お使いの p@ YP の URL は廃止されます。新しい URL に変更してください。"),
+        channel(
+            2,
+            "新しい URL に変更するには、ウィンドウ上部ツールバーの歯車のアイコンをクリックして「全般の設定」をクリックし、",
+        ),
+        channel(3, "YP タブの p@ の項目の URL を「http://insecure.p-at.net/」から「http://p-at.net/」に変更してください。"),
+    ]
+}
+
 fn to_header_virtual_channel(uptime: u32, date: DateTime<FixedOffset>) -> IndexTxtChannel {
     let date = date.with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap());
     let uptime_string = to_day_to_secs_string(uptime);
@@ -73,18 +106,29 @@ fn modify_channel(mut channel: IndexTxtChannel) -> IndexTxtChannel {
     channel
 }
 
-pub fn to_index_txt(peercast: Peercast, date: DateTime<FixedOffset>) -> String {
-    let header_virtual_channel = to_header_virtual_channel(peercast.servent.uptime, date);
-    vec![header_virtual_channel]
+fn to_index_txt_channel(peercast: &Peercast) -> impl Iterator<Item = IndexTxtChannel> + '_ {
+    peercast
+        .channels_found
+        .channel
+        .iter()
+        .map(|x| -> IndexTxtChannel { x.into() })
+        .map(modify_channel)
+}
+
+pub fn to_index_txt(peercast: &Peercast, date: DateTime<FixedOffset>) -> String {
+    [to_header_virtual_channel(peercast.servent.uptime, date)]
         .into_iter()
-        .chain(
-            peercast
-                .channels_found
-                .channel
-                .into_iter()
-                .map(|x| x.into())
-                .map(modify_channel),
-        )
+        .chain(to_index_txt_channel(peercast))
+        .map(|channel| channel.into_string() + "\n")
+        .collect::<Vec<_>>()
+        .join("")
+}
+
+pub fn to_insecure_txt(peercast: &Peercast, date: DateTime<FixedOffset>) -> String {
+    [to_header_virtual_channel(peercast.servent.uptime, date)]
+        .into_iter()
+        .chain(insecure_p_at_statuses())
+        .chain(to_index_txt_channel(peercast))
         .map(|channel| channel.into_string() + "\n")
         .collect::<Vec<_>>()
         .join("")
