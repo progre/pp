@@ -7,12 +7,31 @@ use std::{env, time::Duration};
 
 use anyhow::{anyhow, Result};
 use chrono::DateTime;
+use cloud_storage::client::ObjectClient;
 use p_at::{to_index_txt, to_insecure_txt};
-use tokio::time::sleep;
+use tokio::{join, time::sleep};
 
 use crate::peercast_xml::Peercast;
 
 const ORIGIN: &str = "http://172.17.0.1:7144";
+
+async fn write<'a>(
+    client: &'a ObjectClient<'a>,
+    bucket: &str,
+    filename: &str,
+    data: Vec<u8>,
+    max_age: u8,
+) -> Result<()> {
+    let temp = format!("{}.temp", filename);
+    let mut object = client
+        .create(bucket, data, &temp, "text/plain; charset=UTF-8")
+        .await?;
+    object.cache_control = Some(format!("max-age={}", max_age));
+    client.update(&object).await?;
+    client.rewrite(&object, bucket, filename).await?;
+    client.delete(bucket, &temp).await?;
+    Ok(())
+}
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -42,29 +61,26 @@ async fn main() -> Result<()> {
             let insecure_txt = to_insecure_txt(&peercast, date);
 
             let client = cloud_storage::Client::new();
-            let mut object = client
-                .object()
-                .create(
+            let client = client.object();
+            let (result1, result2) = join!(
+                write(
+                    &client,
                     &bucket,
-                    index_txt.into(),
                     "index.txt",
-                    "text/plain; charset=UTF-8",
-                )
-                .await?;
-            object.cache_control = Some(format!("max-age={}", update_interval));
-            client.object().update(&object).await?;
-            let mut object = client
-                .object()
-                .create(
+                    index_txt.into(),
+                    update_interval + 10,
+                ),
+                write(
+                    &client,
                     &bucket,
-                    insecure_txt.into(),
                     "insecure.txt",
-                    "text/plain; charset=UTF-8",
+                    insecure_txt.into(),
+                    update_interval + 10,
                 )
-                .await?;
-            object.cache_control = Some(format!("max-age={}", update_interval));
-            client.object().update(&object).await?;
+            );
+            result1?;
+            result2?;
         }
-        sleep(Duration::from_secs(update_interval)).await;
+        sleep(Duration::from_secs(update_interval as u64)).await;
     }
 }
