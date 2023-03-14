@@ -23,7 +23,7 @@ async fn write<'a>(
     bucket: &str,
     filename: &str,
     data: Vec<u8>,
-    max_age: u8,
+    max_age: u32,
 ) -> Result<()> {
     let temp = format!("{}.temp", filename);
     let mut object = client
@@ -43,7 +43,7 @@ async fn main() -> Result<()> {
         env::var("GENERATE_INDEX_TXT_BUCKET_NAME").expect("GENERATE_INDEX_TXT_BUCKET_NAME");
     let peercast_password = env::var("PEERCAST_PASSWORD").expect("PEERCAST_PASSWORD");
 
-    let update_interval = 10 * 60;
+    let update_interval = 60;
     loop {
         {
             let xml = reqwest::Client::new()
