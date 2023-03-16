@@ -20,9 +20,6 @@ if [ "$environment_target" = 'production' ]; then
   terraform import \
     google_dns_record_set.resource_recordset \
     "projects/$project/managedZones/$dns_zone_name/rrsets/root.p-at.net./A"
-  terraform import \
-    google_dns_record_set.resource_recordset2 \
-    "projects/$project/managedZones/$dns_zone_name/rrsets/insecure.p-at.net./A"
 fi
 
 terraform import \
