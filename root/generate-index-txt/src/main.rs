@@ -26,6 +26,7 @@ async fn write<'a>(
     max_age: u32,
 ) -> Result<()> {
     let temp = format!("{}.temp", path);
+    // TODO: XML API で x-goog-cache-control を使えば 1 リクエストで実現できそう
     let mut object = client
         .create(bucket, data, &temp, "text/plain; charset=UTF-8")
         .await?;
