@@ -9,18 +9,15 @@ terraform {
 
 variable "env_email_address" {}
 variable "env_password" {}
-variable "env_root_crt_file_name" {}
-variable "env_root_key_file_name" {}
 variable "logflare_uri" {}
 variable "generate_index_txt_google_application_credentials_json" {}
 variable "google_cloud_dns_zone_name" {}
-variable "google_credential_file_name" {}
 variable "google_environment_target" {}
 variable "google_power" {}
 variable "google_project" {}
 
 provider "google" {
-  credentials = file(var.google_credential_file_name)
+  credentials = file("secrets/google_credential.json")
   region      = "us-west1"
   project     = var.google_project
 }
@@ -99,11 +96,11 @@ resource "google_compute_instance" "tf_cloud_01" {
             - name: PASSWORD
               value: "${var.env_password}"
             - name: ROOT_CRT
-              value: "${replace(file(var.env_root_crt_file_name), "\n", "\\n")}"
+              value: "${replace(file("secrets/root.crt"), "\n", "\\n")}"
             - name: ROOT_DOMAIN
               value: "root.p-at.net"
             - name: ROOT_KEY
-              value: "${replace(file(var.env_root_key_file_name), "\n", "\\n")}"
+              value: "${replace(file("secrets/root.key"), "\n", "\\n")}"
           volumeMounts:
             - name: dockersock
               mountPath: /var/run/docker.sock
