@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/index.txt",
-      "destination": "https://storage.googleapis.com/p-at-net/insecure/index.txt"
-    }
-  ]
-}
