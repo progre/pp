@@ -27,17 +27,17 @@ fn p_at_status(desc: String, comment: String) -> IndexTxtChannel {
     }
 }
 
-fn insecure_p_at_statuses() -> [IndexTxtChannel; 3] {
-    fn channel(number: u32, desc: &str) -> IndexTxtChannel {
+fn insecure_p_at_statuses() -> Vec<IndexTxtChannel> {
+    fn channel(idx: usize, desc: &str) -> IndexTxtChannel {
         IndexTxtChannel {
-            name: format!("p@◆Warning ※必ずお読みください ({})", number),
+            name: format!("p@◆Warning ※必ずお読みください ({})", idx + 1),
             id: "00000000000000000000000000000000".into(),
             ip: "".into(),
             url: "https://p-at.net".into(),
             genre: "".into(),
             desc: desc.into(),
-            listeners: 10000 - number as i32,
-            relays: 10000 - number as i32,
+            listeners: 9999 - idx as i32,
+            relays: 9999 - idx as i32,
             bitrate: 0,
             type_: "RAW".into(),
             track_artist: "".into(),
@@ -49,15 +49,12 @@ fn insecure_p_at_statuses() -> [IndexTxtChannel; 3] {
             direct: false,
         }
     }
-
     [
-        channel(1, "お使いの p@ YP の URL は廃止されます。新しい URL に変更してください。"),
-        channel(
-            2,
-            "新しい URL に変更するには、ウィンドウ上部ツールバーの歯車のアイコンをクリックして「全般の設定」をクリックし、",
-        ),
-        channel(3, "YP タブの p@ の項目の URL を「http://insecure.p-at.net/」から「http://p-at.net/」に変更してください。"),
-    ]
+        "お使いの p@ YP の URL は廃止されます。新しい URL に変更してください。",
+        "新しい URL に変更するには、ウィンドウ上部メニューバーの オプション(O) かツールバーの 歯車アイコン をクリックして 全般の設定 をクリックし、",
+        "YP タブの p@ の項目の URL を「http://insecure.p-at.net/」から「http://p-at.net/」に変更してください。",
+        "【注意】新しい設定を追加するのではなく、設定を書き換えてください。同じ YP の設定が複数あると誤動作を起こします。",
+    ].into_iter().enumerate().map(|(idx, msg)| channel(idx, msg)).collect()
 }
 
 fn to_header_virtual_channel(uptime: u32, date: DateTime<FixedOffset>) -> IndexTxtChannel {
