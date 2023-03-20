@@ -29,7 +29,7 @@ pub struct Connections {
 #[derive(Clone, Deserialize, Debug)]
 pub struct Host {
     #[serde(rename = "@ip")]
-    pub ip: SocketAddr,
+    pub ip: Option<SocketAddr>,
     #[serde(rename = "@hops")]
     pub hops: u32,
     #[serde(rename = "@listeners")]

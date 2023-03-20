@@ -64,7 +64,9 @@ impl From<Channel> for IndexTxtChannel {
         Self {
             name: value.name,
             id: value.id,
-            ip: host.map(|host| host.ip.to_string()).unwrap_or_default(),
+            ip: host
+                .and_then(|host| host.ip.map(|ip| ip.to_string()))
+                .unwrap_or_default(),
             url: value.url,
             genre: value.genre,
             desc: value.desc,
@@ -89,7 +91,9 @@ impl From<&Channel> for IndexTxtChannel {
         Self {
             name: value.name.clone(),
             id: value.id.clone(),
-            ip: host.map(|host| host.ip.to_string()).unwrap_or_default(),
+            ip: host
+                .and_then(|host| host.ip.map(|ip| ip.to_string()))
+                .unwrap_or_default(),
             url: value.url.clone(),
             genre: value.genre.clone(),
             desc: value.desc.clone(),
@@ -106,4 +110,11 @@ impl From<&Channel> for IndexTxtChannel {
             direct: host.map(|host| host.direct).unwrap_or_default() == 1,
         }
     }
+}
+
+pub fn join(channels: impl Iterator<Item = IndexTxtChannel>) -> String {
+    channels
+        .map(|channel| channel.into_string() + "\n")
+        .collect::<Vec<_>>()
+        .join("")
 }
