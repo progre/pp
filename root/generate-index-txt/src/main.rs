@@ -44,7 +44,7 @@ async fn main() -> Result<()> {
         env::var("GENERATE_INDEX_TXT_BUCKET_NAME").expect("GENERATE_INDEX_TXT_BUCKET_NAME");
     let peercast_password = env::var("PEERCAST_PASSWORD").expect("PEERCAST_PASSWORD");
 
-    let update_interval = 60;
+    let update_interval = 20;
     loop {
         {
             let xml = reqwest::Client::new()
