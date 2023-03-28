@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/index.txt",
+      "destination": "/_internal/index.txt?host="
+    }
+  ]
+}
