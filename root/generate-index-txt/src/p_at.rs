@@ -7,7 +7,7 @@ use crate::{
     utils::to_day_to_secs_string,
 };
 
-const MESSAGE: &str = "index.txt の生成フローを改善するテスト";
+const MESSAGE: &str = "平常運転";
 
 fn p_at_status(desc: String, comment: String) -> IndexTxtChannel {
     IndexTxtChannel {
@@ -32,14 +32,14 @@ fn p_at_status(desc: String, comment: String) -> IndexTxtChannel {
 }
 
 fn insecure_p_at_statuses() -> Vec<IndexTxtChannel> {
-    fn channel(idx: usize, desc: &str) -> IndexTxtChannel {
+    fn channel(idx: usize, params: (&str, &str, &str)) -> IndexTxtChannel {
         IndexTxtChannel {
-            name: format!("p@◆Warning ※必ずお読みください ({})", idx + 1),
+            name: format!("p@◆{}", params.0),
             id: "00000000000000000000000000000000".into(),
             ip: "".into(),
-            url: "https://p-at.net".into(),
+            url: params.2.into(),
             genre: "".into(),
-            desc: desc.into(),
+            desc: params.1.into(),
             listeners: 9999 - idx as i32,
             relays: 9999 - idx as i32,
             bitrate: 0,
@@ -54,12 +54,15 @@ fn insecure_p_at_statuses() -> Vec<IndexTxtChannel> {
         }
     }
     [
-        "お使いの p@ YP の URL は廃止されます。新しい URL に変更してください。",
-        "新しい URL に変更するには、ウィンドウ上部メニューバーの オプション(O) かツールバーの 歯車アイコン をクリックして 全般の設定 をクリックし、",
-        "YP タブの p@ の項目の URL を「http://insecure.p-at.net/」から「http://p-at.net/」に変更してください。",
-        "【注意1】新しい設定を追加するのではなく、設定を書き換えてください。同じ YP の設定が複数あると誤動作を起こします。",
-        "【注意2】Windows 10 より古い環境は動作保証外です。Windows 10 以降へアップデートしてから使用してください。",
-    ].into_iter().enumerate().map(|(idx, msg)| channel(idx, msg)).collect()
+        ("Warning ※必ずお読みください (1)", "お使いの p@ YP の URL は廃止されます。新しい URL に変更してください。", "https://p-at.net"),
+        ("Warning ※必ずお読みください (2)", "新しい URL に変更するには、ウィンドウ上部メニューバーの オプション(O) かツールバーの 歯車アイコン をクリックして 全般の設定 をクリックし、", "https://p-at.net"),
+        ("Warning ※必ずお読みください (3)", "YP タブの p@ の項目の URL を「http://insecure.p-at.net/」から「http://p-at.net/」に変更してください。", "https://p-at.net"),
+        ("Warning ※必ずお読みください (4)", "【注意1】新しい設定を追加するのではなく、設定を書き換えてください。同じ YP の設定が複数あると誤動作を起こします。", "https://p-at.net"),
+        ("Warning ※必ずお読みください (5)", "【注意2】Windows 10 より古い環境は動作保証外です。Windows 10 以降へアップデートしてから使用してください。", "https://p-at.net"),
+        ("Info 支援のお願い (1)", "p@ YP は広告等を掲載せずに個人によって運営されています。 皆様からの支援はより良いサービスを長期的に提供する助けになります。", "https://p-at.net"),
+        ("Info 支援のお願い (2)", "GitHub から支援する場合(推奨)は、こちらのコンタクト URL からお願いします。", "https://github.com/sponsors/progre"),
+        ("Info 支援のお願い (3)", "PIXIV FANBOX から支援する場合は、こちらのコンタクト URL からお願いします。", "https://progre.fanbox.cc/"),
+    ].into_iter().enumerate().map(|(idx, params)| channel(idx, params)).collect()
 }
 
 fn to_header_virtual_channel(uptime: u32, date: DateTime<FixedOffset>) -> IndexTxtChannel {
