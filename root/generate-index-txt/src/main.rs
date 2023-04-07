@@ -45,6 +45,7 @@ async fn main() -> Result<()> {
     let peercast_password = env::var("PEERCAST_PASSWORD").expect("PEERCAST_PASSWORD");
 
     let update_interval = 20;
+    let mut iteration = 0;
     loop {
         {
             let xml = reqwest::Client::new()
@@ -71,16 +72,26 @@ async fn main() -> Result<()> {
                     index_txt.into(),
                     update_interval + 10,
                 ),
-                write(
-                    &client,
-                    &bucket,
-                    "insecure/index.txt",
-                    insecure_txt.into(),
-                    update_interval + 10,
-                )
+                async {
+                    if iteration == 0 {
+                        write(
+                            &client,
+                            &bucket,
+                            "insecure/index.txt",
+                            insecure_txt.into(),
+                            update_interval + 10,
+                        )
+                        .await?;
+                    }
+                    Result::<_, anyhow::Error>::Ok(())
+                }
             );
             result1?;
             result2?;
+            iteration += 1;
+            if iteration >= 180 {
+                iteration = 0;
+            }
         }
         sleep(Duration::from_secs(update_interval as u64)).await;
     }
