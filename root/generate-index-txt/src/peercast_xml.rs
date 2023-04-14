@@ -4,6 +4,7 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 pub struct Servent {
+    /** seconds */
     #[serde(rename = "@uptime")]
     pub uptime: u32,
 }

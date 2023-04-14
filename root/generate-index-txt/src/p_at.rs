@@ -1,3 +1,8 @@
+use std::{
+    collections::hash_map::DefaultHasher,
+    hash::{Hash, Hasher},
+};
+
 use chrono::{DateTime, FixedOffset, SecondsFormat};
 use regex::Regex;
 
@@ -110,7 +115,7 @@ fn modify_channel(mut channel: IndexTxtChannel) -> IndexTxtChannel {
     channel
 }
 
-fn to_index_txt_channels(peercast: &Peercast) -> impl Iterator<Item = IndexTxtChannel> + '_ {
+pub fn to_index_txt_channels(peercast: &Peercast) -> impl Iterator<Item = IndexTxtChannel> + '_ {
     peercast
         .channels_found
         .channel
@@ -120,19 +125,38 @@ fn to_index_txt_channels(peercast: &Peercast) -> impl Iterator<Item = IndexTxtCh
         .map(modify_channel)
 }
 
-pub fn to_index_txt(peercast: &Peercast, date: DateTime<FixedOffset>) -> String {
+pub fn to_index_txt(
+    uptime: u32,
+    index_txt_channels: impl Iterator<Item = IndexTxtChannel>,
+    date: DateTime<FixedOffset>,
+) -> String {
     join(
-        [to_header_virtual_channel(peercast.servent.uptime, date)]
+        [to_header_virtual_channel(uptime, date)]
             .into_iter()
-            .chain(to_index_txt_channels(peercast)),
+            .chain(index_txt_channels),
     )
 }
 
-pub fn to_insecure_txt(peercast: &Peercast, date: DateTime<FixedOffset>) -> String {
+pub fn to_insecure_txt(
+    uptime: u32,
+    index_txt_channels: impl Iterator<Item = IndexTxtChannel>,
+    date: DateTime<FixedOffset>,
+) -> String {
     join(
-        [to_header_virtual_channel(peercast.servent.uptime, date)]
+        [to_header_virtual_channel(uptime, date)]
             .into_iter()
             .chain(insecure_p_at_statuses())
-            .chain(to_index_txt_channels(peercast)),
+            .chain(index_txt_channels),
     )
+}
+
+pub fn to_channel_infos_hash(index_txt_channelscast: impl Iterator<Item = IndexTxtChannel>) -> u64 {
+    let mut hasher = DefaultHasher::new();
+    index_txt_channelscast
+        .map(|mut channel| {
+            channel.age_minutes = 0;
+        })
+        .collect::<Vec<_>>()
+        .hash(&mut hasher);
+    hasher.finish()
 }

@@ -1,5 +1,6 @@
 use crate::{peercast_xml::Channel, utils::to_minutes_to_secs_string};
 
+#[derive(Clone, Hash)]
 pub struct IndexTxtChannel {
     pub name: String,
     pub id: String,
