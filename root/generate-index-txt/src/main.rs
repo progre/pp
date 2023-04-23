@@ -11,7 +11,6 @@ use std::{
 use anyhow::Result;
 use chrono::{DateTime, FixedOffset, Utc};
 use cloud_storage::client::ObjectClient;
-use index_txt::IndexTxtChannel;
 use p_at::{to_channel_infos_hash, to_index_txt, to_index_txt_channels, to_insecure_txt};
 use tokio::{join, time::sleep};
 
@@ -50,7 +49,7 @@ async fn write<'a>(
 
 fn check_hash_and_timestamp(
     uptime: u32,
-    index_txt_channels: impl Iterator<Item = IndexTxtChannel>,
+    index_txt_channels: impl Iterator<Item = index_txt::Channel>,
     hash: u64,
     hash_uptime: u32,
 ) -> Option<u64> {
@@ -73,11 +72,11 @@ async fn main() -> Result<()> {
         env::var("GENERATE_INDEX_TXT_BUCKET_NAME").expect("GENERATE_INDEX_TXT_BUCKET_NAME");
     let peercast_password = env::var("PEERCAST_PASSWORD").expect("PEERCAST_PASSWORD");
 
-    const UPDATE_INTERVAL: u32 = 20;
     let mut iteration = 0;
     let mut hash = 0;
     let mut hash_uptime = 0;
     loop {
+        const UPDATE_INTERVAL: u32 = 1;
         {
             let xml = fetch(&peercast_password).await?;
             let peercast: Peercast = quick_xml::de::from_str(&xml)?;
@@ -125,7 +124,7 @@ async fn main() -> Result<()> {
                             &bucket,
                             "insecure/index.txt",
                             insecure_txt.into(),
-                            UPDATE_INTERVAL * 180 + 10,
+                            UPDATE_INTERVAL * 60 * 60,
                         )
                         .await?;
                         Result::<_, anyhow::Error>::Ok(())
@@ -135,7 +134,7 @@ async fn main() -> Result<()> {
             result1?;
             result2?;
             iteration += 1;
-            if iteration >= 180 {
+            if iteration >= 60 * 60 {
                 iteration = 0;
             }
         }

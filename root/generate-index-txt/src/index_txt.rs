@@ -1,7 +1,7 @@
-use crate::{peercast_xml::Channel, utils::to_minutes_to_secs_string};
+use crate::{peercast_xml, utils::to_minutes_to_secs_string};
 
 #[derive(Clone, Hash)]
-pub struct IndexTxtChannel {
+pub struct Channel {
     pub name: String,
     pub id: String,
     pub ip: String,
@@ -31,7 +31,7 @@ fn encode(src: &str) -> String {
         .finish()
 }
 
-impl IndexTxtChannel {
+impl Channel {
     pub fn into_string(self) -> String {
         let percent_encoded_name = encode(&self.name);
         [
@@ -59,8 +59,8 @@ impl IndexTxtChannel {
     }
 }
 
-impl From<Channel> for IndexTxtChannel {
-    fn from(value: Channel) -> Self {
+impl From<peercast_xml::Channel> for Channel {
+    fn from(value: peercast_xml::Channel) -> Self {
         let host = value.hits.host.get(0);
         Self {
             name: value.name,
@@ -86,8 +86,8 @@ impl From<Channel> for IndexTxtChannel {
     }
 }
 
-impl From<&Channel> for IndexTxtChannel {
-    fn from(value: &Channel) -> Self {
+impl From<&peercast_xml::Channel> for Channel {
+    fn from(value: &peercast_xml::Channel) -> Self {
         let host = value.hits.host.get(0);
         Self {
             name: value.name.clone(),
@@ -113,9 +113,8 @@ impl From<&Channel> for IndexTxtChannel {
     }
 }
 
-pub fn join(channels: impl Iterator<Item = IndexTxtChannel>) -> String {
+pub fn join(channels: impl Iterator<Item = Channel>) -> String {
     channels
         .map(|channel| channel.into_string() + "\n")
-        .collect::<Vec<_>>()
-        .join("")
+        .collect::<String>()
 }

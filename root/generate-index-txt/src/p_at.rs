@@ -7,54 +7,54 @@ use chrono::{DateTime, FixedOffset, SecondsFormat};
 use regex::Regex;
 
 use crate::{
-    index_txt::{join, IndexTxtChannel},
+    index_txt::{join, Channel},
     peercast_xml::Peercast,
     utils::to_day_to_secs_string,
 };
 
 const MESSAGE: &str = "平常運転";
 
-fn p_at_status(desc: String, comment: String) -> IndexTxtChannel {
-    IndexTxtChannel {
+fn p_at_status(desc: String, comment: String) -> Channel {
+    Channel {
         name: "p@◆Status".into(),
         id: "00000000000000000000000000000000".into(),
-        ip: "".into(),
+        ip: String::new(),
         url: "https://mastodon-japan.net/@p_at".into(),
-        genre: "".into(),
+        genre: String::new(),
         desc,
         listeners: -9,
         relays: -9,
         bitrate: 0,
         type_: "RAW".into(),
-        track_artist: "".into(),
-        track_album: "".into(),
-        track_title: "".into(),
-        track_contact: "".into(),
+        track_artist: String::new(),
+        track_album: String::new(),
+        track_title: String::new(),
+        track_contact: String::new(),
         age_minutes: 0,
         comment,
         direct: false,
     }
 }
 
-fn insecure_p_at_statuses() -> Vec<IndexTxtChannel> {
-    fn channel(idx: usize, params: (&str, &str, &str)) -> IndexTxtChannel {
-        IndexTxtChannel {
+fn insecure_p_at_statuses() -> Vec<Channel> {
+    fn channel(idx: usize, params: (&str, &str, &str)) -> Channel {
+        Channel {
             name: format!("p@◆{}", params.0),
             id: "00000000000000000000000000000000".into(),
-            ip: "".into(),
+            ip: String::new(),
             url: params.2.into(),
-            genre: "".into(),
+            genre: String::new(),
             desc: params.1.into(),
             listeners: 9999 - idx as i32,
             relays: 9999 - idx as i32,
             bitrate: 0,
             type_: "RAW".into(),
-            track_artist: "".into(),
-            track_album: "".into(),
-            track_title: "".into(),
-            track_contact: "".into(),
+            track_artist: String::new(),
+            track_album: String::new(),
+            track_title: String::new(),
+            track_contact: String::new(),
             age_minutes: 0,
-            comment: "".into(),
+            comment: String::new(),
             direct: false,
         }
     }
@@ -70,7 +70,7 @@ fn insecure_p_at_statuses() -> Vec<IndexTxtChannel> {
     ].into_iter().enumerate().map(|(idx, params)| channel(idx, params)).collect()
 }
 
-fn to_header_virtual_channel(uptime: u32, date: DateTime<FixedOffset>) -> IndexTxtChannel {
+fn to_header_virtual_channel(uptime: u32, date: DateTime<FixedOffset>) -> Channel {
     let uptime_string = to_day_to_secs_string(uptime);
     p_at_status(
         MESSAGE.into(),
@@ -82,7 +82,7 @@ fn to_header_virtual_channel(uptime: u32, date: DateTime<FixedOffset>) -> IndexT
     )
 }
 
-fn modify_channel(mut channel: IndexTxtChannel) -> IndexTxtChannel {
+fn modify_channel(mut channel: Channel) -> Channel {
     let genre_src = channel.genre;
     let genre: String;
     let naisho;
@@ -115,19 +115,19 @@ fn modify_channel(mut channel: IndexTxtChannel) -> IndexTxtChannel {
     channel
 }
 
-pub fn to_index_txt_channels(peercast: &Peercast) -> impl Iterator<Item = IndexTxtChannel> + '_ {
+pub fn to_index_txt_channels(peercast: &Peercast) -> impl Iterator<Item = Channel> + '_ {
     peercast
         .channels_found
         .channel
         .iter()
         .filter(|x| !x.hits.host.is_empty()) // NOTE: 配信終了直後に host が空で残ることがある
-        .map(|x| -> IndexTxtChannel { x.into() })
+        .map(|x| -> Channel { x.into() })
         .map(modify_channel)
 }
 
 pub fn to_index_txt(
     uptime: u32,
-    index_txt_channels: impl Iterator<Item = IndexTxtChannel>,
+    index_txt_channels: impl Iterator<Item = Channel>,
     date: DateTime<FixedOffset>,
 ) -> String {
     join(
@@ -139,7 +139,7 @@ pub fn to_index_txt(
 
 pub fn to_insecure_txt(
     uptime: u32,
-    index_txt_channels: impl Iterator<Item = IndexTxtChannel>,
+    index_txt_channels: impl Iterator<Item = Channel>,
     date: DateTime<FixedOffset>,
 ) -> String {
     join(
@@ -150,7 +150,7 @@ pub fn to_insecure_txt(
     )
 }
 
-pub fn to_channel_infos_hash(index_txt_channelscast: impl Iterator<Item = IndexTxtChannel>) -> u64 {
+pub fn to_channel_infos_hash(index_txt_channelscast: impl Iterator<Item = Channel>) -> u64 {
     let mut hasher = DefaultHasher::new();
     index_txt_channelscast
         .map(|mut channel| {
