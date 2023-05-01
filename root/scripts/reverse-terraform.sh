@@ -1,6 +1,5 @@
 #!/bin/bash -eux
 
-dns_zone_name=$(sed --null-data --regexp-extended 's/^.+google_cloud_dns_zone_name += "([^\"]+)".*$/\1/' terraform.tfvars)
 environment_target=$(sed --null-data --regexp-extended 's/^.+google_environment_target += "([^\"]+)".*$/\1/' terraform.tfvars)
 project=$(sed --null-data --regexp-extended 's/^.+google_project += "([^\"]+)".*$/\1/' terraform.tfvars)
 
@@ -15,13 +14,6 @@ terraform import \
   google_compute_address.tf_address \
   "projects/$project/regions/us-west1/addresses/tf-$environment_target-ipv4-address" \
   || echo skip
-
-if [ "$environment_target" = 'production' ]; then
-  terraform import \
-    google_dns_record_set.resource_recordset \
-    "projects/$project/managedZones/$dns_zone_name/rrsets/root.p-at.net./A"
-fi
-
 terraform import \
   google_compute_instance.tf_cloud_01 \
   "projects/$project/zones/us-west1-a/instances/tf-$environment_target" \

@@ -42,16 +42,6 @@ resource "google_compute_address" "tf_address" {
   name = "tf-${var.google_environment_target}-ipv4-address"
 }
 
-resource "google_dns_record_set" "resource_recordset" {
-  count = var.google_power && var.google_environment_target == "production" ? 1 : 0
-
-  managed_zone = var.google_cloud_dns_zone_name
-  name         = "root.p-at.net."
-  type         = "A"
-  rrdatas      = [google_compute_address.tf_address[0].address]
-  ttl          = 300
-}
-
 resource "google_compute_instance" "tf_cloud_01" {
   count = var.google_power ? 1 : 0
 
