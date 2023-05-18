@@ -155,6 +155,7 @@ pub fn to_channel_infos_hash(index_txt_channelscast: impl Iterator<Item = Channe
     index_txt_channelscast
         .map(|mut channel| {
             channel.age_minutes = 0;
+            channel
         })
         .collect::<Vec<_>>()
         .hash(&mut hasher);
