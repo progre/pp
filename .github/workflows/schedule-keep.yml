@@ -1,0 +1,20 @@
+name: .keep
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: .keep
+    - run: |
+        git config --local user.email "git.invalid"
+        git config --local user.name "git"
+        git switch --create ".keep"
+        git commit --amend --message ".keep"
+        git push --force-with-lease origin .keep
