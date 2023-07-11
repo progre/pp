@@ -13,6 +13,6 @@ jobs:
     - run: |
         git config --local user.email "git.invalid"
         git config --local user.name "git"
-        git switch --create ".keep"
-        git commit --amend --message ".keep"
-        git push --force-with-lease origin .keep
+        git switch --create "_keep"
+        git commit --amend --message "_keep"
+        git push --force-with-lease origin _keep
