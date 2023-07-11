@@ -1,4 +1,4 @@
-name: .keep
+name: "[Schedule] Keep"
 
 on:
   schedule:
@@ -10,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-      with:
-        ref: .keep
     - run: |
         git config --local user.email "git.invalid"
         git config --local user.name "git"
