@@ -15,4 +15,5 @@ jobs:
         git config --local user.name "git"
         git switch --create "_keep"
         git commit --amend --message "_keep"
-        git push --force-with-lease origin _keep
+        git push _keep
+        git push origin :_keep
