@@ -65,7 +65,7 @@ fn now() -> DateTime<FixedOffset> {
         .with_timezone(&FixedOffset::east_opt(9 * 3600).unwrap())
 }
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<()> {
     env::var("GOOGLE_APPLICATION_CREDENTIALS_JSON").expect("GOOGLE_APPLICATION_CREDENTIALS_JSON");
     let bucket =
