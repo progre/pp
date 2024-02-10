@@ -269,7 +269,7 @@ export default function index(props: Props): JSX.Element {
         <h1>連絡先</h1>
         <div>
           <Link
-            href="https://twitter.com/p_at_yp"
+            href="https://bsky.app/profile/p-at.net"
             target="_blank"
             rel="noreferrer"
           >
