@@ -33,7 +33,7 @@ export default function Footer(props: { rawLink?: boolean }): JSX.Element {
         ©
         <a
           style={{ marginLeft: '0.25em' }}
-          href="https://twitter.com/progremaster"
+          href="https://bsky.app/profile/progre.me"
           target="_blank"
           rel="noreferrer"
         >
