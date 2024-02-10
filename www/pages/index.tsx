@@ -273,7 +273,7 @@ export default function index(props: Props): JSX.Element {
             target="_blank"
             rel="noreferrer"
           >
-            @p_at_yp
+            @p-at.net
           </Link>
         </div>
         <div
