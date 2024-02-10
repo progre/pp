@@ -19,7 +19,7 @@ fn p_at_status(desc: String, comment: String) -> Channel {
         name: "p@◆Status".into(),
         id: "00000000000000000000000000000000".into(),
         ip: String::new(),
-        url: "https://mastodon-japan.net/@p_at".into(),
+        url: "https://bsky.app/profile/p-at.net".into(),
         genre: String::new(),
         desc,
         listeners: -9,
