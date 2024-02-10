@@ -17,7 +17,7 @@ jobs:
         run: echo "value=$(scripts/num-channels.ts)" >> $GITHUB_OUTPUT
       - name: Warn if some channels are broadcasting
         if: github.event_name != 'workflow_dispatch' && steps.num_channels.outputs.value > 0
-        run: echo '::warning::${{ steps.num_channels.outputs.value }} チャンネルが配信中のため再起動を中止しました。'
+        run: echo '::warning::${{ steps.num_channels.outputs.value }} チャンネルが配信中ですが、無視して再起動します。'
       - name: Warn if some channels are broadcasting
         if: github.event_name == 'workflow_dispatch' && steps.num_channels.outputs.value > 0
         run: echo '::warning::${{ steps.num_channels.outputs.value }} チャンネルが配信中ですが、手動実行なので再起動します。'
@@ -26,7 +26,6 @@ jobs:
   restart:
     name: Restart
     needs: check_channels
-    if: github.event_name == 'workflow_dispatch' || needs.check_channels.outputs.num_channels == 0
     runs-on: ubuntu-latest
     steps:
       - uses: hashicorp/setup-terraform@v2
