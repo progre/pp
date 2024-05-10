@@ -30,7 +30,7 @@ fn p_at_status(desc: String, comment: String) -> Channel {
         track_album: String::new(),
         track_title: String::new(),
         track_contact: String::new(),
-        age_minutes: 0,
+        uptime_minutes: 0,
         comment,
         direct: false,
     }
@@ -53,7 +53,7 @@ fn insecure_p_at_statuses() -> Vec<Channel> {
             track_album: String::new(),
             track_title: String::new(),
             track_contact: String::new(),
-            age_minutes: 0,
+            uptime_minutes: 0,
             comment: String::new(),
             direct: false,
         }
@@ -154,7 +154,7 @@ pub fn to_channel_infos_hash(index_txt_channelscast: impl Iterator<Item = Channe
     let mut hasher = DefaultHasher::new();
     index_txt_channelscast
         .map(|mut channel| {
-            channel.age_minutes = 0;
+            channel.uptime_minutes = 0;
             channel
         })
         .collect::<Vec<_>>()
