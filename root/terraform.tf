@@ -52,7 +52,7 @@ resource "google_compute_instance" "tf_cloud_01" {
   allow_stopping_for_update = true
   boot_disk {
     initialize_params {
-      image = "projects/cos-cloud/global/images/cos-stable-109-17800-66-81"
+      image = "projects/cos-cloud/global/images/cos-113-18244-1-65"
     }
   }
   metadata = {
