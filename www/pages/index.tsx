@@ -9,7 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { GetServerSidePropsResult } from 'next';
 import NextLink from 'next/link';
 import * as parser from 'peercast-yp-channels-parser';
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 import CopyBox from '../components/CopyBox';
 import Footer from '../components/Footer';
 import Head from '../components/Head';
@@ -142,17 +142,17 @@ export default function index(props: Props): JSX.Element {
         <p>
           <strong>
             チャンネルを掲載するには
-            <NextLink href="/terms" passHref>
-              <Link>利用規約</Link>
-            </NextLink>
+            <Link component={NextLink} href="/terms">
+              利用規約
+            </Link>
             に同意する必要があります。
           </strong>
         </p>
         <p>
           <strong>
-            <NextLink href="/terms" passHref>
-              <Link>利用規約</Link>
-            </NextLink>
+            <Link component={NextLink} href="/terms">
+              利用規約
+            </Link>
           </strong>
         </p>
         <FormControlLabel
@@ -320,7 +320,7 @@ export async function getStaticProps(): Promise<
       dummyIndexTxt: parser.stringify(dummyChannels(now), now) + '\n',
       cipheredSupportEmail: encrypt(
         process.env.SUPPORT_EMAIL ??
-          '(現在メールでのサポートを受け付けておりません)'
+        '(現在メールでのサポートを受け付けておりません)'
       ),
     },
   };
