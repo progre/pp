@@ -3,7 +3,7 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Tooltip from '@mui/material/Tooltip';
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 
 export default function CopyBox(props: { value: string }): JSX.Element {
   const [openTimeoutHandler, setOpenTimeoutHandler] = useState(

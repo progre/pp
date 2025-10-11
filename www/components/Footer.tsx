@@ -1,6 +1,6 @@
 import { Link as MLink } from '@mui/material';
 import NextLink from 'next/link';
-import { PropsWithChildren } from 'react';
+import { JSX, PropsWithChildren } from 'react';
 
 function Link(
   props: PropsWithChildren<{ href: string; rawLink?: boolean }>
@@ -9,9 +9,9 @@ function Link(
     return <MLink href={props.href}>{props.children}</MLink>;
   }
   return (
-    <NextLink href={props.href} passHref>
-      <MLink>{props.children}</MLink>
-    </NextLink>
+    <MLink component={NextLink} href={props.href}>
+      {props.children}
+    </MLink>
   );
 }
 

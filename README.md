@@ -1,3 +1,5 @@
+## サーバー構成
+
 ```mermaid
 flowchart TD
 
@@ -19,19 +21,19 @@ end
 style pat fill:#0000
 subgraph pat["p@YP"]
   subgraph vercel["p-at.net (Vercel)"]
-    isr["Vercel CDN\n(https://p-at.net)"]
-    www["index.txt 配信用 HTTP サーバー\n(Next.js)"]
+    isr["Vercel CDN<br>(https://p-at.net)"]
+    www["index.txt 配信用 HTTP サーバー<br>(Next.js)"]
   end
 
   subgraph GCP
     direction TB
     subgraph GCE
       subgraph docker1["Docker1"]
-        nginxroot["Nginx\n(https://root.p-at.net)"]
-        nginxinsecure["Nginx\n(http://insecure.p-at.net)"]
+        nginxinsecure["Nginx<br>(http://insecure.p-at.net)<br>301 Moved Permanently"]
+        nginxroot["Nginx<br>(https://root.p-at.net)"]
       end
       subgraph docker2["Docker2"]
-        root["root モード PeerCast\n(pcp://root.p-at.net)"];
+        root["root モード PeerCast<br>(pcp://root.p-at.net)"];
       end
     end
     dns["Cloud DNS"]
@@ -39,11 +41,11 @@ subgraph pat["p@YP"]
   end
 end
 
-listener["リスナーの PeerCast"]--pcp-->broadcaster
+listener["リスナーの PeerCast"]==pcp==>broadcaster
 broadcaster["配信者の PeerCast"]--pcp-->root
-browser["PCYP"]--https-->isr
-pecareco["PeCaRecorder 等の https 未対応の PCYP"]--http-->nginxinsecure
-nginxinsecure--https-->isr
+pecareco["PeCaRecorder 等の https 未対応の PCYP"]==http==>nginxinsecure
+pecareco==https==>isr
+browser["PCYP"]==https==>isr
 isr--http-->www;
 www--https-->logger
 www--https-->nginxroot;
@@ -51,4 +53,28 @@ nginxroot--http-->root;
 
 gha["GitHub Action"] -."Terraform".-> GCP
 www -.Pull.-> Repository
+```
+
+## デプロイ構成
+
+```mermaid
+flowchart TD
+
+subgraph "GitHub"
+  Repository
+  gha -.-> Repository
+end
+
+style pat fill:#0000
+subgraph pat["p@YP"]
+  subgraph vercel["p-at.net (Vercel)"]
+    www["index.txt 配信用 HTTP サーバー<br>(Next.js)"]
+  end
+  subgraph GCP
+    ...
+  end
+end
+
+gha["GitHub Action"] -."Terraform".-> GCP
+www -.Subscribing.-> Repository
 ```

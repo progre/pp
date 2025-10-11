@@ -3,30 +3,23 @@
   "version": "0.1.0",
   "dependencies": {
     "@emotion/react": "^11.0.0",
-    "@emotion/styled": "^11.0.0",
-    "@google-cloud/logging": "^9.5.4",
-    "@mui/icons-material": "^5.0.1",
-    "@mui/material": "^5.0.1",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.4",
+    "@mui/material": "^7.3.4",
     "array-shuffle": "^3.0.0",
-    "mpegts.js": "^1.6.8",
-    "next": "^11.1.2",
-    "node-abort-controller": "^3.0.0",
+    "next": "^15.5.4",
     "peercast-yp-channels-parser": "0.0.5",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "request": "^2.88.2",
-    "web-streams-polyfill": "^3.1.1",
-    "xml2js": "^0.4.23"
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
-    "@types/react": "^17.0.15",
-    "@types/request": "^2.48.7",
-    "@types/xml2js": "^0.4.9",
+    "@types/node": "24.7.1",
+    "@types/react": "^19.2.2",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.30.0",
     "eslint-config-next": "^11.0.1",
-    "typescript": "^4.3.5"
+    "typescript": "^5.9.3"
   },
   "private": true,
   "scripts": {

@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import NextLink from 'next/link';
 import Footer from '../components/Footer';
 import Head from '../components/Head';
+import { JSX } from 'react';
 
 export default function terms(): JSX.Element {
   return (
