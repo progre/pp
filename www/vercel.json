@@ -1,4 +1,16 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=60"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/index.txt",
