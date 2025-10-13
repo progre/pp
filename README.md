@@ -13,13 +13,10 @@ subgraph "配信者"
   broadcaster
 end
 
-subgraph "GitHub"
-  Repository
-  gha -.-> Repository
-end
-
 style pat fill:#0000
 subgraph pat["p@YP"]
+  cloudflare["Cloudflare Cache"]
+
   subgraph vercel["p-at.net (Vercel)"]
     isr["Vercel CDN<br>(https://p-at.net)"]
     www["index.txt 配信用 HTTP サーバー<br>(Next.js)"]
@@ -35,24 +32,26 @@ subgraph pat["p@YP"]
       subgraph docker2["Docker2"]
         root["root モード PeerCast<br>(pcp://root.p-at.net)"];
       end
+      subgraph docker3["Docker3"]
+        gen["index.txt 生成プロセス"]
+      end
     end
     dns["Cloud DNS"]
-    logger["Cloud Logger"]
+    cloudstorage["Cloud Storage"]
+
+    gen --PUT---> cloudstorage
   end
 end
 
 listener["リスナーの PeerCast"]==pcp==>broadcaster
 broadcaster["配信者の PeerCast"]--pcp-->root
 pecareco["PeCaRecorder 等の https 未対応の PCYP"]==http==>nginxinsecure
-pecareco==https==>isr
-browser["PCYP"]==https==>isr
+pecareco==https==>cloudflare
+cloudflare--https-->isr
+browser["PCYP"]==https==>cloudflare
 isr--http-->www;
-www--https-->logger
-www--https-->nginxroot;
+www--https-->cloudstorage;
 nginxroot--http-->root;
-
-gha["GitHub Action"] -."Terraform".-> GCP
-www -.Pull.-> Repository
 ```
 
 ## デプロイ構成
