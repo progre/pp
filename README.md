@@ -13,11 +13,6 @@ subgraph "配信者"
   broadcaster
 end
 
-subgraph "GitHub"
-  Repository
-  gha -.-> Repository
-end
-
 style pat fill:#0000
 subgraph pat["p@YP"]
   subgraph vercel["p-at.net (Vercel)"]
@@ -50,9 +45,6 @@ isr--http-->www;
 www--https-->logger
 www--https-->nginxroot;
 nginxroot--http-->root;
-
-gha["GitHub Action"] -."Terraform".-> GCP
-www -.Pull.-> Repository
 ```
 
 ## デプロイ構成
