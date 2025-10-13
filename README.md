@@ -30,9 +30,14 @@ subgraph pat["p@YP"]
       subgraph docker2["Docker2"]
         root["root モード PeerCast<br>(pcp://root.p-at.net)"];
       end
+      subgraph docker3["Docker3"]
+        gen["index.txt 生成プロセス"]
+      end
     end
+    cloudstorage["Cloud Storage"]
     dns["Cloud DNS"]
-    logger["Cloud Logger"]
+
+    gen --PUT--> cloudstorage
   end
 end
 
@@ -42,8 +47,7 @@ pecareco["PeCaRecorder 等の https 未対応の PCYP"]==http==>nginxinsecure
 pecareco==https==>isr
 browser["PCYP"]==https==>isr
 isr--http-->www;
-www--https-->logger
-www--https-->nginxroot;
+www--https-->cloudstorage;
 nginxroot--http-->root;
 ```
 
