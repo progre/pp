@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          curl --head https://p-at.net/index.txt && \
-          curl --head http://insecure.p-at.net/index.txt
+          curl --head https://p-at.net/index.txt
   channels:
     name: Channels
     needs: health_check
