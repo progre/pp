@@ -1,0 +1,30 @@
+name: "[Manual] Apply"
+on:
+  workflow_dispatch:
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.2.9
+      - uses: actions/checkout@v3
+      - name: Extract secrets
+        env:
+          GOOGLE_ENVIRONMENT_TARGET: production
+          GOOGLE_POWER: true
+          LOGFLARE_URI: /logs/json?api_key=${{ secrets.LOGFLARE_API_KEY }}&source=c565ddc7-1d34-4fd2-9e68-0b6339577dfa
+          TF_GOOGLE_CREDENTIAL_FILE: ${{ secrets.TF_GOOGLE_CREDENTIAL_FILE }}
+          TF_ROOT_CRT_FILE: ${{ secrets.TF_ROOT_CRT_FILE }}
+          TF_ROOT_KEY_FILE: ${{ secrets.TF_ROOT_KEY_FILE }}
+          TF_TERRAFORM_TFVARS: ${{ secrets.TF_TERRAFORM_TFVARS }}
+        working-directory: ./root
+        run: ./scripts/extract-secrets.sh
+      - name: Reverse terraform
+        working-directory: ./root
+        run: ./scripts/reverse-terraform.sh
+      - name: Terraform
+        working-directory: ./root
+        run: |
+          terraform apply -auto-approve | sed --regexp-extended 's/value: \"[^\"]+\"/value: \"****\"/g'
