@@ -1,4 +1,4 @@
-FROM docker
+FROM docker:29
 RUN apk update && apk add openssl
 CMD peercast_password="$(openssl rand -base64 33 | tr '/+' '_-')" && \
   docker run \
