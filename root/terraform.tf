@@ -4,10 +4,6 @@ terraform {
       source  = "hashicorp/google"
       version = "4.38.0"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.5"
-    }
   }
 }
 
@@ -20,27 +16,9 @@ variable "google_environment_target" {}
 variable "google_power" {}
 variable "google_project" {}
 
-variable "regions" {
-  default = ["us-west1", "us-central1", "us-east1"]
-}
-
-resource "random_shuffle" "region" {
-  input        = var.regions
-  result_count = 1
-}
-
-data "google_compute_zones" "available" {
-  region = random_shuffle.region.result[0]
-}
-
-resource "random_shuffle" "zone" {
-  input        = data.google_compute_zones.available.names
-  result_count = 1
-}
-
 provider "google" {
   credentials = file("secrets/google_credential.json")
-  region      = random_shuffle.region.result[0]
+  region      = "us-west1"
   project     = var.google_project
 }
 
@@ -69,7 +47,7 @@ resource "google_compute_instance" "tf_cloud_01" {
 
   name                      = "tf-${var.google_environment_target}"
   machine_type              = "e2-micro"
-  zone                      = random_shuffle.zone.result[0]
+  zone                      = "us-west1-b"
   tags                      = [google_compute_firewall.tf_firewall.name]
   allow_stopping_for_update = true
   boot_disk {
