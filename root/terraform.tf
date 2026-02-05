@@ -47,7 +47,7 @@ resource "google_compute_instance" "tf_cloud_01" {
 
   name                      = "tf-${var.google_environment_target}"
   machine_type              = "e2-micro"
-  zone                      = "us-west1-b"
+  zone                      = "us-west1-c"
   tags                      = [google_compute_firewall.tf_firewall.name]
   allow_stopping_for_update = true
   boot_disk {
