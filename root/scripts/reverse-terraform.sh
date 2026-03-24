@@ -16,7 +16,7 @@ terraform import \
   || echo skip
 terraform import \
   google_compute_instance.tf_cloud_01 \
-  "projects/$project/zones/us-west1-a/instances/tf-$environment_target" \
+  "projects/$project/zones/us-west1-b/instances/tf-$environment_target" \
   || echo skip
 terraform import \
   google_logging_project_bucket_config.tf_bucket \
