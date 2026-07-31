@@ -12,11 +12,11 @@ terraform import \
   "projects/$project/global/firewalls/tf-firewall"
 terraform import \
   google_compute_address.tf_address \
-  "projects/$project/regions/us-west1/addresses/tf-$environment_target-ipv4-address" \
+  "projects/$project/regions/us-central1/addresses/tf-$environment_target-ipv4-address" \
   || echo skip
 terraform import \
   google_compute_instance.tf_cloud_01 \
-  "projects/$project/zones/us-west1-a/instances/tf-$environment_target" \
+  "projects/$project/zones/us-central1-f/instances/tf-$environment_target" \
   || echo skip
 terraform import \
   google_logging_project_bucket_config.tf_bucket \
