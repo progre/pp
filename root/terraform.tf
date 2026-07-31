@@ -18,7 +18,7 @@ variable "google_project" {}
 
 provider "google" {
   credentials = file("secrets/google_credential.json")
-  region      = "us-central1"
+  region      = "us-west1"
   project     = var.google_project
 }
 
@@ -47,7 +47,7 @@ resource "google_compute_instance" "tf_cloud_01" {
 
   name                      = "tf-${var.google_environment_target}"
   machine_type              = "e2-micro"
-  zone                      = "us-central1-f"
+  zone                      = "us-west1-b"
   tags                      = [google_compute_firewall.tf_firewall.name]
   allow_stopping_for_update = true
   boot_disk {
