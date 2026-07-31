@@ -2,7 +2,7 @@ name: "[Schedule] Restart"
 on:
   schedule:
     # UTC
-    - cron: "0 23 * * *"
+    - cron: "0 23 * * 6" # 毎週日曜 08:00 JST
   workflow_dispatch:
 
 jobs:
