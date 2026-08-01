@@ -47,5 +47,5 @@ jobs:
         working-directory: ./root
         run: |
           terraform init -backend-config="prefix=production" && \
-          terraform taint google_compute_instance.tf_cloud_01 && \
+          terraform taint 'google_compute_instance.tf_cloud_01[0]' && \
           terraform apply -auto-approve | sed --regexp-extended 's/value: \"[^\"]+\"/value: \"****\"/g'
