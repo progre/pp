@@ -1,4 +1,8 @@
 terraform {
+  backend "gcs" {
+    bucket = "progreyp-tfstate"
+    credentials = "secrets/google_credential.json"
+  }
   required_providers {
     google = {
       source  = "hashicorp/google"

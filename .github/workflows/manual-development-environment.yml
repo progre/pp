@@ -28,12 +28,10 @@ jobs:
           TF_TERRAFORM_TFVARS: ${{ secrets.TF_TERRAFORM_TFVARS }}
         working-directory: ./root
         run: ./scripts/extract-secrets.sh
-      - name: Reverse terraform
-        working-directory: ./root
-        run: ./scripts/reverse-terraform.sh
       - name: Terraform
         working-directory: ./root
         run: |
+          terraform init -backend-config="prefix=development" && \
           terraform apply -auto-approve | sed --regexp-extended 's/value: \"[^\"]+\"/value: \"****\"/g'
       - name: Print outputs
         run: |

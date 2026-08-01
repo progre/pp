@@ -77,3 +77,9 @@ end
 gha["GitHub Action"] -."Terraform".-> GCP
 www -.Subscribing.-> Repository
 ```
+
+```bash
+gcloud storage buckets create gs://[Gcloud Project ID]-tfstate --location=us-west1 --uniform-bucket-level-access
+gcloud storage buckets update gs://[Gcloud Project ID]-tfstate --versioning
+gcloud storage buckets add-iam-policy-binding gs://[Gcloud Project ID]-tfstate --member=serviceAccount:terraform@[Gcloud Project ID].iam.gserviceaccount.com --role=roles/storage.objectAdmin
+```

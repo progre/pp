@@ -15,7 +15,7 @@ $ docker build --tag progre/pp-init:latest --file Dockerfile.init . && \
 $ docker push progre/pp-init:latest && \
   docker push progre/pp-peercast:latest && \
   docker push progre/pp:latest
-$ terraform init
+$ terraform init -backend-config="prefix=production"
 $ terraform apply -var-file="main.tfvars" -auto-approve
 ```
 

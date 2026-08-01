@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.2.9
+          terraform_version: 1.5.7
       - uses: actions/checkout@v3
       - name: Extract secrets
         env:
@@ -43,11 +43,9 @@ jobs:
           TF_TERRAFORM_TFVARS: ${{ secrets.TF_TERRAFORM_TFVARS }}
         working-directory: ./root
         run: ./scripts/extract-secrets.sh
-      - name: Reverse terraform
-        working-directory: ./root
-        run: ./scripts/reverse-terraform.sh
       - name: Terraform
         working-directory: ./root
         run: |
+          terraform init -backend-config="prefix=production" && \
           terraform taint google_compute_instance.tf_cloud_01 && \
           terraform apply -auto-approve | sed --regexp-extended 's/value: \"[^\"]+\"/value: \"****\"/g'
